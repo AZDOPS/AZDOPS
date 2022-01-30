@@ -1,2 +1,2 @@
 # AZDevOPS
-Functions for managing Azure DevOps
+Functions for managing Azure DevOps using PowerShell
