@@ -22,15 +22,14 @@ Describe 'Start-AZDevOPSPipeline' {
         BeforeAll {
             $script:AzDOOrganization = 'dummyorg'
 
-            function InvokeAZDevOPSRestMethod {}
-            Mock -CommandName 'InvokeAZDevOPSRestMethod' -MockWith {
+            Mock -CommandName 'InvokeAZDevOPSRestMethod' -ModuleName 'AZDevOPS' -MockWith {
                 '{"count":2,"value":[{"_links":{"self":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/1?revision=1"},"web":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_build/definition?definitionId=1"}},"url":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/1?revision=1","id":1,"revision":1,"name":"dummypipeline1","folder":"\\"},{"_links":{"self":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/3?revision=1"},"web":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_build/definition?definitionId=3"}},"url":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/3?revision=1","id":3,"revision":1,"name":"ummypipeline2","folder":"\\"}]}' | ConvertFrom-Json     
             }
         }
 
         It 'Should call mock' {
             Start-AZDevOPSPipeline -Name 'DummyPipeline' -Project 'DummyProject'
-            Should -Invoke 'InvokeAZDevOPSRestMethod' -Exactly 2
+            Should -Invoke 'InvokeAZDevOPSRestMethod' -ModuleName 'AZDevOPS' -Exactly -Times 2
         }
     }
 }
