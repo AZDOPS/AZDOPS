@@ -15,8 +15,6 @@ function Connect-AZDevOPS {
     $Script:AzDOOrganization = $Organization
 
     $URI = "https://vssps.dev.azure.com/${Script:AzDOOrganization}/_apis/profile/profiles/me?api-version=7.1-preview.3"
-    # $URI = 'https://app.vssps.visualstudio.com/_apis/profile/profiles/me?api-version=7.1-preview.3'
 
     InvokeAZDevOPSRestMethod -Method Get -Uri $URI
-
 }

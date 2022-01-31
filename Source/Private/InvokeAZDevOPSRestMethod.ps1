@@ -23,5 +23,12 @@ function InvokeAZDevOPSRestMethod {
         $InvokeSplat.Add('ContentType', 'application/json')
     }
     
-    Invoke-RestMethod @InvokeSplat
+    $result = Invoke-RestMethod @InvokeSplat
+
+    if ($result -like "*Azure DevOps Services | Sign In*") {
+        throw 'Failed to call Azure DevOps API. Please login before using.'
+    }
+    else {
+        $result
+    }
 }

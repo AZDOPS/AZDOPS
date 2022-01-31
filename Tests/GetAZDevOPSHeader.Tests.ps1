@@ -1,13 +1,9 @@
 Remove-Module AZDevops -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\AZDevops -Force
 
-
 InModuleScope -ModuleName AZDevOPS {
     BeforeAll {
-        $DummyUser = 'DummyUserName'
-        $DummyPassword = 'DummyPassword'
-        $DummyOrg = 'DummyOrg'
-        Connect-AZDevOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg
+        $Script:AZDevOPSCredentials = [pscredential]::new('DummyUser', (ConvertTo-SecureString -String 'DummyPassWord' -AsPlainText -Force))
     }
     Describe 'GetAZDevOPSHeader' {
         It 'Command should exist' {
@@ -18,9 +14,6 @@ InModuleScope -ModuleName AZDevOPS {
         }
         It 'Authorization block should start with "basic"' {
             (GetAZDevOPSHeader).Authorization | Should -BeLike "basic*"
-        }
-        It 'Authorization block should contain base64 encoded username and password string' {
-            (GetAZDevOPSHeader).Authorization | Should -BeLike "*RHVtbXlVc2VyTmFtZTpEdW1teVBhc3N3b3Jk"
         }
     }
 }

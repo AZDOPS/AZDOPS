@@ -3,12 +3,6 @@ Import-Module $PSScriptRoot\..\Source\AZDevops -Force
 
 
 InModuleScope -ModuleName AZDevOPS {
-    BeforeAll {
-        $DummyUser = 'DummyUserName'
-        $DummyPassword = 'DummyPassword'
-        $DummyOrg = 'DummyOrg'
-        Connect-AZDevOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg
-    }
     Describe 'InvokeAZDevOPSRestMethod' {
         BeforeAll {
             $PostObject = @{
@@ -69,7 +63,24 @@ InModuleScope -ModuleName AZDevOPS {
                 $ResultPostObject = InvokeAZDevOPSRestMethod @PostObject
                 $ResultPostObject.Headers.Authorization | Should -Be 'MockedHeader'
             }
-            
+            Context 'Calling API' {
+                It 'If we get a sign in window that should be treated as a failure' {
+                    Mock -CommandName GetAZDevOPSHeader -MockWith {@{Authorization = 'MockedHeader'}} -ModuleName AZDevOPS
+                    Mock -CommandName Invoke-RestMethod -ModuleName AZDevOPS -MockWith {
+                        return '<html lang="en-US">
+                        <head><title>
+                        
+                                    Azure DevOps Services | Sign In
+                        
+                        </title><meta http-equiv="X-UA-Compatible" content="IE=11;&#32;IE=10;&#32;IE=9;&#32;IE=8" />
+                            <link rel="SHORTCUT ICON" href="/favicon.ico"/>'
+                    }
+    
+                    {InvokeAZDevOPSRestMethod @PostObject} | Should -Throw
+                    Should -Invoke Invoke-RestMethod -ModuleName AZDevOPS -Exactly 1
+                    Should -Invoke GetAZDevOPSHeader -ModuleName AZDevOPS -Exactly 1
+                }
+            }
         }
     }
 }
