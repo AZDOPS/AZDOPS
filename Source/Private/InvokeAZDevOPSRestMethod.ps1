@@ -16,11 +16,11 @@ function InvokeAZDevOPSRestMethod {
         'Uri' = $uri
         'Method' = $method
         'Headers' = $CallHeaders
+        'ContentType' = 'application/json'
     }
 
     if (-not [string]::IsNullOrEmpty($Body)) {
         $InvokeSplat.Add('Body', $body)
-        $InvokeSplat.Add('ContentType', 'application/json')
     }
     
     $result = Invoke-RestMethod @InvokeSplat
