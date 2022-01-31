@@ -1,10 +1,14 @@
-BeforeAll {
-    $DummyUser = 'DummyUserName'
-    $DummyPassword = 'DummyPassword'
-    Connect-AZDevOPS -Username $DummyUser -PersonalAccessToken $DummyPassword
-}
+Remove-Module AZDevops -Force -ErrorAction SilentlyContinue
+Import-Module $PSScriptRoot\..\Source\AZDevops -Force
+
 
 InModuleScope -ModuleName AZDevOPS {
+    BeforeAll {
+        $DummyUser = 'DummyUserName'
+        $DummyPassword = 'DummyPassword'
+        $DummyOrg = 'DummyOrg'
+        Connect-AZDevOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg
+    }
     Describe 'GetAZDevOPSHeader' {
         It 'Command should exist' {
             Get-Command GetAZDevOPSHeader | Should -Not -BeNullOrEmpty

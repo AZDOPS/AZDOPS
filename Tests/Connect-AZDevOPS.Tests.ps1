@@ -4,10 +4,12 @@ Import-Module $PSScriptRoot\..\Source\AZDevops -Force
 InModuleScope -ModuleName AZDevOPS {
     BeforeAll {
         Remove-Variable AZDevOPSCredentials -ErrorAction SilentlyContinue
+        # Mock -CommandName InvokeAZDevOPSRestMethod -MockWith {Return 'mocked'} -ModuleName AZDevOPS
 
         $DummyUser = 'DummyUserName'
         $DummyPassword = 'DummyPassword'
-        Connect-AZDevOPS -Username $DummyUser -PersonalAccessToken $DummyPassword
+        $DummyOrg = 'DummyOrg'
+        Connect-AZDevOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg
     }
 
     Describe 'Creating connection variable' {
@@ -23,22 +25,31 @@ InModuleScope -ModuleName AZDevOPS {
         It 'Password should be set' {
             $Script:AZDevOPSCredentials.GetNetworkCredential().Password| Should -Be $DummyPassword
         }
+        It 'AzDoOrganization should be set' {
+            $Script:AzDOOrganization | Should -Be $DummyOrg
+        }
     }
-
 }
 
 Describe 'Verifying parameters' {
-    BeforeAll {
-        $DummyUser = 'DummyUserName'
-        $DummyPassword = 'DummyPassword'
+    It 'Should have parameter Username' {
+        (Get-Command Connect-AZDevOPS).Parameters.Keys | Should -Contain 'Username'
     }
-
-    Context 'Missing parameters' {
-        It 'Username should be required' {
-            (Get-Command Connect-AZDevOPS).Parameters.Username.Attributes.Mandatory | Should -Be $true
-        }
-        It 'PersonalAccessToken should be required' {
-            (Get-Command Connect-AZDevOPS).Parameters.PersonalAccessToken.Attributes.Mandatory | Should -Be $true
-        }
+    It 'Username should be required' {
+        (Get-Command Connect-AZDevOPS).Parameters['Username'].Attributes.Mandatory | Should -Be $true
+    }
+    
+    It 'Should have parameter PersonalAccessToken' {
+        (Get-Command Connect-AZDevOPS).Parameters.Keys | Should -Contain 'PersonalAccessToken'
+    }
+    It 'PersonalAccessToken should be required' {
+        (Get-Command Connect-AZDevOPS).Parameters['PersonalAccessToken'].Attributes.Mandatory | Should -Be $true
+    }
+    
+    It 'Should have parameter Organization' {
+        (Get-Command Connect-AZDevOPS).Parameters.Keys | Should -Contain 'Organization'
+    }
+    It 'Organization should be required' {
+        (Get-Command Connect-AZDevOPS).Parameters['Organization'].Attributes.Mandatory | Should -Be $true
     }
 }
