@@ -21,6 +21,9 @@ InModuleScope -ModuleName AZDevOPS {
             It 'Should have parameter uri' {
                 (Get-Command InvokeAZDevOPSRestMethod).Parameters.Keys | Should -Contain 'uri'
             }
+            It 'Should have parameter Organization' {
+                (Get-Command InvokeAZDevOPSRestMethod).Parameters.Keys | Should -Contain 'Organization'
+            }
             
             It 'Uri should be mandatory' {
                 (Get-Command InvokeAZDevOPSRestMethod).Parameters['uri'].Attributes.Mandatory | Should -Be $true
@@ -34,7 +37,14 @@ InModuleScope -ModuleName AZDevOPS {
         }
         Context 'Building webrequest call' {
             BeforeEach {
-                Mock -CommandName GetAZDevOPSHeader -MockWith {@{Authorization = 'MockedHeader'}} -ModuleName AZDevOPS
+                Mock -CommandName GetAZDevOPSHeader -MockWith {
+                    @{
+                        Header = @{
+                            "Authorization" = "Basic RHVtbXlVc2VyMjpEdW1teVBhc3N3b3JkMg=="
+                        }
+                        Organization = "org2"
+                    }
+                } -ModuleName AZDevOPS
                 Mock -CommandName Invoke-RestMethod -MockWith {Return $InvokeSplat} -ModuleName AZDevOPS
             }
             It 'Should call GetAZDevOPSHeader' {
@@ -61,11 +71,37 @@ InModuleScope -ModuleName AZDevOPS {
             }
             It 'Verify Header is set' {
                 $ResultPostObject = InvokeAZDevOPSRestMethod @PostObject
-                $ResultPostObject.Headers.Authorization | Should -Be 'MockedHeader'
+                $ResultPostObject.Headers.Authorization | Should -Be 'Basic RHVtbXlVc2VyMjpEdW1teVBhc3N3b3JkMg=='
             }
+
+            Context 'Parameters includes -Organization' {
+                It 'If organization is given, it should get call GetAZDevOpsHeader with that organization name' {
+                    Mock -CommandName GetAZDevOPSHeader -MockWith {
+                        @{
+                            Header = @{
+                                "Authorization" = "Basic RHVtbXlVc2VyMjpEdW1teVBhc3N3b3JkMg=="
+                            }
+                            Organization = "org1"
+                        }
+                    } -ModuleName AZDevOPS -ParameterFilter {$Organization -eq 'org1'}
+                    Mock -CommandName Invoke-RestMethod -MockWith {Return $CallHeaders} -ModuleName AZDevOPS
+
+                    $ResultPostObject = InvokeAZDevOPSRestMethod @PostObject -Organization 'org1'
+                    $ResultPostObject.Organization | Should -Be 'org1'
+                    Should -Invoke GetAZDevOPSHeader -ModuleName AZDevOPS -Exactly 1 -ParameterFilter {$Organization -eq 'org1'}
+                }
+            }
+
             Context 'Calling API' {
                 It 'If we get a sign in window that should be treated as a failure' {
-                    Mock -CommandName GetAZDevOPSHeader -MockWith {@{Authorization = 'MockedHeader'}} -ModuleName AZDevOPS
+                    Mock -CommandName GetAZDevOPSHeader -MockWith {
+                        @{
+                            Header = @{
+                                "Authorization" = "Basic RHVtbXlVc2VyMjpEdW1teVBhc3N3b3JkMg=="
+                            }
+                            Organization = "org2"
+                        }
+                    } -ModuleName AZDevOPS
                     Mock -CommandName Invoke-RestMethod -ModuleName AZDevOPS -MockWith {
                         return '<html lang="en-US">
                         <head><title>

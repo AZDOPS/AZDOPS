@@ -7,15 +7,23 @@ function InvokeAZDevOPSRestMethod {
         [Microsoft.PowerShell.Commands.WebRequestMethod]$method,
 
         [Parameter()]
-        [string]$Body
+        [string]$Body,
+
+        [Parameter()]
+        [string]$Organization
     )
 
-    $CallHeaders = GetAZDevOPSHeader
+    if (-not [string]::IsNullOrEmpty($Organization)) {
+        $CallHeaders = GetAZDevOPSHeader -Organization $Organization
+    }
+    else {
+        $CallHeaders = GetAZDevOPSHeader
+    }
 
     $InvokeSplat = @{
         'Uri' = $uri
         'Method' = $method
-        'Headers' = $CallHeaders
+        'Headers' = $CallHeaders.Header
         'ContentType' = 'application/json'
     }
 
