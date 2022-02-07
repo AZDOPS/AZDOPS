@@ -7,7 +7,10 @@ function Start-AZDevOPSPipeline {
         [string]$Project,
 
         [Parameter()]
-        [string]$Organization
+        [string]$Organization,
+
+        [Parameter()]
+        [string]$Branch = 'main'
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
@@ -26,7 +29,7 @@ function Start-AZDevOPSPipeline {
     }
 
     $URI = "https://dev.azure.com/$($org.Organization)/$Project/_apis/pipelines/$PipelineID/runs?api-version=7.1-preview.1"
-    $Body = '{"stagesToSkip":[],"resources":{"repositories":{"self":{"refName":"refs/heads/master"}}},"variables":{}}'
+    $Body = '{"stagesToSkip":[],"resources":{"repositories":{"self":{"refName":"refs/heads/' + $Branch + '"}}},"variables":{}}'
     
     $InvokeSplat = @{
         Method = 'Post' 

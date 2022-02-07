@@ -20,6 +20,10 @@ Describe 'Start-AZDevOPSPipeline' {
         It 'Should have parameter Organization' {
             (Get-Command Start-AZDevOPSPipeline).Parameters.Keys | Should -Contain 'Organization'
         }
+
+        It 'Should have parameter Branch' {
+            (Get-Command Start-AZDevOPSPipeline).Parameters.Keys | Should -Contain 'Branch'
+        }
     }
 
     Context 'Starting pipeline' {
@@ -77,9 +81,13 @@ Describe 'Start-AZDevOPSPipeline' {
             $r = Start-AZDevOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject'
             $r.Method | Should -Be 'post'
         }
-        It 'Body should be set (Empty for now until/if we add parameters)' {
+        It 'Body should be set with branch name. If no branch is given, "main"' {
             $r = Start-AZDevOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject'
-            $r.Body | Should -Not -BeNullOrEmpty
+            $r.Body | Should -BeLike "*main*"
+        }
+        It 'Body should be set with branch name If branch is given as parameter, "branch"' {
+            $r = Start-AZDevOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject' -Branch 'branch'
+            $r.Body | Should -BeLike "*branch*"
         }
     }
 }
