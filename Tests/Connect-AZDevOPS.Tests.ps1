@@ -8,15 +8,15 @@ BeforeAll {
     InModuleScope -ModuleName 'AZDevOPS' {
         Remove-Variable AZDevOPSCredentials -Scope 'Script' -ErrorAction SilentlyContinue
     }
-
-    $DummyUser = 'DummyUserName'
-    $DummyPassword = 'DummyPassword'
-    $DummyOrg = 'DummyOrg'
 }
 
 Describe 'Creating connection variable' {
-    Context 'mocking stuff' {
+    Context 'Initial connection, No previous connection created' {
         BeforeAll {
+            $DummyUser = 'DummyUserName'
+            $DummyPassword = 'DummyPassword'
+            $DummyOrg = 'DummyOrg'
+
             Mock -CommandName InvokeAZDevOPSRestMethod -MockWith {} -ModuleName AZDevOPS
             Connect-AZDevOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg
         }
@@ -26,28 +26,116 @@ Describe 'Creating connection variable' {
                 Get-Variable -Name 'AZDevOPSCredentials' -Scope 'Script' | Should -Not -BeNullOrEmpty
             }
         }
+        It 'AZDevOPSCredentials variable Should be a hashtable' {
+            InModuleScope -ModuleName 'AZDevOPS' {
+                $script:AZDevOPSCredentials.GetType().Name | Should -Be 'hashtable'
+            }
+        }
+        It 'Variable should contain one conenction' {
+            InModuleScope -ModuleName 'AZDevOPS' {
+                $script:AZDevOPSCredentials.Keys.Count | Should -Be 1
+            }
+        }
+        It 'Should have set one default conenction' {
+            InModuleScope -ModuleName 'AZDevOPS' {
+                $r = $script:AZDevOPSCredentials.Keys | Where-Object {$AZDevOPSCredentials[$_].Default -eq $true}
+                $r.Count | Should -Be 1 -Because 'If this is the first connection we create we should always set it as default'
+            }
+        }
+
         It 'Variable should be encrypted (PSCredential)' {
             InModuleScope -ModuleName 'AZDevOPS' {
-                $Script:AZDevOPSCredentials | Should -BeOfType [pscredential]
+                $r = $script:AZDevOPSCredentials.Keys | Where-Object {$AZDevOPSCredentials[$_].Default -eq $true}
+                $res = $AZDevOPSCredentials[$r]
+                $res.Credential| Should -BeOfType [pscredential]
             }
         }
         It 'Username should be set' {
             InModuleScope -ModuleName 'AZDevOPS' -Parameters @{'DummyUser' = $DummyUser} {
-               $Script:AZDevOPSCredentials.UserName | Should -Be $DummyUser
+                $r = $script:AZDevOPSCredentials.Keys | Where-Object {$AZDevOPSCredentials[$_].Default -eq $true}
+                $res = $AZDevOPSCredentials[$r]
+                $res.Credential.UserName | Should -Be $DummyUser
             }
         }
         It 'Password should be set' {
             InModuleScope -ModuleName 'AZDevOPS' -Parameters @{'DummyPassword' = $DummyPassword} {
-                $Script:AZDevOPSCredentials.GetNetworkCredential().Password| Should -Be $DummyPassword
+                $r = $script:AZDevOPSCredentials.Keys | Where-Object {$AZDevOPSCredentials[$_].Default -eq $true}
+                $res = $AZDevOPSCredentials[$r]
+                $res.Credential.GetNetworkCredential().Password| Should -Be $DummyPassword
             }
         }
-        It 'AzDoOrganization should be set' {
+        It 'AzDoOrganization should be set as key' {
             InModuleScope -ModuleName 'AZDevOPS' -Parameters @{'DummyOrg' = $DummyOrg} {
-                $Script:AzDOOrganization | Should -Be $DummyOrg
+                $r = $script:AZDevOPSCredentials.Keys | Where-Object {$AZDevOPSCredentials[$_].Default -eq $true}
+                $r | Should -Be $DummyOrg
             }
         }
         It 'Should have called mock' {
             Should -Invoke InvokeAZDevOPSRestMethod -Exactly 1 -Scope Context -ModuleName AZDevOPS
+        }
+    }
+
+    Context 'Adding a second connection, not setting default' {
+        BeforeAll {
+            $DummyUser = 'DummyUserName2'
+            $DummyPassword = 'DummyPassword2'
+            $DummyOrg = 'DummyOrg2'
+
+            Mock -CommandName InvokeAZDevOPSRestMethod -MockWith {} -ModuleName AZDevOPS
+            Connect-AZDevOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg
+        }
+
+        It 'Variable should contain two conenctions' {
+            InModuleScope -ModuleName 'AZDevOPS' {
+                $script:AZDevOPSCredentials.Keys.Count | Should -Be 2
+            }
+        }
+        It 'Should add this connection to connection list' {
+            InModuleScope -ModuleName 'AZDevOPS' -Parameters @{'DummyOrg' = $DummyOrg} {
+                $script:AZDevOPSCredentials.Keys | Should -Contain $DummyOrg
+            }
+        }
+        It 'Should have only have one default conenction' {
+            InModuleScope -ModuleName 'AZDevOPS' {
+                $r = $script:AZDevOPSCredentials.Keys | Where-Object {$AZDevOPSCredentials[$_].Default -eq $true}
+                $r.Count | Should -Be 1
+            }
+        }
+    }
+
+    Context 'Adding a third connection, setting this as default' {
+        BeforeAll {
+            $DummyUser = 'DummyUserName3'
+            $DummyPassword = 'DummyPassword3'
+            $DummyOrg = 'DummyOrg3'
+
+            Mock -CommandName InvokeAZDevOPSRestMethod -MockWith {} -ModuleName AZDevOPS
+            Connect-AZDevOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg -Default
+        }
+
+        It 'Variable should contain three conenctions' {
+            InModuleScope -ModuleName 'AZDevOPS' {
+                $script:AZDevOPSCredentials.Keys.Count | Should -Be 3
+            }
+        }
+        It 'Should add this connection to connection list' {
+            InModuleScope -ModuleName 'AZDevOPS' -Parameters @{'DummyOrg' = $DummyOrg} {
+                $script:AZDevOPSCredentials.Keys | Should -Contain $DummyOrg
+            
+            }
+        }
+        It 'Should have only have one default conenction' {
+            InModuleScope -ModuleName 'AZDevOPS' {
+                $r = $script:AZDevOPSCredentials.Keys | Where-Object {$AZDevOPSCredentials[$_].Default -eq $true}
+                $r.Count | Should -Be 1
+            }
+        }
+        It "Username of default connection should be set to $DummyUser" {
+            InModuleScope -ModuleName 'AZDevOPS' -Parameters @{'DummyUser' = $DummyUser} {
+                $r = $script:AZDevOPSCredentials.Keys | Where-Object {$AZDevOPSCredentials[$_].Default -eq $true}
+                $res = $AZDevOPSCredentials[$r]
+                $res.Credential.UserName | Should -Be $DummyUser
+            }
         }
     }
 }
@@ -77,5 +165,12 @@ Describe 'Verifying parameters' {
     }
     It 'Organization should be required' {
         (Get-Command Connect-AZDevOPS).Parameters['Organization'].Attributes.Mandatory | Should -Be $true
+    }
+    
+    It 'Should have parameter Default' {
+        (Get-Command Connect-AZDevOPS).Parameters.Keys | Should -Contain 'Default'
+    }
+    It 'Default should be switch' {
+        (Get-Command Connect-AZDevOPS).Parameters['Default'].SwitchParameter | Should -Be $true
     }
 }

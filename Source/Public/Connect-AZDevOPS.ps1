@@ -8,11 +8,29 @@ function Connect-AZDevOPS {
         [string]$PersonalAccessToken,
 
         [Parameter(Mandatory)]
-        [string]$Organization
+        [string]$Organization,
+
+        [Parameter()]
+        [switch]$Default
     )
     
-    $Script:AZDevOPSCredentials = [pscredential]::new($Username,(ConvertTo-SecureString -String $PersonalAccessToken -AsPlainText -Force))
-    $Script:AzDOOrganization = $Organization
+    $Credential = [pscredential]::new($Username,(ConvertTo-SecureString -String $PersonalAccessToken -AsPlainText -Force))
+    
+    if ($AZDevOPSCredentials.Count -eq 0) {
+        $Default = $true
+        $Script:AZDevOPSCredentials = @{}
+    }
+    elseif ($default.IsPresent) {
+        $r = $script:AZDevOPSCredentials.Keys | Where-Object {$AZDevOPSCredentials[$_].Default -eq $true}
+        $AZDevOPSCredentials[$r].Default = $false
+    }
+
+    $OrgData = @{
+        Credential = $Credential
+        Default = $Default
+    }
+
+    $Script:AZDevOPSCredentials.Add($Organization, $OrgData)
 
     $URI = "https://vssps.dev.azure.com/${Script:AzDOOrganization}/_apis/profile/profiles/me?api-version=7.1-preview.3"
 
