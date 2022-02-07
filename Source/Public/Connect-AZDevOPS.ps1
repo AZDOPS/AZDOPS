@@ -32,7 +32,7 @@ function Connect-AZDevOPS {
 
     $Script:AZDevOPSCredentials.Add($Organization, $OrgData)
 
-    $URI = "https://vssps.dev.azure.com/${Script:AzDOOrganization}/_apis/profile/profiles/me?api-version=7.1-preview.3"
+    $URI = "https://vssps.dev.azure.com/$Organization/_apis/profile/profiles/me?api-version=7.1-preview.3"
 
     InvokeAZDevOPSRestMethod -Method Get -Uri $URI
 }
