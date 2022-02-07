@@ -1,6 +1,8 @@
 function GetAZDevOPSHeader {
     [CmdletBinding()]
-    param ()
+    param (
+        $Organization
+    )
 
     $UserName = $Script:AZDevOPSCredentials.UserName
     $Password = $Script:AZDevOPSCredentials.GetNetworkCredential().Password
