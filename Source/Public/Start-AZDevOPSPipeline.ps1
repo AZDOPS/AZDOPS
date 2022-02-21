@@ -21,7 +21,7 @@ function Start-AZDevOPSPipeline {
     }
 
     $AllPipelinesURI = "https://dev.azure.com/$($org.Organization)/$Project/_apis/pipelines?api-version=7.1-preview.1"
-    $AllPipelines = InvokeAZDevOPSRestMethod -Method Get -Uri $AllPipelinesURI 
+    $AllPipelines = InvokeAZDevOPSRestMethod -Method Get -Uri $AllPipelinesURI -Organization $org
     $PipelineID = ($AllPipelines.value | Where-Object -Property Name -EQ $Name).id
 
     if ([string]::IsNullOrEmpty($PipelineID)) {
@@ -35,6 +35,7 @@ function Start-AZDevOPSPipeline {
         Method = 'Post' 
         Uri = $URI 
         Body = $Body
+        Organization = $org
     }
 
     InvokeAZDevOPSRestMethod @InvokeSplat
