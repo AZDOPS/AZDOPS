@@ -31,28 +31,28 @@ Describe 'Start-AZDevOPSPipeline' {
             InModuleScope -ModuleName AZDevOps {
                 Mock -CommandName GetAZDevOPSHeader -ModuleName AZDevOPS -MockWith {
                     @{
-                        Header = @{
-                            "Authorization" = "Basic Base64=="
+                        Header       = @{
+                            'Authorization' = 'Basic Base64=='
                         }
-                        Organization = "DummyOrg"
+                        Organization = 'DummyOrg'
                     }
-                } -ParameterFilter {$Organization -eq 'Organization'}
+                } -ParameterFilter { $Organization -eq 'Organization' }
                 Mock -CommandName GetAZDevOPSHeader -ModuleName AZDevOPS -MockWith {
                     @{
-                        Header = @{
-                            "Authorization" = "Basic Base64=="
+                        Header       = @{
+                            'Authorization' = 'Basic Base64=='
                         }
-                        Organization = "DummyOrg"
+                        Organization = 'DummyOrg'
                     }
                 }
 
                 Mock -CommandName InvokeAZDevOPSRestMethod -ModuleName AZDevOPS -MockWith {
                     '{"count":2,"value":[{"_links":{"self":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/1?revision=1"},"web":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_build/definition?definitionId=1"}},"url":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/1?revision=1","id":1,"revision":1,"name":"dummypipeline1","folder":"\\"},{"_links":{"self":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/3?revision=1"},"web":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_build/definition?definitionId=3"}},"url":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/3?revision=1","id":3,"revision":1,"name":"ummypipeline2","folder":"\\"}]}' | ConvertFrom-Json     
-                } -ParameterFilter {$method -eq 'Get'}
+                } -ParameterFilter { $method -eq 'Get' }
 
                 Mock -CommandName InvokeAZDevOPSRestMethod -ModuleName AZDevOPS -MockWith {
                     return $InvokeSplat
-                } -ParameterFilter {$method -eq 'post'}
+                } -ParameterFilter { $method -eq 'post' }
             }
         }
 
@@ -67,15 +67,15 @@ Describe 'Start-AZDevOPSPipeline' {
 
         It 'If an organization is passed, that organization should be used for URI' {
             Start-AZDevOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject' -Organization 'Organization'
-            Should -Invoke 'GetAZDevOPSHeader' -ModuleName 'AZDevOPS' -Exactly -Times 1 -ParameterFilter {$Organization -eq 'Organization'}
+            Should -Invoke 'GetAZDevOPSHeader' -ModuleName 'AZDevOPS' -Exactly -Times 1 -ParameterFilter { $Organization -eq 'Organization' }
         }
         It 'If no pipeline with correct name is found we should throw error' {
-            {Start-AZDevOPSPipeline -Name 'NonExistingPipeline' -Project 'DummyProject' -Organization 'Organization'} | Should -Throw
+            { Start-AZDevOPSPipeline -Name 'NonExistingPipeline' -Project 'DummyProject' -Organization 'Organization' } | Should -Throw
         }
 
         It 'Uri should be set correct' {
             $r = Start-AZDevOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject'
-            $r.Uri | Should -Be "https://dev.azure.com/DummyOrg/DummyProject/_apis/pipelines/1/runs?api-version=7.1-preview.1"
+            $r.Uri | Should -Be 'https://dev.azure.com/DummyOrg/DummyProject/_apis/pipelines/1/runs?api-version=7.1-preview.1'
         }
         It 'Method should be post' {
             $r = Start-AZDevOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject'
@@ -83,11 +83,15 @@ Describe 'Start-AZDevOPSPipeline' {
         }
         It 'Body should be set with branch name. If no branch is given, "main"' {
             $r = Start-AZDevOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject'
-            $r.Body | Should -BeLike "*main*"
+            $r.Body | Should -BeLike '*main*'
         }
         It 'Body should be set with branch name If branch is given as parameter, "branch"' {
             $r = Start-AZDevOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject' -Branch 'branch'
-            $r.Body | Should -BeLike "*branch*"
+            $r.Body | Should -BeLike '*branch*'
+        }
+        It 'Organization should be of type string' {
+            $r = Start-AZDevOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject' -Branch 'branch'
+            $r.Organization | Should -BeOfType [string]
         }
     }
 }
