@@ -73,6 +73,7 @@ FunctionsToExport = @(
     'Connect-AZDevOps',
     'Start-AZDevOPSPipeline',
     'New-AZDevOPSProject',
+    'New-AzDevOPSVariableGroup',
     'Get-AzDevOPSProject'
 )
 
