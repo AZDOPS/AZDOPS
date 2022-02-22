@@ -80,13 +80,13 @@ If you like to start contributing to the AZDevOPS module. Please make sure that 
 
 ## Feature Suggestions
 
-- Please first search [Open Issues](https://github.com/bjompen/AZDevOPS/issues) before opening an issue to check whether your feature has already been suggested. If it has, feel free to add your own comments to the existing issue.
+- Please first search [Open Issues](https://github.com/AZDOPS/AZDevOPS/issues) before opening an issue to check whether your feature has already been suggested. If it has, feel free to add your own comments to the existing issue.
 - Ensure you have included a "What?" - what your feature entails, being as specific as possible, and giving mocked-up syntax examples where possible.
 - Ensure you have included a "Why?" - what the benefit of including this feature will be.
-- Use the "Feature Request" issue template [here](https://github.com/bjompen/AZDevOPS/issues/new/choose) to submit your request.
+- Use the "Feature Request" issue template [here](https://github.com/AZDOPS/AZDevOPS/issues/new/choose) to submit your request.
 
 ## Bug Reports
 
-- Please first search [Open Issues](https://github.com/bjompen/AZDevOPS/issues) before opening an issue, to see if it has already been reported.
+- Please first search [Open Issues](https://github.com/AZDOPS/AZDevOPS/issues) before opening an issue, to see if it has already been reported.
 - Try to be as specific as possible, including the version of the AZDevOPS PowerShell module, PowerShell version and OS used to reproduce the issue, and any example files or snippets of AZDevOPS code needed to reproduce it.
-- Use the "Bug Report" issue template [here](https://github.com/bjompen/AZDevOPS/issues/new/choose) to submit your request.
+- Use the "Bug Report" issue template [here](https://github.com/AZDOPS/AZDevOPS/issues/new/choose) to submit your request.
