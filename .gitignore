@@ -1,2 +1,4 @@
 # Testcoverage output from pester
 **/coverage.xml
+
+Debug/*
