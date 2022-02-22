@@ -1,10 +1,10 @@
 function InvokeAZDevOPSRestMethod {
     param (
         [Parameter(Mandatory)]
-        [URI]$uri,
+        [URI]$Uri,
 
         [Parameter()]
-        [Microsoft.PowerShell.Commands.WebRequestMethod]$method,
+        [Microsoft.PowerShell.Commands.WebRequestMethod]$Method,
 
         [Parameter()]
         [string]$Body,
@@ -21,22 +21,22 @@ function InvokeAZDevOPSRestMethod {
     }
 
     $InvokeSplat = @{
-        'Uri' = $uri
-        'Method' = $method
+        'Uri' = $Uri
+        'Method' = $Method
         'Headers' = $CallHeaders.Header
         'ContentType' = 'application/json'
     }
 
     if (-not [string]::IsNullOrEmpty($Body)) {
-        $InvokeSplat.Add('Body', $body)
+        $InvokeSplat.Add('Body', $Body)
     }
     
-    $result = Invoke-RestMethod @InvokeSplat
+    $Result = Invoke-RestMethod @InvokeSplat
 
-    if ($result -like "*Azure DevOps Services | Sign In*") {
+    if ($Result -like "*Azure DevOps Services | Sign In*") {
         throw 'Failed to call Azure DevOps API. Please login before using.'
     }
     else {
-        $result
+        $Result
     }
 }
