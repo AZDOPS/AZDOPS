@@ -71,7 +71,7 @@ InModuleScope -ModuleName AZDevOPS {
                 $ProjectName = 'DummyOrg'
             }
 
-            It 'uses InvokeAZDevOPSRestMethod' {
+            It 'uses InvokeAZDevOPSRestMethod two times' {
                 New-AZDevOPSProject -Organization $OrganizationName -Name $ProjectName -Visibility Private
 
                 Should -Invoke 'InvokeAZDevOPSRestMethod' -ModuleName 'AZDevOPS' -Exactly -Times 2

@@ -12,17 +12,21 @@ Establish a connection to Azure DevOps using a PAT.
 
 ## SYNTAX
 
-```
+```powershell
 Connect-AZDevOPS [-Username] <String> [-PersonalAccessToken] <String> [-Organization] <String> [-Default]
  [<CommonParameters>]
 ```
 
 ## DESCRIPTION
+
 Establish a connection to Azure DevOps using a PAT.
+
+Can replace an existing connection by specifying the same organization again.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
 Connect-AZDevOps -Username 'john.doe@azdevops.com' -PersonalAccessToken '<myPersonalAccessToken>' -Organization 'AZDevOPS'
 ```
@@ -30,6 +34,7 @@ Connect-AZDevOps -Username 'john.doe@azdevops.com' -PersonalAccessToken '<myPers
 Connect to Azure DevOps organization using a personal access token.
 
 ### Example 2
+
 ```powershell
 Connect-AZDevOps -Username 'john.doe@azdevops.com' -PersonalAccessToken '<myPersonalAccessToken>' -Organization 'AZDevOPS' -Default
 ```
@@ -39,6 +44,7 @@ Connect to Azure DevOps organization using a personal access token and setting i
 ## PARAMETERS
 
 ### -Default
+
 Specifies if the connection should be the default connection or not.
 
 ```yaml
@@ -54,6 +60,7 @@ Accept wildcard characters: False
 ```
 
 ### -Organization
+
 Name of the Azure DevOps organization.
 
 ```yaml
@@ -69,6 +76,7 @@ Accept wildcard characters: False
 ```
 
 ### -PersonalAccessToken
+
 Specifies the Personal Access Token to use for the connection.
 
 ```yaml
@@ -84,6 +92,7 @@ Accept wildcard characters: False
 ```
 
 ### -Username
+
 Username to use for the connection in the format of UPN.
 
 ```yaml
@@ -99,6 +108,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
@@ -108,6 +118,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS

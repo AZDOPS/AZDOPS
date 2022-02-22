@@ -30,7 +30,7 @@ function Connect-AZDevOPS {
         Default = $Default
     }
 
-    $Script:AZDevOPSCredentials.Add($Organization, $OrgData)
+    $Script:AZDevOPSCredentials[$Organization] = $OrgData
 
     $URI = "https://vssps.dev.azure.com/$Organization/_apis/profile/profiles/me?api-version=7.1-preview.3"
 
