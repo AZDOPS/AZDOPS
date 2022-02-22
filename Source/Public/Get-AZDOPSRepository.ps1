@@ -1,7 +1,7 @@
 function Get-AZDOPSRepository {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory)]
+        [Parameter()]
         [string]$Organization,
 
         [Parameter(Mandatory)]
@@ -9,6 +9,14 @@ function Get-AZDOPSRepository {
 
         [string]$Repository
     )
+
+    if (-not [string]::IsNullOrEmpty($Organization)) {
+        $OrgInfo = GetAZDOPSHeader -Organization $Organization
+    }
+    else {
+        $OrgInfo = GetAZDOPSHeader
+        $Organization = $OrgInfo['Organization']
+    }
 
     if ($PSBoundParameters.ContainsKey('Repository')) {
         $Uri = "https://dev.azure.com/$Organization/$Project/_apis/git/repositories/$Repository`?api-version=7.1-preview.1"
@@ -25,6 +33,4 @@ function Get-AZDOPSRepository {
     else {
         Write-Output -InputObject $result
     }
-    
-
 }

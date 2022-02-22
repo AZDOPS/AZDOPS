@@ -1,5 +1,5 @@
-Remove-Module AZDOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\AZDOPS
+Remove-Module AZDOPS -Force -ErrorAction SilentlyContinue
+Import-Module $PSScriptRoot\..\Source\AZDOPS -Force
 
 Describe "Get-AZDOPSRepository" {
     Context "Function tests" {
@@ -26,10 +26,30 @@ Describe "Get-AZDOPSRepository" {
                     )
                 }
             }
+            Mock -CommandName GetAZDOPSHeader -ModuleName AZDOPS -MockWith {
+                @{
+                    Header       = @{
+                        'Authorization' = 'Basic Base64=='
+                    }
+                    Organization = 'DummyOrg'
+                }
+            } -ParameterFilter { $Organization -eq 'Organization' }
+            Mock -CommandName GetAZDOPSHeader -ModuleName AZDOPS -MockWith {
+                @{
+                    Header       = @{
+                        'Authorization' = 'Basic Base64=='
+                    }
+                    Organization = 'DummyOrg'
+                }
+            }
         }
 
         It "Returns repositories" {
             Get-AZDOPSRepository -Organization 'MyOrg' -Project 'MyProject' | Should -Not -BeNullOrEmpty
+        }
+
+        It "Returns repositories without organization specified" {
+            Get-AZDOPSRepository -Project 'MyProject' | Should -Not -BeNullOrEmpty
         }
 
         It 'Returns an id' {
