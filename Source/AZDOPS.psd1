@@ -76,6 +76,7 @@ FunctionsToExport = @(
     'Get-AZDOPSProject',
     'New-AZDOPSVariableGroup',
     'Remove-AZDOPSVariableGroup',
+    'Get-AZDOPSRepository',
     'Get-AZDOPSConnection'
 )
 
