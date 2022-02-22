@@ -1,11 +1,11 @@
-Remove-Module AZDevOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\AZDevOPS
+Remove-Module AZDOPS -ErrorAction SilentlyContinue
+Import-Module $PSScriptRoot\..\Source\AZDOPS
 
-InModuleScope -ModuleName AZDevOPS {
-    Describe 'New-AZDevOPSProject tests' {
+InModuleScope -ModuleName AZDOPS {
+    Describe 'New-AZDOPSProject tests' {
         Context 'Creating project' {
             BeforeAll {
-                Mock -CommandName GetAZDevOPSHeader -ModuleName AZDevOPS -MockWith {
+                Mock -CommandName GetAZDOPSHeader -ModuleName AZDOPS -MockWith {
                     @{
                         Header       = @{
                             'Authorization' = 'Basic Base64=='
@@ -13,7 +13,7 @@ InModuleScope -ModuleName AZDevOPS {
                         Organization = $OrganizationName
                     }
                 } -ParameterFilter { $OrganizationName -eq 'Organization' }
-                Mock -CommandName GetAZDevOPSHeader -ModuleName AZDevOPS -MockWith {
+                Mock -CommandName GetAZDOPSHeader -ModuleName AZDOPS -MockWith {
                     @{
                         Header       = @{
                             'Authorization' = 'Basic Base64=='
@@ -22,7 +22,7 @@ InModuleScope -ModuleName AZDevOPS {
                     }
                 }
 
-                Mock -CommandName InvokeAZDevOPSRestMethod -ModuleName AZDevOPS -MockWith {
+                Mock -CommandName InvokeAZDOPSRestMethod -ModuleName AZDOPS -MockWith {
                     return @"
                     {
                         "count": 4,
@@ -63,7 +63,7 @@ InModuleScope -ModuleName AZDevOPS {
                       }
 "@ | ConvertFrom-Json
                 } -ParameterFilter { $method -eq 'Get' }
-                Mock -CommandName InvokeAZDevOPSRestMethod -ModuleName AZDevOPS -MockWith {
+                Mock -CommandName InvokeAZDOPSRestMethod -ModuleName AZDOPS -MockWith {
                     return $InvokeSplat
                 } -ParameterFilter { $method -eq 'Post' }
 
@@ -71,67 +71,67 @@ InModuleScope -ModuleName AZDevOPS {
                 $ProjectName = 'DummyOrg'
             }
 
-            It 'uses InvokeAZDevOPSRestMethod two times' {
-                New-AZDevOPSProject -Organization $OrganizationName -Name $ProjectName -Visibility Private
+            It 'uses InvokeAZDOPSRestMethod two times' {
+                New-AZDOPSProject -Organization $OrganizationName -Name $ProjectName -Visibility Private
 
-                Should -Invoke 'InvokeAZDevOPSRestMethod' -ModuleName 'AZDevOPS' -Exactly -Times 2
+                Should -Invoke 'InvokeAZDOPSRestMethod' -ModuleName 'AZDOPS' -Exactly -Times 2
             }
             It 'returns output after creating project' {
-                New-AZDevOPSProject -Organization $OrganizationName -Name $ProjectName -Visibility 'Public' | Should -BeOfType [pscustomobject] -Because 'InvokeAZDevOPSRestMethod should convert the json to pscustomobject'
+                New-AZDOPSProject -Organization $OrganizationName -Name $ProjectName -Visibility 'Public' | Should -BeOfType [pscustomobject] -Because 'InvokeAZDOPSRestMethod should convert the json to pscustomobject'
             }
             It 'should not throw with mandatory parameters' {
-                { New-AZDevOPSProject -Organization $OrganizationName -Name $ProjectName -Visibility 'Public' } | Should -Not -Throw
+                { New-AZDOPSProject -Organization $OrganizationName -Name $ProjectName -Visibility 'Public' } | Should -Not -Throw
             }
             It 'should throw with invalid Visibility parameter' {
-                { New-AZDevOPSProject -Organization $OrganizationName -Name $ProjectName -Visibility 'DummyVisibility' } | Should -Throw
+                { New-AZDOPSProject -Organization $OrganizationName -Name $ProjectName -Visibility 'DummyVisibility' } | Should -Throw
             }
             It 'should throw with invalid SourceControlType parameter' {
-                { New-AZDevOPSProject -Organization $OrganizationName -Name $ProjectName -SourceControlType 'DummySourceControl' -Visibility 'Private' } | Should -Throw
+                { New-AZDOPSProject -Organization $OrganizationName -Name $ProjectName -SourceControlType 'DummySourceControl' -Visibility 'Private' } | Should -Throw
             }
             It 'should throw with invalid ProcessTypeName parameter' {
-                { New-AZDevOPSProject -Organization $OrganizationName -Name $ProjectName -ProcessTypeName "Dummy Process" -Visibility 'Private' } | Should -Throw
+                { New-AZDOPSProject -Organization $OrganizationName -Name $ProjectName -ProcessTypeName "Dummy Process" -Visibility 'Private' } | Should -Throw
             }
             It 'should not throw with Basic ProcessTypeName parameter' {
-                { New-AZDevOPSProject -Organization $OrganizationName -Name $ProjectName -ProcessTypeName "Basic" -Visibility 'Private' } | Should -Not -Throw
+                { New-AZDOPSProject -Organization $OrganizationName -Name $ProjectName -ProcessTypeName "Basic" -Visibility 'Private' } | Should -Not -Throw
             }
         }
 
         Context 'Parameters' {
             It 'Should have parameter Organization' {
-                (Get-Command New-AZDevOPSProject).Parameters.Keys | Should -Contain 'Organization'
+                (Get-Command New-AZDOPSProject).Parameters.Keys | Should -Contain 'Organization'
             }
             It 'Organization should not be required' {
-                (Get-Command New-AZDevOPSProject).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
+                (Get-Command New-AZDOPSProject).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
             }
             It 'Should have parameter Name' {
-                (Get-Command New-AZDevOPSProject).Parameters.Keys | Should -Contain 'Name'
+                (Get-Command New-AZDOPSProject).Parameters.Keys | Should -Contain 'Name'
             }
             It 'Name should be required' {
-                (Get-Command New-AZDevOPSProject).Parameters['Name'].Attributes.Mandatory | Should -Be $true
+                (Get-Command New-AZDOPSProject).Parameters['Name'].Attributes.Mandatory | Should -Be $true
             }
             It 'Should have parameter Description' {
-                (Get-Command New-AZDevOPSProject).Parameters.Keys | Should -Contain 'Description'
+                (Get-Command New-AZDOPSProject).Parameters.Keys | Should -Contain 'Description'
             }
             It 'Description should not be required' {
-                (Get-Command New-AZDevOPSProject).Parameters['Description'].Attributes.Mandatory | Should -Be $false
+                (Get-Command New-AZDOPSProject).Parameters['Description'].Attributes.Mandatory | Should -Be $false
             }
             It 'Should have parameter Visibility' {
-                (Get-Command New-AZDevOPSProject).Parameters.Keys | Should -Contain 'Visibility'
+                (Get-Command New-AZDOPSProject).Parameters.Keys | Should -Contain 'Visibility'
             }
             It 'Visibility should be required' {
-                (Get-Command New-AZDevOPSProject).Parameters['Visibility'].Attributes.Mandatory | Should -Be $true
+                (Get-Command New-AZDOPSProject).Parameters['Visibility'].Attributes.Mandatory | Should -Be $true
             }
             It 'Should have parameter SourceControlType' {
-                (Get-Command New-AZDevOPSProject).Parameters.Keys | Should -Contain 'SourceControlType'
+                (Get-Command New-AZDOPSProject).Parameters.Keys | Should -Contain 'SourceControlType'
             }
             It 'SourceControlType should be required' {
-                (Get-Command New-AZDevOPSProject).Parameters['SourceControlType'].Attributes.Mandatory | Should -Be $false
+                (Get-Command New-AZDOPSProject).Parameters['SourceControlType'].Attributes.Mandatory | Should -Be $false
             }
             It 'Should have parameter ProcessTypeName' {
-                (Get-Command New-AZDevOPSProject).Parameters.Keys | Should -Contain 'ProcessTypeName'
+                (Get-Command New-AZDOPSProject).Parameters.Keys | Should -Contain 'ProcessTypeName'
             }
             It 'ProcessTypeName should be required' {
-                (Get-Command New-AZDevOPSProject).Parameters['ProcessTypeName'].Attributes.Mandatory | Should -Be $false
+                (Get-Command New-AZDOPSProject).Parameters['ProcessTypeName'].Attributes.Mandatory | Should -Be $false
             }
         }
     }

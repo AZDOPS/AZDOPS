@@ -1,38 +1,42 @@
 ---
-external help file: AZDevOPS-help.xml
-Module Name: AZDevOPS
+external help file: AZDOPS-help.xml
+Module Name: AZDOPS
 online version:
 schema: 2.0.0
 ---
 
-# Start-AZDevOPSPipeline
+# Remove-AZDOPSVariableGroup
 
 ## SYNOPSIS
-Starts an Azure DevOps Pipeline.
+
+Removes a variable group from Azure DevOps.
 
 ## SYNTAX
 
-```
-Start-AZDevOPSPipeline [-Name] <String> [-Project] <String> [[-Organization] <String>] [[-Branch] <String>]
+```powershell
+Remove-AZDOPSVariableGroup [[-Organization] <String>] [-ProjectName] <String> [-VariableGroupName] <String>
  [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Starts an Azure DevOps Pipeline.
+
+Removes a variable group from Azure DevOps.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
-Start-AZDevOPSPipeline -Name 'myPipeline' -Project 'myProject' -Organization 'AZDevOPS' -Branch 'main'
+Remove-AZDOPSVariableGroup -Organization 'AZDOPS' -ProjectName 'AZDOPS' -VariableGroupName 'ExampleVarGroup'
 ```
 
-Starts the DevOps Pipeline 'myPipeline' in the project 'myProject'.
+Removes the variable group called ExampleVarGroup.
 
 ## PARAMETERS
 
-### -Branch
-Name of the branch to use.
+### -Organization
+
+Name of the Azure DevOps organization.
 
 ```yaml
 Type: String
@@ -40,44 +44,15 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Name
-Name of the DevOps Pipeline.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
 Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Organization
-Name of the DevOps Organization
+### -ProjectName
 
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Project
-Name of the DevOps Project.
+Name of the Azure DevOps project.
 
 ```yaml
 Type: String
@@ -91,7 +66,24 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -VariableGroupName
+
+Name of the variable group to remove.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
@@ -101,6 +93,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS

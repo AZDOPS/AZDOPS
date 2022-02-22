@@ -1,9 +1,9 @@
-Remove-Module AZDevops -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\AZDevops -Force
+Remove-Module AZDOPS -Force -ErrorAction SilentlyContinue
+Import-Module $PSScriptRoot\..\Source\AZDOPS -Force
 
 
-InModuleScope -ModuleName AZDevOPS {
-    Describe 'InvokeAZDevOPSRestMethod' {
+InModuleScope -ModuleName AZDOPS {
+    Describe 'InvokeAZDOPSRestMethod' {
         BeforeAll {
             $PostObject = @{
                 Uri = 'https://dev.microsoft.com/dummyorg/dummy/api/path?Querysting=stuff'
@@ -13,96 +13,96 @@ InModuleScope -ModuleName AZDevOPS {
         }
         Context 'Parameters' {
             It 'Should have parameter method' {
-                (Get-Command InvokeAZDevOPSRestMethod).Parameters.Keys | Should -Contain 'method'
+                (Get-Command InvokeAZDOPSRestMethod).Parameters.Keys | Should -Contain 'method'
             }
             It 'Should have parameter body' {
-                (Get-Command InvokeAZDevOPSRestMethod).Parameters.Keys | Should -Contain 'body'
+                (Get-Command InvokeAZDOPSRestMethod).Parameters.Keys | Should -Contain 'body'
             }
             It 'Should have parameter uri' {
-                (Get-Command InvokeAZDevOPSRestMethod).Parameters.Keys | Should -Contain 'uri'
+                (Get-Command InvokeAZDOPSRestMethod).Parameters.Keys | Should -Contain 'uri'
             }
             It 'Should have parameter Organization' {
-                (Get-Command InvokeAZDevOPSRestMethod).Parameters.Keys | Should -Contain 'Organization'
+                (Get-Command InvokeAZDOPSRestMethod).Parameters.Keys | Should -Contain 'Organization'
             }
             
             It 'Uri should be mandatory' {
-                (Get-Command InvokeAZDevOPSRestMethod).Parameters['uri'].Attributes.Mandatory | Should -Be $true
+                (Get-Command InvokeAZDOPSRestMethod).Parameters['uri'].Attributes.Mandatory | Should -Be $true
             }
             It 'Uri should be of type URI' {
-                (Get-Command InvokeAZDevOPSRestMethod).Parameters['uri'].ParameterType.Name | Should -Be 'URI'
+                (Get-Command InvokeAZDOPSRestMethod).Parameters['uri'].ParameterType.Name | Should -Be 'URI'
             }
             It 'Method should be of type WebRequestMethod' {
-                (Get-Command InvokeAZDevOPSRestMethod).Parameters['Method'].ParameterType.Name | Should -Be 'WebRequestMethod'
+                (Get-Command InvokeAZDOPSRestMethod).Parameters['Method'].ParameterType.Name | Should -Be 'WebRequestMethod'
             }
         }
         Context 'Building webrequest call' {
             BeforeEach {
-                Mock -CommandName GetAZDevOPSHeader -MockWith {
+                Mock -CommandName GetAZDOPSHeader -MockWith {
                     @{
                         Header = @{
                             "Authorization" = "Basic RHVtbXlVc2VyMjpEdW1teVBhc3N3b3JkMg=="
                         }
                         Organization = "org2"
                     }
-                } -ModuleName AZDevOPS
-                Mock -CommandName Invoke-RestMethod -MockWith {Return $InvokeSplat} -ModuleName AZDevOPS
+                } -ModuleName AZDOPS
+                Mock -CommandName Invoke-RestMethod -MockWith {Return $InvokeSplat} -ModuleName AZDOPS
             }
-            It 'Should call GetAZDevOPSHeader' {
-                $null = InvokeAZDevOPSRestMethod @PostObject
-                Should -Invoke GetAZDevOPSHeader -ModuleName AZDevOPS -Exactly 1
-                Should -Invoke Invoke-RestMethod  -ModuleName AZDevOPS -Exactly 1
+            It 'Should call GetAZDOPSHeader' {
+                $null = InvokeAZDOPSRestMethod @PostObject
+                Should -Invoke GetAZDOPSHeader -ModuleName AZDOPS -Exactly 1
+                Should -Invoke Invoke-RestMethod  -ModuleName AZDOPS -Exactly 1
             }
 
             It 'Verify URI is set' {
-                $ResultPostObject = InvokeAZDevOPSRestMethod @PostObject
+                $ResultPostObject = InvokeAZDOPSRestMethod @PostObject
                 $ResultPostObject.Uri | Should -Be $PostObject.Uri
             }
             It 'Verify Method is set' {
-                $ResultPostObject = InvokeAZDevOPSRestMethod @PostObject
+                $ResultPostObject = InvokeAZDOPSRestMethod @PostObject
                 $ResultPostObject.Method | Should -Be $PostObject.Method
             }
             It 'Verify ContentType is set' {
-                $ResultPostObject = InvokeAZDevOPSRestMethod @PostObject
+                $ResultPostObject = InvokeAZDOPSRestMethod @PostObject
                 $ResultPostObject.ContentType | Should -Be 'application/json'
             }
             It 'Verify Body is set' {
-                $ResultPostObject = InvokeAZDevOPSRestMethod @PostObject
+                $ResultPostObject = InvokeAZDOPSRestMethod @PostObject
                 $ResultPostObject.Body | Should -Be $PostObject.Body
             }
             It 'Verify Header is set' {
-                $ResultPostObject = InvokeAZDevOPSRestMethod @PostObject
+                $ResultPostObject = InvokeAZDOPSRestMethod @PostObject
                 $ResultPostObject.Headers.Authorization | Should -Be 'Basic RHVtbXlVc2VyMjpEdW1teVBhc3N3b3JkMg=='
             }
 
             Context 'Parameters includes -Organization' {
-                It 'If organization is given, it should get call GetAZDevOpsHeader with that organization name' {
-                    Mock -CommandName GetAZDevOPSHeader -MockWith {
+                It 'If organization is given, it should get call GetAZDOPSHeader with that organization name' {
+                    Mock -CommandName GetAZDOPSHeader -MockWith {
                         @{
                             Header = @{
                                 "Authorization" = "Basic RHVtbXlVc2VyMjpEdW1teVBhc3N3b3JkMg=="
                             }
                             Organization = "org1"
                         }
-                    } -ModuleName AZDevOPS -ParameterFilter {$Organization -eq 'org1'}
-                    Mock -CommandName Invoke-RestMethod -MockWith {Return $CallHeaders} -ModuleName AZDevOPS
+                    } -ModuleName AZDOPS -ParameterFilter {$Organization -eq 'org1'}
+                    Mock -CommandName Invoke-RestMethod -MockWith {Return $CallHeaders} -ModuleName AZDOPS
 
-                    $ResultPostObject = InvokeAZDevOPSRestMethod @PostObject -Organization 'org1'
+                    $ResultPostObject = InvokeAZDOPSRestMethod @PostObject -Organization 'org1'
                     $ResultPostObject.Organization | Should -Be 'org1'
-                    Should -Invoke GetAZDevOPSHeader -ModuleName AZDevOPS -Exactly 1 -ParameterFilter {$Organization -eq 'org1'}
+                    Should -Invoke GetAZDOPSHeader -ModuleName AZDOPS -Exactly 1 -ParameterFilter {$Organization -eq 'org1'}
                 }
             }
 
             Context 'Calling API' {
                 It 'If we get a sign in window that should be treated as a failure' {
-                    Mock -CommandName GetAZDevOPSHeader -MockWith {
+                    Mock -CommandName GetAZDOPSHeader -MockWith {
                         @{
                             Header = @{
                                 "Authorization" = "Basic RHVtbXlVc2VyMjpEdW1teVBhc3N3b3JkMg=="
                             }
                             Organization = "org2"
                         }
-                    } -ModuleName AZDevOPS
-                    Mock -CommandName Invoke-RestMethod -ModuleName AZDevOPS -MockWith {
+                    } -ModuleName AZDOPS
+                    Mock -CommandName Invoke-RestMethod -ModuleName AZDOPS -MockWith {
                         return '<html lang="en-US">
                         <head><title>
                         
@@ -112,9 +112,9 @@ InModuleScope -ModuleName AZDevOPS {
                             <link rel="SHORTCUT ICON" href="/favicon.ico"/>'
                     }
     
-                    {InvokeAZDevOPSRestMethod @PostObject} | Should -Throw
-                    Should -Invoke Invoke-RestMethod -ModuleName AZDevOPS -Exactly 1
-                    Should -Invoke GetAZDevOPSHeader -ModuleName AZDevOPS -Exactly 1
+                    {InvokeAZDOPSRestMethod @PostObject} | Should -Throw
+                    Should -Invoke Invoke-RestMethod -ModuleName AZDOPS -Exactly 1
+                    Should -Invoke GetAZDOPSHeader -ModuleName AZDOPS -Exactly 1
                 }
             }
         }

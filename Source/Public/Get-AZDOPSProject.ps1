@@ -1,4 +1,4 @@
-function Get-AzDevOPSProject {
+function Get-AZDOPSProject {
     [CmdletBinding()]
     param (
         [Parameter()]
@@ -9,17 +9,17 @@ function Get-AzDevOPSProject {
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
-        $Org = GetAZDevOPSHeader -Organization $Organization
+        $Org = GetAZDOPSHeader -Organization $Organization
     }
     else {
-        $Org = GetAZDevOPSHeader
+        $Org = GetAZDOPSHeader
         $Organization = $Org['Organization']
     }
 
     $Uri = "https://dev.azure.com/$Organization/_apis/projects?api-version=7.1-preview.4"
 
     $Method = 'GET'
-    $ProjectInfo = (InvokeAZDevOPSRestMethod -Uri $Uri -Method $Method -Organization $Organization).value
+    $ProjectInfo = (InvokeAZDOPSRestMethod -Uri $Uri -Method $Method -Organization $Organization).value
 
     if (-not [string]::IsNullOrWhiteSpace($ProjectName)) {
         $ProjectInfo = $ProjectInfo | Where-Object -Property Name -eq $ProjectName

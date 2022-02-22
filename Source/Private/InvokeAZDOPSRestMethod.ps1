@@ -1,4 +1,4 @@
-function InvokeAZDevOPSRestMethod {
+function InvokeAZDOPSRestMethod {
     param (
         [Parameter(Mandatory)]
         [URI]$Uri,
@@ -14,10 +14,10 @@ function InvokeAZDevOPSRestMethod {
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
-        $CallHeaders = GetAZDevOPSHeader -Organization $Organization
+        $CallHeaders = GetAZDOPSHeader -Organization $Organization
     }
     else {
-        $CallHeaders = GetAZDevOPSHeader
+        $CallHeaders = GetAZDOPSHeader
     }
 
     $InvokeSplat = @{

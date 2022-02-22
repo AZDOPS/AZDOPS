@@ -1,4 +1,4 @@
-function Connect-AZDevOPS {
+function Connect-AZDOPS {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
@@ -17,13 +17,13 @@ function Connect-AZDevOPS {
     $Credential = [pscredential]::new($Username, (ConvertTo-SecureString -String $PersonalAccessToken -AsPlainText -Force))
     $ShouldBeDefault = $Default.IsPresent
 
-    if ($AZDevOPSCredentials.Count -eq 0) {
+    if ($AZDOPSCredentials.Count -eq 0) {
         $ShouldBeDefault = $true
-        $Script:AZDevOPSCredentials = @{}
+        $Script:AZDOPSCredentials = @{}
     }
     elseif ($default.IsPresent) {
-        $r = $script:AZDevOPSCredentials.Keys | Where-Object { $AZDevOPSCredentials[$_].Default -eq $true }
-        $AZDevOPSCredentials[$r].Default = $false
+        $r = $script:AZDOPSCredentials.Keys | Where-Object { $AZDOPSCredentials[$_].Default -eq $true }
+        $AZDOPSCredentials[$r].Default = $false
     }
 
     $OrgData = @{
@@ -31,15 +31,15 @@ function Connect-AZDevOPS {
         Default    = $ShouldBeDefault
     }
     
-    $Script:AZDevOPSCredentials[$Organization] = $OrgData
+    $Script:AZDOPSCredentials[$Organization] = $OrgData
     
     $URI = "https://vssps.dev.azure.com/$Organization/_apis/profile/profiles/me?api-version=7.1-preview.3"
 
     try {
-        InvokeAZDevOPSRestMethod -Method Get -Uri $URI
+        InvokeAZDOPSRestMethod -Method Get -Uri $URI
     }
     catch {
-        $Script:AZDevOPSCredentials.Remove($Organization)
+        $Script:AZDOPSCredentials.Remove($Organization)
         throw $_
     }
 }
