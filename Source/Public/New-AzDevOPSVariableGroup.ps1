@@ -1,7 +1,7 @@
 function New-AzDevOPSVariableGroup {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory)]
+        [Parameter()]
         [string]$Organization,
 
         [Parameter(Mandatory)]
@@ -25,6 +25,7 @@ function New-AzDevOPSVariableGroup {
     }
     else {
         $Org = GetAZDevOPSHeader
+        $Organization = $Org['Organization']
     }
 
     $ProjectInfo = Get-AzDevOPSProject -Organization $Organization -ProjectName $ProjectName
@@ -51,5 +52,5 @@ function New-AzDevOPSVariableGroup {
         }
     } | ConvertTo-Json -Depth 10
 
-    InvokeAZDevOPSRestMethod -Uri $Uri -Method $Method -Body $Body -Organization $Org['Organization']
+    InvokeAZDevOPSRestMethod -Uri $Uri -Method $Method -Body $Body -Organization $Organization
 }
