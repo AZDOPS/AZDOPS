@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-AZDOPSConnection
 
 ## SYNOPSIS
-Gets all active AZDOPS connections
+Gets all established connections to Azure DevOps.
 
 ## SYNTAX
 
@@ -17,7 +17,7 @@ Get-AZDOPSConnection
 ```
 
 ## DESCRIPTION
-This commands lists all active AZDOPS connecions.
+This commands lists all established connections to Azure DevOps.
 
 ## EXAMPLES
 
