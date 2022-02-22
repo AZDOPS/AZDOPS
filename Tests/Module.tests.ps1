@@ -7,8 +7,8 @@
 $ScriptDirectory = Split-Path -Path $PSCommandPath -Parent
 
 # actual exported functions
-$ExportedFunctions = (Get-Module -FullyQualifiedName "$ScriptDirectory\..\Source\AZDevOPS.psd1" -ListAvailable -Refresh).ExportedFunctions.Keys
-$ModuleName = (Get-ChildItem -Path "$ScriptDirectory\..\Source\AZDevOPS.psm1").BaseName
+$ExportedFunctions = (Get-Module -FullyQualifiedName "$ScriptDirectory\..\Source\AZDOPS.psd1" -ListAvailable -Refresh).ExportedFunctions.Keys
+$ModuleName = (Get-ChildItem -Path "$ScriptDirectory\..\Source\AZDOPS.psm1").BaseName
 
 # Create test cases for public functions
 if (Test-Path -Path "$ScriptDirectory\..\Source\Public" -PathType Container) {
@@ -41,7 +41,7 @@ if (Test-Path -Path "$ScriptDirectory\..\Source\Private" -PathType Container) {
 # Import the module files before starting tests
 BeforeAll {
     $ScriptDirectory = Split-Path -Path $PSCommandPath -Parent
-    Import-Module -FullyQualifiedName "$ScriptDirectory\..\Source\AZDevOPS.psd1" -ErrorAction Stop
+    Import-Module -FullyQualifiedName "$ScriptDirectory\..\Source\AZDOPS.psd1" -ErrorAction Stop
 }
 
 Describe "Module $ModuleName" {

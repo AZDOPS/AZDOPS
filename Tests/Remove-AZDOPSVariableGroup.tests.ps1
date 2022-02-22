@@ -1,11 +1,11 @@
-Remove-Module AZDevOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\AZDevOPS
+Remove-Module AZDOPS -ErrorAction SilentlyContinue
+Import-Module $PSScriptRoot\..\Source\AZDOPS
 
-InModuleScope -ModuleName AZDevOPS {
-    Describe 'Remove-AzDevOPSVariableGroup tests' {
+InModuleScope -ModuleName AZDOPS {
+    Describe 'Remove-AZDOPSVariableGroup tests' {
         Context 'Removing variable group' {
             BeforeAll {
-                Mock -CommandName GetAZDevOPSHeader -ModuleName AZDevOPS -MockWith {
+                Mock -CommandName GetAZDOPSHeader -ModuleName AZDOPS -MockWith {
                     @{
                         Header       = @{
                             'Authorization' = 'Basic Base64=='
@@ -13,7 +13,7 @@ InModuleScope -ModuleName AZDevOPS {
                         Organization = $OrganizationName
                     }
                 } -ParameterFilter { $OrganizationName -eq 'Organization' }
-                Mock -CommandName GetAZDevOPSHeader -ModuleName AZDevOPS -MockWith {
+                Mock -CommandName GetAZDOPSHeader -ModuleName AZDOPS -MockWith {
                     @{
                         Header       = @{
                             'Authorization' = 'Basic Base64=='
@@ -22,10 +22,10 @@ InModuleScope -ModuleName AZDevOPS {
                     }
                 }
 
-                Mock -CommandName InvokeAZDevOPSRestMethod -ModuleName AZDevOPS -MockWith {
+                Mock -CommandName InvokeAZDOPSRestMethod -ModuleName AZDOPS -MockWith {
                     return ''
                 } -ParameterFilter { $method -eq 'Delete' }
-                Mock -CommandName InvokeAZDevOPSRestMethod -ModuleName AZDevOPS -MockWith {
+                Mock -CommandName InvokeAZDOPSRestMethod -ModuleName AZDOPS -MockWith {
                     return [pscustomobject]@{
                         'count' = 1
                         'value' = @(
@@ -56,7 +56,7 @@ InModuleScope -ModuleName AZDevOPS {
                         )
                     }
                 } -ParameterFilter { $method -eq 'Get' }
-                Mock -CommandName Get-AzDevOPSProject -ModuleName AZDevOPS -MockWith {
+                Mock -CommandName Get-AZDOPSProject -ModuleName AZDOPS -MockWith {
                     return [pscustomobject]@{
                         id = (New-Guid).Guid
                     }
@@ -67,37 +67,37 @@ InModuleScope -ModuleName AZDevOPS {
                 $VariableGroupName = 'DummyGroup'
             }
 
-            It 'uses InvokeAZDevOPSRestMethod two times' {
-                Remove-AzDevOPSVariableGroup -ProjectName $ProjectName -VariableGroupName $VariableGroupName
+            It 'uses InvokeAZDOPSRestMethod two times' {
+                Remove-AZDOPSVariableGroup -ProjectName $ProjectName -VariableGroupName $VariableGroupName
 
-                Should -Invoke 'InvokeAZDevOPSRestMethod' -ModuleName 'AZDevOPS' -Exactly -Times 2
+                Should -Invoke 'InvokeAZDOPSRestMethod' -ModuleName 'AZDOPS' -Exactly -Times 2
             }
             It 'returns empty output after removing variable group' {
-                Remove-AzDevOPSVariableGroup -ProjectName $ProjectName -VariableGroupName $VariableGroupName | Should -BeNullOrEmpty
+                Remove-AZDOPSVariableGroup -ProjectName $ProjectName -VariableGroupName $VariableGroupName | Should -BeNullOrEmpty
             }
             It 'should not throw with mandatory parameters' {
-                { Remove-AzDevOPSVariableGroup -ProjectName $ProjectName -VariableGroupName $VariableGroupName } | Should -Not -Throw
+                { Remove-AZDOPSVariableGroup -ProjectName $ProjectName -VariableGroupName $VariableGroupName } | Should -Not -Throw
             }
         }
 
         Context 'Parameters' {
             It 'Should have parameter Organization' {
-                (Get-Command Remove-AzDevOPSVariableGroup).Parameters.Keys | Should -Contain 'Organization'
+                (Get-Command Remove-AZDOPSVariableGroup).Parameters.Keys | Should -Contain 'Organization'
             }
             It 'Organization should not be required' {
-                (Get-Command Remove-AzDevOPSVariableGroup).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
+                (Get-Command Remove-AZDOPSVariableGroup).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
             }
             It 'Should have parameter ProjectName' {
-                (Get-Command Remove-AzDevOPSVariableGroup).Parameters.Keys | Should -Contain 'ProjectName'
+                (Get-Command Remove-AZDOPSVariableGroup).Parameters.Keys | Should -Contain 'ProjectName'
             }
             It 'ProjectName should be required' {
-                (Get-Command Remove-AzDevOPSVariableGroup).Parameters['ProjectName'].Attributes.Mandatory | Should -Be $true
+                (Get-Command Remove-AZDOPSVariableGroup).Parameters['ProjectName'].Attributes.Mandatory | Should -Be $true
             }
             It 'Should have parameter VariableGroupName' {
-                (Get-Command Remove-AzDevOPSVariableGroup).Parameters.Keys | Should -Contain 'VariableGroupName'
+                (Get-Command Remove-AZDOPSVariableGroup).Parameters.Keys | Should -Contain 'VariableGroupName'
             }
             It 'VariableGroupName should not be required' {
-                (Get-Command Remove-AzDevOPSVariableGroup).Parameters['VariableGroupName'].Attributes.Mandatory | Should -Be $true
+                (Get-Command Remove-AZDOPSVariableGroup).Parameters['VariableGroupName'].Attributes.Mandatory | Should -Be $true
             }
         }
     }

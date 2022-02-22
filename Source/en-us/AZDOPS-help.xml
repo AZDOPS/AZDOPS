@@ -2,9 +2,9 @@
 <helpItems schema="maml" xmlns="http://msh">
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
-      <command:name>Connect-AZDevOPS</command:name>
+      <command:name>Connect-AZDOPS</command:name>
       <command:verb>Connect</command:verb>
-      <command:noun>AZDevOPS</command:noun>
+      <command:noun>AZDOPS</command:noun>
       <maml:description>
         <maml:para>Establish a connection to Azure DevOps using a PAT.</maml:para>
       </maml:description>
@@ -14,7 +14,7 @@
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
-        <maml:name>Connect-AZDevOPS</maml:name>
+        <maml:name>Connect-AZDOPS</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
           <maml:name>Username</maml:name>
           <maml:description>
@@ -142,14 +142,14 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Connect-AZDevOps -Username 'john.doe@azdevops.com' -PersonalAccessToken '&lt;myPersonalAccessToken&gt;' -Organization 'AZDevOPS'</dev:code>
+        <dev:code>Connect-AZDOPS -Username 'john.doe@AZDOPS.com' -PersonalAccessToken '&lt;myPersonalAccessToken&gt;' -Organization 'AZDOPS'</dev:code>
         <dev:remarks>
           <maml:para>Connect to Azure DevOps organization using a personal access token.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>Connect-AZDevOps -Username 'john.doe@azdevops.com' -PersonalAccessToken '&lt;myPersonalAccessToken&gt;' -Organization 'AZDevOPS' -Default</dev:code>
+        <dev:code>Connect-AZDOPS -Username 'john.doe@AZDOPS.com' -PersonalAccessToken '&lt;myPersonalAccessToken&gt;' -Organization 'AZDOPS' -Default</dev:code>
         <dev:remarks>
           <maml:para>Connect to Azure DevOps organization using a personal access token and setting it as default organization.</maml:para>
         </dev:remarks>
@@ -159,9 +159,9 @@
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
-      <command:name>Start-AZDevOPSPipeline</command:name>
+      <command:name>Start-AZDOPSPipeline</command:name>
       <command:verb>Start</command:verb>
-      <command:noun>AZDevOPSPipeline</command:noun>
+      <command:noun>AZDOPSPipeline</command:noun>
       <maml:description>
         <maml:para>Starts an Azure DevOps Pipeline.</maml:para>
       </maml:description>
@@ -171,7 +171,7 @@
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
-        <maml:name>Start-AZDevOPSPipeline</maml:name>
+        <maml:name>Start-AZDOPSPipeline</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
           <maml:name>Name</maml:name>
           <maml:description>
@@ -300,7 +300,7 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>Start-AZDevOPSPipeline -Name 'myPipeline' -Project 'myProject' -Organization 'AZDevOPS' -Branch 'main'</dev:code>
+        <dev:code>Start-AZDOPSPipeline -Name 'myPipeline' -Project 'myProject' -Organization 'AZDOPS' -Branch 'main'</dev:code>
         <dev:remarks>
           <maml:para>Starts the DevOps Pipeline 'myPipeline' in the project 'myProject'.</maml:para>
         </dev:remarks>
