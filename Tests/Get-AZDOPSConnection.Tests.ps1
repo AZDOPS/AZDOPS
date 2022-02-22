@@ -29,7 +29,7 @@ Describe 'Get-AZDOPSConnection' {
             (Get-AZDOPSConnection).Count | Should -Be 2
         }
 
-        It 'Verifying the first returned organization mathces the set variable' {
+        It 'Verifying the first returned organization matches the set variable' {
             (Get-AZDOPSConnection)['org1'].Credential.Username | Should -Be 'DummyUser1'
         }
     }
