@@ -10,7 +10,10 @@ function InvokeAZDOPSRestMethod {
         [string]$Body,
 
         [Parameter()]
-        [string]$Organization
+        [string]$Organization,
+
+        [Parameter()]
+        [string]$ContentType = 'application/json'
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
@@ -24,7 +27,7 @@ function InvokeAZDOPSRestMethod {
         'Uri' = $Uri
         'Method' = $Method
         'Headers' = $CallHeaders.Header
-        'ContentType' = 'application/json'
+        'ContentType' = $ContentType
     }
 
     if (-not [string]::IsNullOrEmpty($Body)) {
