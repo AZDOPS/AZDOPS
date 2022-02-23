@@ -1,23 +1,40 @@
 function New-AZDOPSVariableGroup {
     [CmdletBinding()]
     param (
-        [Parameter()]
+        [Parameter(Mandatory,
+            ParameterSetName = "VariableSingle")]
+
+        [Parameter(Mandatory,
+            ParameterSetName = "VariableHashtable")]
         [string]$Organization,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory,
+            ParameterSetName = "VariableSingle")]
+        
+        [Parameter(Mandatory,
+            ParameterSetName = "VariableHashtable")]
         [string]$ProjectName,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory,
+            ParameterSetName = "VariableSingle")]
+        [Parameter(Mandatory,
+            ParameterSetName = "VariableHashtable")]
         [string]$VariableGroupName,
 
-        [Parameter(Mandatory)]
+        [Parameter(ParameterSetName = "VariableSingle")]
         [string]$VariableName,
 
-        [Parameter(Mandatory)]
+        [Parameter(ParameterSetName = "VariableSingle")]
         [string]$VariableValue,
 
+        [Parameter(ParameterSetName = "VariableSingle")]
+        [switch]$IsSecret,
+
         [Parameter()]
-        [string]$Description
+        [string]$Description,
+
+        [Parameter(ParameterSetName = "VariableHashtable")]
+        [hashtable]$VariableHashtable
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
@@ -33,24 +50,41 @@ function New-AZDOPSVariableGroup {
     $URI = "https://dev.azure.com/${Organization}/_apis/distributedtask/variablegroups?api-version=7.1-preview.2"
     $method = 'POST'
 
-    $Body = @{
-        Name                           = "$VariableGroupName"
-        Description                    = "$Description"
-        Type                           = "Vsts"
-        variableGroupProjectReferences = @(@{
-                Name             = "$VariableGroupName"
-                Description      = "$Description"
-                projectReference = @{
-                    Id   = "$($ProjectInfo.Id)"
+    if ($VariableName) {
+        $Body = @{
+            Name                           = "$VariableGroupName"
+            Description                    = "$Description"
+            Type                           = "Vsts"
+            variableGroupProjectReferences = @(@{
+                    Name             = "$VariableGroupName"
+                    Description      = "$Description"
+                    projectReference = @{
+                        Id = "$($ProjectInfo.Id)"
+                    }
+                })
+            variables                      = @{
+                "$VariableName" = @{
+                    isSecret = $IsSecret.IsPresent
+                    value    = "$VariableValue"
                 }
-            })
-        variables                      = @{
-            "$VariableName" = @{
-                isSecret = $false
-                value    = "$VariableValue"
             }
-        }
-    } | ConvertTo-Json -Depth 10
+        } | ConvertTo-Json -Depth 10
+    }
+    else {
+        $Body = @{
+            Name                           = "$VariableGroupName"
+            Description                    = "$Description"
+            Type                           = "Vsts"
+            variableGroupProjectReferences = @(@{
+                    Name             = "$VariableGroupName"
+                    Description      = "$Description"
+                    projectReference = @{
+                        Id = "$($ProjectInfo.Id)"
+                    }
+                })
+            variables                      = $VariableHashtable
+        } | ConvertTo-Json -Depth 10
+    }
 
     InvokeAZDOPSRestMethod -Uri $Uri -Method $Method -Body $Body -Organization $Organization
 }
