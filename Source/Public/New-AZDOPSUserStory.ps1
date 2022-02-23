@@ -21,7 +21,6 @@ function New-AZDOPSUserStory {
 
         [Parameter(ParameterSetName = "Default")]
         [string]$Priority
-        
 
     )
 
@@ -61,5 +60,5 @@ function New-AZDOPSUserStory {
       },	 
     ]"
     
-    InvokeAZDOPSRestMethod -Uri $URI -Method $Method -Body $Body -Organization $Organization
+    InvokeAZDOPSRestMethod -Uri $URI -ContentType "application/json-patch+json" -Method $Method -Body $Body -Organization $Organization
 }
