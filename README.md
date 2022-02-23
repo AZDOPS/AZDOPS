@@ -2,7 +2,7 @@
 
 This repository contains functions for creating and maintaining Azure DevOps environments with support for multiple environment connections.
 
-This project started out as a hackaton around PowerShell and Pester with the goal to be able to create, update, and remove, all or most of the parts we regularely use in our own Azure DevOps environments, in a standardized and easy way.
+This project started out as a hackathon around PowerShell and Pester with the goal to be able to create, update, and remove, all or most of the parts we regularly use in our own Azure DevOps environments, in a standardized and easy way.
 
 ## Installation
 
@@ -17,7 +17,7 @@ If you find a bug or have an idea for a new feature create an issue in the repo.
 
 If you like the this module and want to contribute you are very much welcome to do so. Please read our [Contribution Guide](CONTRIBUTING.md) before you start! ❤
 
-We try to maintain high test coverage, and encourage TDD using [Pester](https://github.com/pester/Pester). We will gladly help out with you need help getting started with it.
+We try to maintain high test coverage, and encourage TDD using [Pester](https://github.com/pester/Pester). We will gladly help out if you need help getting started with it.
 
 ## Maintainers
 
@@ -26,7 +26,7 @@ This project is currently maintained by the following coders:
 - [bjompen](https://github.com/bjompen)
 - [JohnRoos](https://github.com/JohnRoos)
 - [PalmEmanuel](https://github.com/PalmEmanuel)
-- [emilguden](https://github.com/emilguden)
+- [egullbrandsson](https://github.com/egullbrandsson)
 - [StefanIvemo](https://github.com/StefanIvemo)
 - [SimonWahlin](https://github.com/SimonWahlin)
 - [SebastianClaesson](https://github.com/SebastianClaesson)
