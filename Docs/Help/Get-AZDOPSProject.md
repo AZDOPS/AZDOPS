@@ -5,46 +5,45 @@ online version:
 schema: 2.0.0
 ---
 
-# Remove-AZDOPSVariableGroup
+# Get-AZDOPSProject
 
 ## SYNOPSIS
 
-Removes a variable group from Azure DevOps.
+Gets one or several projects in an Azure DevOps organization.
 
 ## SYNTAX
 
 ```powershell
-Remove-AZDOPSVariableGroup [[-Organization] <String>] [-Project] <String> [-VariableGroupName] <String>
- [<CommonParameters>]
+Get-AZDOPSProject [[-Organization] <String>] [[-Project] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Removes a variable group from Azure DevOps.
+Gets one or several projects in an Azure DevOps organization.
 
 ## EXAMPLES
 
 ### Example 1
 
 ```powershell
-Remove-AZDOPSVariableGroup -Organization 'azdops' -Project 'azdopsproj' -VariableGroupName 'ExampleVarGroup'
+PS C:\> Get-AZDOPSProject -Organization 'azdops' -Project 'azdopsproj'
 ```
 
-Removes the variable group called "ExampleVarGroup" from the project "azdopsproj" in the organization "azdops".
+Gets the project called "azdopsproj" from the organization "azdops".
 
 ### Example 2
 
 ```powershell
-Remove-AZDOPSVariableGroup -Project 'azdopsproj' -VariableGroupName 'ExampleVarGroup'
+PS C:\> Get-AZDOPSProject -Project 'azdopsproj'
 ```
 
-Removes the variable group called "ExampleVarGroup" from the project "azdopsproj" in the default organization.
+Gets the project called "azdopsproj" from the default organization.
 
 ## PARAMETERS
 
 ### -Organization
 
-Name of the Azure DevOps organization.
+The name of the organization of the project.
 
 ```yaml
 Type: String
@@ -60,31 +59,15 @@ Accept wildcard characters: False
 
 ### -Project
 
-Name of the Azure DevOps project.
+The name of the project to find.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -VariableGroupName
-
-Name of the variable group to remove.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
