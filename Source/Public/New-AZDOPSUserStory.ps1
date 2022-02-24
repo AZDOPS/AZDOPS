@@ -1,43 +1,44 @@
 function New-AZDOPSUserStory {
-    [CmdletBinding()]
-    param (
+  [CmdletBinding()]
+  param (
 
-        [Parameter(Mandatory,
-            ParameterSetName = "Default")]
-        [string]$Organization,
+    [Parameter(Mandatory,
+      ParameterSetName = "Default")]
+    [string]$Organization,
 
-        [Parameter(Mandatory,
-            ParameterSetName = "Default")]
-        [string]$ProjectName,
+    [Parameter(Mandatory,
+      ParameterSetName = "Default")]
+    [string]$ProjectName,
 
-        [Parameter(ParameterSetName = "Default")]
-        [string]$Title,
+    [Parameter(Mandatory,
+      ParameterSetName = "Default")]
+    [string]$Title,
 
-        [Parameter(ParameterSetName = "Default")]
-        [string]$Description,
+    [Parameter(ParameterSetName = "Default")]
+    [string]$Description,
 
-        [Parameter(ParameterSetName = "Default")]
-        [string]$Tags,        
+    [Parameter(ParameterSetName = "Default")]
+    [string]$Tags,        
 
-        [Parameter(ParameterSetName = "Default")]
-        [string]$Priority
+    [Parameter(ParameterSetName = "Default")]
+    [string]$Priority
 
-    )
+  )
 
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $Org = GetAZDOPSHeader -Organization $Organization
-    }
-    else {
-        $Org = GetAZDOPSHeader
-        $Organization = $Org['Organization']
-    }
+  if (-not [string]::IsNullOrEmpty($Organization)) {
+    $Org = GetAZDOPSHeader -Organization $Organization
+  }
+  else {
+    $Org = GetAZDOPSHeader
+    $Organization = $Org['Organization']
+  }
 
 
-    $URI = "https://dev.azure.com/$Organization/$ProjectName/_apis/wit/workitems/`$User Story?api-version=5.1"
-    $Method = 'POST'
+  $URI = "https://dev.azure.com/$Organization/$ProjectName/_apis/wit/workitems/`$User Story?api-version=5.1"
+  $Method = 'POST'
 
-    $desc = $Description.Replace('"',"'")
-    $Body="[
+  $desc = $Description.Replace('"', "'")
+  $Body = "[
       {
         `"op`": `"add`",
         `"path`": `"/fields/System.Title`",
@@ -60,5 +61,5 @@ function New-AZDOPSUserStory {
       },	 
     ]"
     
-    InvokeAZDOPSRestMethod -Uri $URI -ContentType "application/json-patch+json" -Method $Method -Body $Body -Organization $Organization
+  InvokeAZDOPSRestMethod -Uri $URI -ContentType "application/json-patch+json" -Method $Method -Body $Body -Organization $Organization
 }
