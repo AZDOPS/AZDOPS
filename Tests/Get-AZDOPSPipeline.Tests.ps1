@@ -56,7 +56,28 @@ InModuleScope -ModuleName AZDOPS {
                         ]
                     }
 '@ | ConvertFrom-Json
-                } -ParameterFilter { $method -eq 'Get' }
+                } -ParameterFilter { $Method -eq 'Get' -and $Uri -like '*/pipelines?*' }
+
+                Mock -CommandName InvokeAZDOPSRestMethod -ModuleName AZDOPS -MockWith {
+                    return @'
+                    {
+                        "_links": {
+                            "self": "@{href=https://dev.azure.com/OrganizationName/Project/_apis/pipelines/9?revision=1}",
+                            "web": "@{href=https://dev.azure.com/OrganizationName/Project/_build/definition?definitionId=9}"
+                        },
+                        "configuration": {
+                            "path": "DummyPipe1Path.yml",
+                            "repository": "@{id=Repo; type=azureReposGit}",
+                            "type": "yaml"
+                        },
+                        "url": "https://dev.azure.com/OrganizationName/Project/_apis/pipelines/9?revision=1",
+                        "id": 9,
+                        "revision": 1,
+                        "name": "DummyPipe1",
+                        "folder": "\\"
+                    }
+'@ | ConvertFrom-Json
+                } -ParameterFilter { $Method -eq 'Get' -and $Uri -like '*/pipelines/*' }
 
             }
             It 'uses InvokeAZDOPSRestMethod two times' {
