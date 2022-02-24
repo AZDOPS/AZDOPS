@@ -68,6 +68,10 @@ InModuleScope -ModuleName AZDOPS {
                 $ResultPostObject = InvokeAZDOPSRestMethod @PostObject
                 $ResultPostObject.ContentType | Should -Be 'application/json'
             }
+            It 'Verify ContentType when parameter is used' {
+                $ResultPostObject = InvokeAZDOPSRestMethod @PostObject -ContentType 'application/json-patch+json'
+                $ResultPostObject.ContentType | Should -Be 'application/json-patch+json'
+            }
             It 'Verify Body is set' {
                 $ResultPostObject = InvokeAZDOPSRestMethod @PostObject
                 $ResultPostObject.Body | Should -Be $PostObject.Body
