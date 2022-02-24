@@ -69,18 +69,7 @@ PowerShellVersion = '7.2'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @(
-    'Connect-AZDOPS',
-    'Disconnect-AZDOPS',
-    'Start-AZDOPSPipeline',
-    'New-AZDOPSProject',
-    'Get-AZDOPSProject',
-    'New-AZDOPSVariableGroup',
-    'Remove-AZDOPSVariableGroup',
-    'Get-AZDOPSRepository',
-    'Get-AZDOPSConnection',
-    'Get-AZDOPSPipeline'
-)
+FunctionsToExport = '*'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = ''
