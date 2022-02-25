@@ -27,7 +27,12 @@ function New-AZDOPSVariableGroup {
         [string]$Description,
 
         [Parameter(Mandatory, ParameterSetName = 'VariableHashtable')]
-        [hashtable]$VariableHashtable
+        [ValidateScript(
+            {
+                $_ | ForEach-Object { $_.Keys -Contains 'Name' -and $_.Keys -Contains 'IsSecret' -and $_.Keys -Contains 'Value' -and $_.Keys.count -eq 3 }
+            }, 
+            ErrorMessage = 'The hashtable must contain the following keys: Name, IsSecret, Value')]
+        [hashtable[]]$VariableHashtable
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
@@ -64,6 +69,16 @@ function New-AZDOPSVariableGroup {
         } | ConvertTo-Json -Depth 10
     }
     else {
+
+        $Variables = [hashtable]::new()
+        foreach ($Hashtable in $VariableHashtable) {
+            $Variables.Add(
+                $Hashtable.Name, @{
+                    isSecret = $Hashtable.IsSecret
+                    value    = $Hashtable.Value
+                })
+        }
+
         $Body = @{
             Name                           = $VariableGroupName
             Description                    = $Description
@@ -75,7 +90,7 @@ function New-AZDOPSVariableGroup {
                         Id = $($ProjectInfo.Id)
                     }
                 })
-            variables                      = $VariableHashtable
+            variables                      = $Variables
         } | ConvertTo-Json -Depth 10
     }
 
