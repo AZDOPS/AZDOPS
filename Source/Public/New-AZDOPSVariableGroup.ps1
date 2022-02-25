@@ -35,12 +35,12 @@ function New-AZDOPSVariableGroup {
         [hashtable[]]$VariableHashtable
     )
 
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $Org = GetAZDOPSHeader -Organization $Organization
-    }
-    else {
+    if ([string]::IsNullOrEmpty($Organization)) {
         $Org = GetAZDOPSHeader
         $Organization = $Org['Organization']
+    }
+    else {
+        $Org = GetAZDOPSHeader -Organization $Organization
     }
 
     $ProjectInfo = Get-AZDOPSProject -Organization $Organization -Project $Project
