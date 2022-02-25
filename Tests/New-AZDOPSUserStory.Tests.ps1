@@ -43,3 +43,60 @@ InModuleScope -ModuleName AZDOPS {
         }
     }
 }
+
+Describe 'New-AZDOPSUserStory' {
+    Context 'Creating new user story' {
+        BeforeAll {
+            InModuleScope -ModuleName AZDOPS {
+                Mock -CommandName GetAZDOPSHeader -ModuleName AZDOPS -MockWith {
+                    @{
+                        Header       = @{
+                            'Authorization' = 'Basic Base64=='
+                        }
+                        Organization = $OrganizationName
+                    }
+                } -ParameterFilter { $OrganizationName -eq 'Organization' }
+                Mock -CommandName GetAZDOPSHeader -ModuleName AZDOPS -MockWith {
+                    @{
+                        Header       = @{
+                            'Authorization' = 'Basic Base64=='
+                        }
+                        Organization = 'DummyOrg'
+                    }
+                }
+
+                Mock -CommandName InvokeAZDOPSRestMethod -MockWith {
+                    return $InvokeSplat
+                }
+            }
+
+            $TestRunSplat = @{
+                Organization = 'DummyOrg' 
+                ProjectName = 'DummyProj'
+                Title = 'USTitle'
+                Description = 'USDescription'
+                Tags = 'USTags'
+                Priority = 'USPrio'
+            }
+        }
+        
+        It 'Should have called mock InvokeAZDOPSRestMethod' {
+            $TesRes = New-AZDOPSUserStory @TestRunSplat
+            Should -Invoke -CommandName 'InvokeAZDOPSRestMethod' -Exactly 1 -ModuleName AZDOPS
+        }
+        It 'Should have called mock GetAZDOPSHeader' {
+            $TesRes = New-AZDOPSUserStory @TestRunSplat
+            Should -Invoke -CommandName 'GetAZDOPSHeader' -Exactly 1 -ModuleName AZDOPS
+        }
+        
+        It 'Verifying post object, ContentType' {
+            $TesRes = New-AZDOPSUserStory @TestRunSplat
+            $TesRes.ContentType | Should -Be "application/json-patch+json"
+        }
+        It 'Verifying post object, Body' {
+            $DesiredReslt = '[{"op":"add","path":"/fields/System.Title","value":"USTitle"},{"op":"add","path":"/fields/System.Description","value":"USDescription"},{"op":"add","path":"/fields/System.Tags","value":"USTags"},{"op":"add","path":"/fields/Microsoft.VSTS.Common.Priority","value":"USPrio"}]'
+            $TesRes = (New-AZDOPSUserStory @TestRunSplat).Body | ConvertFrom-Json | ConvertTo-Json -Compress
+            $TesRes | Should -Be $DesiredReslt
+        }
+    }
+}

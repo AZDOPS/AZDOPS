@@ -61,5 +61,13 @@ function New-AZDOPSUserStory {
       },	 
     ]"
     
-  InvokeAZDOPSRestMethod -Uri $URI -ContentType "application/json-patch+json" -Method $Method -Body $Body -Organization $Organization
+  $InvokeSplat = @{
+    Uri           = $URI
+    ContentType   = "application/json-patch+json"
+    Method        = $Method
+    Body          = $Body
+    Organization  = $Organization
+  }
+
+  InvokeAZDOPSRestMethod @InvokeSplat
 }
