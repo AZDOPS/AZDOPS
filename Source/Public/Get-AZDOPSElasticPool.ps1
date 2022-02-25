@@ -5,7 +5,7 @@ function Get-AZDOPSElasticPool {
         [string]$Organization,
 
         [Parameter()]
-        [string]$PoolId
+        [int32]$PoolId
 
     )
 

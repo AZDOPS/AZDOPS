@@ -12,7 +12,7 @@ function New-AZDOPSElasticPool {
         [string]$Organization,
         
         [Parameter()]
-        [string]
+        [guid]
         $ProjectId,
 
         [Parameter()]
