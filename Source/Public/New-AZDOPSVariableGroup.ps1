@@ -1,39 +1,32 @@
 function New-AZDOPSVariableGroup {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory,
-            ParameterSetName = "VariableSingle")]
-
-        [Parameter(Mandatory,
-            ParameterSetName = "VariableHashtable")]
+        [Parameter(ParameterSetName = 'VariableSingle')]
+        [Parameter(ParameterSetName = 'VariableHashtable')]
         [string]$Organization,
 
-        [Parameter(Mandatory,
-            ParameterSetName = "VariableSingle")]
+        [Parameter(Mandatory, ParameterSetName = 'VariableSingle')]
         
-        [Parameter(Mandatory,
-            ParameterSetName = "VariableHashtable")]
-        [string]$ProjectName,
+        [Parameter(Mandatory, ParameterSetName = 'VariableHashtable')]
+        [string]$Project,
 
-        [Parameter(Mandatory,
-            ParameterSetName = "VariableSingle")]
-        [Parameter(Mandatory,
-            ParameterSetName = "VariableHashtable")]
+        [Parameter(Mandatory, ParameterSetName = 'VariableSingle')]
+        [Parameter(Mandatory, ParameterSetName = 'VariableHashtable')]
         [string]$VariableGroupName,
 
-        [Parameter(ParameterSetName = "VariableSingle")]
+        [Parameter(Mandatory, ParameterSetName = 'VariableSingle')]
         [string]$VariableName,
 
-        [Parameter(ParameterSetName = "VariableSingle")]
+        [Parameter(Mandatory, ParameterSetName = 'VariableSingle')]
         [string]$VariableValue,
 
-        [Parameter(ParameterSetName = "VariableSingle")]
+        [Parameter(ParameterSetName = 'VariableSingle')]
         [switch]$IsSecret,
 
         [Parameter()]
         [string]$Description,
 
-        [Parameter(ParameterSetName = "VariableHashtable")]
+        [Parameter(Mandatory, ParameterSetName = 'VariableHashtable')]
         [hashtable]$VariableHashtable
     )
 
@@ -45,41 +38,41 @@ function New-AZDOPSVariableGroup {
         $Organization = $Org['Organization']
     }
 
-    $ProjectInfo = Get-AZDOPSProject -Organization $Organization -ProjectName $ProjectName
+    $ProjectInfo = Get-AZDOPSProject -Organization $Organization -Project $Project
 
     $URI = "https://dev.azure.com/${Organization}/_apis/distributedtask/variablegroups?api-version=7.1-preview.2"
     $method = 'POST'
 
     if ($VariableName) {
         $Body = @{
-            Name                           = "$VariableGroupName"
-            Description                    = "$Description"
-            Type                           = "Vsts"
+            Name                           = $VariableGroupName
+            Description                    = $Description
+            Type                           = 'Vsts'
             variableGroupProjectReferences = @(@{
-                    Name             = "$VariableGroupName"
-                    Description      = "$Description"
+                    Name             = $VariableGroupName
+                    Description      = $Description
                     projectReference = @{
-                        Id = "$($ProjectInfo.Id)"
+                        Id = $ProjectInfo.Id
                     }
                 })
             variables                      = @{
-                "$VariableName" = @{
+                $VariableName = @{
                     isSecret = $IsSecret.IsPresent
-                    value    = "$VariableValue"
+                    value    = $VariableValue
                 }
             }
         } | ConvertTo-Json -Depth 10
     }
     else {
         $Body = @{
-            Name                           = "$VariableGroupName"
-            Description                    = "$Description"
-            Type                           = "Vsts"
+            Name                           = $VariableGroupName
+            Description                    = $Description
+            Type                           = 'Vsts'
             variableGroupProjectReferences = @(@{
-                    Name             = "$VariableGroupName"
-                    Description      = "$Description"
+                    Name             = $VariableGroupName
+                    Description      = $Description
                     projectReference = @{
-                        Id = "$($ProjectInfo.Id)"
+                        Id = $($ProjectInfo.Id)
                     }
                 })
             variables                      = $VariableHashtable

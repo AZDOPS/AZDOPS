@@ -24,6 +24,9 @@ InModuleScope -ModuleName AZDOPS {
             It 'Should have parameter Organization' {
                 (Get-Command InvokeAZDOPSRestMethod).Parameters.Keys | Should -Contain 'Organization'
             }
+            It 'Should have parameter ContentType' {
+                (Get-Command InvokeAZDOPSRestMethod).Parameters.Keys | Should -Contain 'ContentType'
+            }
             
             It 'Uri should be mandatory' {
                 (Get-Command InvokeAZDOPSRestMethod).Parameters['uri'].Attributes.Mandatory | Should -Be $true
@@ -64,6 +67,10 @@ InModuleScope -ModuleName AZDOPS {
             It 'Verify ContentType is set' {
                 $ResultPostObject = InvokeAZDOPSRestMethod @PostObject
                 $ResultPostObject.ContentType | Should -Be 'application/json'
+            }
+            It 'Verify ContentType when parameter is used' {
+                $ResultPostObject = InvokeAZDOPSRestMethod @PostObject -ContentType 'application/json-patch+json'
+                $ResultPostObject.ContentType | Should -Be 'application/json-patch+json'
             }
             It 'Verify Body is set' {
                 $ResultPostObject = InvokeAZDOPSRestMethod @PostObject
