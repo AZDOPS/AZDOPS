@@ -5,7 +5,7 @@ function Get-AZDOPSProject {
         [string]$Organization,
 
         [Parameter()]
-        [string]$ProjectName
+        [string]$Project
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
@@ -21,8 +21,8 @@ function Get-AZDOPSProject {
     $Method = 'GET'
     $ProjectInfo = (InvokeAZDOPSRestMethod -Uri $Uri -Method $Method -Organization $Organization).value
 
-    if (-not [string]::IsNullOrWhiteSpace($ProjectName)) {
-        $ProjectInfo = $ProjectInfo | Where-Object -Property Name -eq $ProjectName
+    if (-not [string]::IsNullOrWhiteSpace($Project)) {
+        $ProjectInfo = $ProjectInfo | Where-Object -Property Name -eq $Project
     }
 
     Write-Output $ProjectInfo

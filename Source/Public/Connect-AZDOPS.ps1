@@ -18,7 +18,7 @@ function Connect-AZDOPS {
     $Credential = [pscredential]::new($Username, (ConvertTo-SecureString -String $PersonalAccessToken -AsPlainText -Force))
     $ShouldBeDefault = $Default.IsPresent
 
-    if ($AZDOPSCredentials.Count -eq 0) {
+    if ($script:AZDOPSCredentials.Count -eq 0) {
         $ShouldBeDefault = $true
         $Script:AZDOPSCredentials = @{}
     }
