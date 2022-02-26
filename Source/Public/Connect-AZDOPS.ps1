@@ -1,4 +1,5 @@
 function Connect-AZDOPS {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
