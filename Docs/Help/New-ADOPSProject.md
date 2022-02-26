@@ -1,11 +1,11 @@
 ---
-external help file: AZDOPS-help.xml
-Module Name: AZDOPS
+external help file: ADOPS-help.xml
+Module Name: ADOPS
 online version:
 schema: 2.0.0
 ---
 
-# New-AZDOPSProject
+# New-ADOPSProject
 
 ## SYNOPSIS
 
@@ -14,7 +14,7 @@ Creates a new project in Azure DevOps.
 ## SYNTAX
 
 ```powershell
-New-AZDOPSProject [-Name] <String> [[-Description] <String>] [-Visibility] <String>
+New-ADOPSProject [-Name] <String> [[-Description] <String>] [-Visibility] <String>
  [[-SourceControlType] <String>] [[-ProcessTypeName] <String>] [[-Organization] <String>] [<CommonParameters>]
 ```
 
@@ -27,26 +27,26 @@ Creates a new project in Azure DevOps.
 ### Example 1
 
 ```powershell
-PS C:\> New-AZDOPSProject -Name 'azdopsproj' -Description 'an example project' -Visibility Public -Organization 'azdops'
+PS C:\> New-ADOPSProject -Name 'ADOPSproj' -Description 'an example project' -Visibility Public -Organization 'ADOPS'
 ```
 
-Creates a new, public project called "azdopsproj" with a description in the organization "azdops".
+Creates a new, public project called "ADOPSproj" with a description in the organization "ADOPS".
 
 ### Example 2
 
 ```powershell
-PS C:\> New-AZDOPSProject -Name 'azdopsproj' -Visibility Private -ProcessTypeName 'Agile'
+PS C:\> New-ADOPSProject -Name 'ADOPSproj' -Visibility Private -ProcessTypeName 'Agile'
 ```
 
-Creates a new, private project called "azdopsproj" with the process type "Agile" in the default organization.
+Creates a new, private project called "ADOPSproj" with the process type "Agile" in the default organization.
 
 ### Example 3
 
 ```powershell
-PS C:\> New-AZDOPSProject -Name 'azdopsproj' -Visibility Private -ProcessTypeName 'MyOwnProcess' -SourceControlType 'Tfvc'
+PS C:\> New-ADOPSProject -Name 'ADOPSproj' -Visibility Private -ProcessTypeName 'MyOwnProcess' -SourceControlType 'Tfvc'
 ```
 
-Creates a new, private project called "azdopsproj" with an existing, custom process type "MyOwnProcess" in the default organization, with the source control type set to Team Foundation Version Control.
+Creates a new, private project called "ADOPSproj" with an existing, custom process type "MyOwnProcess" in the default organization, with the source control type set to Team Foundation Version Control.
 
 ## PARAMETERS
 

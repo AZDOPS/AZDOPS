@@ -1,11 +1,11 @@
 ---
-external help file: AZDOPS-help.xml
-Module Name: AZDOPS
+external help file: ADOPS-help.xml
+Module Name: ADOPS
 online version:
 schema: 2.0.0
 ---
 
-# Get-AZDOPSProject
+# Get-ADOPSProject
 
 ## SYNOPSIS
 
@@ -14,7 +14,7 @@ Gets one or several projects in an Azure DevOps organization.
 ## SYNTAX
 
 ```powershell
-Get-AZDOPSProject [[-Organization] <String>] [[-Project] <String>] [<CommonParameters>]
+Get-ADOPSProject [[-Organization] <String>] [[-Project] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -26,18 +26,18 @@ Gets one or several projects in an Azure DevOps organization.
 ### Example 1
 
 ```powershell
-PS C:\> Get-AZDOPSProject -Organization 'azdops' -Project 'azdopsproj'
+PS C:\> Get-ADOPSProject -Organization 'ADOPS' -Project 'ADOPSproj'
 ```
 
-Gets the project called "azdopsproj" from the organization "azdops".
+Gets the project called "ADOPSproj" from the organization "ADOPS".
 
 ### Example 2
 
 ```powershell
-PS C:\> Get-AZDOPSProject -Project 'azdopsproj'
+PS C:\> Get-ADOPSProject -Project 'ADOPSproj'
 ```
 
-Gets the project called "azdopsproj" from the default organization.
+Gets the project called "ADOPSproj" from the default organization.
 
 ## PARAMETERS
 

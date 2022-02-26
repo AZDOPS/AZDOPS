@@ -1,4 +1,4 @@
-function GetAZDOPSHeader {
+function GetADOPSHeader {
     [CmdletBinding()]
     param (
         [string]$Organization
@@ -7,12 +7,12 @@ function GetAZDOPSHeader {
     $Res = @{}
     
     if (-not [string]::IsNullOrEmpty($Organization)) {
-        $HeaderObj = $Script:AZDOPSCredentials[$Organization]
+        $HeaderObj = $Script:ADOPSCredentials[$Organization]
         $res.Add('Organization', $Organization)
     }
     else {
-        $r = $script:AZDOPSCredentials.Keys | Where-Object {$script:AZDOPSCredentials[$_].Default -eq $true}
-        $HeaderObj = $script:AZDOPSCredentials[$r]
+        $r = $script:ADOPSCredentials.Keys | Where-Object {$script:ADOPSCredentials[$_].Default -eq $true}
+        $HeaderObj = $script:ADOPSCredentials[$r]
         $res.Add('Organization', $r)
     }
 

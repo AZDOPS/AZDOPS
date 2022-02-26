@@ -1,4 +1,4 @@
-function New-AZDOPSProject {
+function New-ADOPSProject {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
@@ -28,10 +28,10 @@ function New-AZDOPSProject {
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
-        $OrgInfo = GetAZDOPSHeader -Organization $Organization
+        $OrgInfo = GetADOPSHeader -Organization $Organization
     }
     else {
-        $OrgInfo = GetAZDOPSHeader
+        $OrgInfo = GetADOPSHeader
         $Organization = $OrgInfo['Organization']
     }
 
@@ -44,7 +44,7 @@ function New-AZDOPSProject {
         Organization = $Organization
     }
 
-    $ProcessTemplates = (InvokeAZDOPSRestMethod @InvokeSplat).value
+    $ProcessTemplates = (InvokeADOPSRestMethod @InvokeSplat).value
 
     if ([string]::IsNullOrWhiteSpace($ProcessTypeName)) {
         $ProcessTemplateTypeId = $ProcessTemplates | Where-Object isDefault -eq $true | Select-Object -ExpandProperty id
@@ -83,5 +83,5 @@ function New-AZDOPSProject {
         Organization = $Organization
     }
 
-    InvokeAZDOPSRestMethod @InvokeSplat
+    InvokeADOPSRestMethod @InvokeSplat
 }

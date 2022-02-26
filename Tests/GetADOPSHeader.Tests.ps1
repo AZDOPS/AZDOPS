@@ -1,9 +1,9 @@
-Remove-Module AZDOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\AZDOPS -Force
+Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
+Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
-InModuleScope -ModuleName AZDOPS {
+InModuleScope -ModuleName ADOPS {
     BeforeAll {
-        $Script:AZDOPSCredentials = @{
+        $Script:ADOPSCredentials = @{
             'org1' = @{
                 Credential = [pscredential]::new('DummyUser1',(ConvertTo-SecureString -String 'DummyPassword1' -AsPlainText -Force))
                 Default = $false
@@ -16,21 +16,21 @@ InModuleScope -ModuleName AZDOPS {
     }
 
     
-    Describe 'GetAZDOPSHeader' {
+    Describe 'GetADOPSHeader' {
         Context 'Given no input, should return the default connection' {
             It 'Should return credential value of default organization, org2' {
-                (GetAZDOPSHeader).Header.Authorization | Should -BeLike "basic*"
+                (GetADOPSHeader).Header.Authorization | Should -BeLike "basic*"
             }
             It 'Token should contain organization name' {
-                (GetAZDOPSHeader).Organization | Should -Be 'org2'
+                (GetADOPSHeader).Organization | Should -Be 'org2'
             }
         }
         Context 'Given an organization as input, should return that organization' {
             It 'Should return credential value of default organization, org1' {
-                (GetAZDOPSHeader -Organization 'org1').Header.Authorization | Should -BeLike "basic*"
+                (GetADOPSHeader -Organization 'org1').Header.Authorization | Should -BeLike "basic*"
             }
             It 'Token should contain organization name' {
-                (GetAZDOPSHeader -Organization 'org1').Organization | Should -Be 'org1'
+                (GetADOPSHeader -Organization 'org1').Organization | Should -Be 'org1'
             }
         }
     }
@@ -38,12 +38,12 @@ InModuleScope -ModuleName AZDOPS {
 
 Describe 'Verifying parameters' {
     BeforeAll {
-        Remove-Module AZDOPS -Force -ErrorAction SilentlyContinue
-        Import-Module $PSScriptRoot\..\Source\AZDOPS -Force
+        Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
+        Import-Module $PSScriptRoot\..\Source\ADOPS -Force
     }
     It 'Should have parameter Organization' {
-        InModuleScope -ModuleName 'AZDOPS' {
-            (Get-Command GetAZDOPSHeader).Parameters.Keys | Should -Contain 'Organization'
+        InModuleScope -ModuleName 'ADOPS' {
+            (Get-Command GetADOPSHeader).Parameters.Keys | Should -Contain 'Organization'
         }
     }
 }

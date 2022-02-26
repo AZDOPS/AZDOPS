@@ -1,8 +1,8 @@
-Remove-Module AZDOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\AZDOPS
+Remove-Module ADOPS -ErrorAction SilentlyContinue
+Import-Module $PSScriptRoot\..\Source\ADOPS
 
-InModuleScope -ModuleName AZDOPS {
-    Describe 'Get-AZDOPSPipeline tests' {
+InModuleScope -ModuleName ADOPS {
+    Describe 'Get-ADOPSPipeline tests' {
         Context 'Getting Pipeline' {
             BeforeAll {
 
@@ -10,7 +10,7 @@ InModuleScope -ModuleName AZDOPS {
                 $Project = 'DummyProject'
                 $PipeName = 'DummyPipe1'
                 
-                Mock -CommandName GetAZDOPSHeader -ModuleName AZDOPS -MockWith {
+                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
                     @{
                         Header       = @{
                             'Authorization' = 'Basic Base64=='
@@ -18,7 +18,7 @@ InModuleScope -ModuleName AZDOPS {
                         Organization = $OrganizationName
                     }
                 } -ParameterFilter { $OrganizationName -eq $OrganizationName }
-                Mock -CommandName GetAZDOPSHeader -ModuleName AZDOPS -MockWith {
+                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
                     @{
                         Header       = @{
                             'Authorization' = 'Basic Base64=='
@@ -27,7 +27,7 @@ InModuleScope -ModuleName AZDOPS {
                     }
                 }
 
-                Mock -CommandName InvokeAZDOPSRestMethod -ModuleName AZDOPS -MockWith {
+                Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                     return @'
                     {
                         "value": [
@@ -58,7 +58,7 @@ InModuleScope -ModuleName AZDOPS {
 '@ | ConvertFrom-Json
                 } -ParameterFilter { $Method -eq 'Get' -and $Uri -like '*/pipelines?*' }
 
-                Mock -CommandName InvokeAZDOPSRestMethod -ModuleName AZDOPS -MockWith {
+                Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                     return @'
                     {
                         "_links": {
@@ -80,42 +80,42 @@ InModuleScope -ModuleName AZDOPS {
                 } -ParameterFilter { $Method -eq 'Get' -and $Uri -like '*/pipelines/*' }
 
             }
-            It 'uses InvokeAZDOPSRestMethod two times' {
-                Get-AZDOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName
-                Should -Invoke 'InvokeAZDOPSRestMethod' -ModuleName 'AZDOPS' -Exactly -Times 2
+            It 'uses InvokeADOPSRestMethod two times' {
+                Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName
+                Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 2
             }
             It 'returns output after getting pipeline' {
-                Get-AZDOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName | Should -BeOfType [pscustomobject] -Because 'InvokeAZDOPSRestMethod should convert the json to pscustomobject'
+                Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName | Should -BeOfType [pscustomobject] -Because 'InvokeADOPSRestMethod should convert the json to pscustomobject'
             }
             It 'should not throw with mandatory parameters' {
-                { Get-AZDOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName } | Should -Not -Throw
+                { Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName } | Should -Not -Throw
             }
             It 'returns single output after getting pipeline' {
-                (Get-AZDOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName).count | Should -Be 1
+                (Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName).count | Should -Be 1
             }
             It 'returns multiple outputs after getting pipelines' {
-                (Get-AZDOPSPipeline -Organization $OrganizationName -Project $Project).count | Should -Be 2
+                (Get-ADOPSPipeline -Organization $OrganizationName -Project $Project).count | Should -Be 2
             }
         }
 
         Context 'Parameters' {
             It 'Should have parameter Organization' {
-                (Get-Command Get-AZDOPSPipeline).Parameters.Keys | Should -Contain 'Organization'
+                (Get-Command Get-ADOPSPipeline).Parameters.Keys | Should -Contain 'Organization'
             }
             It 'Organization should not be required' {
-                (Get-Command Get-AZDOPSPipeline).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
+                (Get-Command Get-ADOPSPipeline).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
             }
             It 'Should have parameter Project' {
-                (Get-Command Get-AZDOPSPipeline).Parameters.Keys | Should -Contain 'Project'
+                (Get-Command Get-ADOPSPipeline).Parameters.Keys | Should -Contain 'Project'
             }
             It 'Project should be required' {
-                (Get-Command Get-AZDOPSPipeline).Parameters['Project'].Attributes.Mandatory | Should -Be $true
+                (Get-Command Get-ADOPSPipeline).Parameters['Project'].Attributes.Mandatory | Should -Be $true
             }
             It 'Should have parameter Name' {
-                (Get-Command Get-AZDOPSPipeline).Parameters.Keys | Should -Contain 'Name'
+                (Get-Command Get-ADOPSPipeline).Parameters.Keys | Should -Contain 'Name'
             }
             It 'Name should not be required' {
-                (Get-Command Get-AZDOPSPipeline).Parameters['Name'].Attributes.Mandatory | Should -Be $false
+                (Get-Command Get-ADOPSPipeline).Parameters['Name'].Attributes.Mandatory | Should -Be $false
             }
         }
     }

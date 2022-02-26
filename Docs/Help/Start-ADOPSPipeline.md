@@ -1,11 +1,11 @@
 ---
-external help file: AZDOPS-help.xml
-Module Name: AZDOPS
+external help file: ADOPS-help.xml
+Module Name: ADOPS
 online version:
 schema: 2.0.0
 ---
 
-# Start-AZDOPSPipeline
+# Start-ADOPSPipeline
 
 ## SYNOPSIS
 Starts an Azure DevOps Pipeline.
@@ -13,7 +13,7 @@ Starts an Azure DevOps Pipeline.
 ## SYNTAX
 
 ```
-Start-AZDOPSPipeline [-Name] <String> [-Project] <String> [[-Organization] <String>] [[-Branch] <String>]
+Start-ADOPSPipeline [-Name] <String> [-Project] <String> [[-Organization] <String>] [[-Branch] <String>]
  [<CommonParameters>]
 ```
 
@@ -24,7 +24,7 @@ Starts an Azure DevOps Pipeline.
 
 ### Example 1
 ```powershell
-Start-AZDOPSPipeline -Name 'myPipeline' -Project 'myProject' -Organization 'AZDOPS' -Branch 'main'
+Start-ADOPSPipeline -Name 'myPipeline' -Project 'myProject' -Organization 'ADOPS' -Branch 'main'
 ```
 
 Starts the DevOps Pipeline 'myPipeline' in the project 'myProject'.

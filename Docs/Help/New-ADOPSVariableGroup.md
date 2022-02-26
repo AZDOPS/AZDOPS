@@ -1,11 +1,11 @@
 ---
-external help file: AZDOPS-help.xml
-Module Name: AZDOPS
+external help file: ADOPS-help.xml
+Module Name: ADOPS
 online version:
 schema: 2.0.0
 ---
 
-# New-AZDOPSVariableGroup
+# New-ADOPSVariableGroup
 
 ## SYNOPSIS
 
@@ -16,14 +16,14 @@ Creates a new variable group in an Azure DevOps project.
 ### VariableHashtable
 
 ```powershell
-New-AZDOPSVariableGroup [-Organization <String>] -Project <String> -VariableGroupName <String>
+New-ADOPSVariableGroup [-Organization <String>] -Project <String> -VariableGroupName <String>
  [-Description <String>] [-VariableHashtable <Hashtable[]>] [<CommonParameters>]
 ```
 
 ### VariableSingle
 
 ```powershell
-New-AZDOPSVariableGroup [-Organization <String>] -Project <String> -VariableGroupName <String>
+New-ADOPSVariableGroup [-Organization <String>] -Project <String> -VariableGroupName <String>
  [-VariableName <String>] [-VariableValue <String>] [-IsSecret] [-Description <String>] [<CommonParameters>]
 ```
 
@@ -38,7 +38,7 @@ The command only supports a single variable being created together with the vari
 ### Example 1
 
 ```powershell
-PS C:\> New-AZDOPSVariableGroup -Project 'azdopsproj' -Organization 'azdops' -VariableGroupName 'azdopsvars' -Description 'vargroup example' -VariableHashtable @{
+PS C:\> New-ADOPSVariableGroup -Project 'ADOPSproj' -Organization 'ADOPS' -VariableGroupName 'ADOPSvars' -Description 'vargroup example' -VariableHashtable @{
     'var-name' = @{
         'value' = 'var-value'
         'isSecret' = $false
@@ -46,15 +46,15 @@ PS C:\> New-AZDOPSVariableGroup -Project 'azdopsproj' -Organization 'azdops' -Va
 }
 ```
 
-Creates a new variable group called "azdopsvars" in the project "azdopsproj" in the organization "azdops" with a description, providing a hashtable to create a non-secret variable called "var-name" with the value "var-value".
+Creates a new variable group called "ADOPSvars" in the project "ADOPSproj" in the organization "ADOPS" with a description, providing a hashtable to create a non-secret variable called "var-name" with the value "var-value".
 
 ### Example 2
 
 ```powershell
-PS C:\> New-AZDOPSVariableGroup -Project 'azdopsproj' -VariableGroupName 'azdopsvars' -VariableName 'var-name' -VariableValue 'var-value'
+PS C:\> New-ADOPSVariableGroup -Project 'ADOPSproj' -VariableGroupName 'ADOPSvars' -VariableName 'var-name' -VariableValue 'var-value'
 ```
 
-Creates a new variable group called "azdopsvars" in the project "azdopsproj" in the default organization, creating a variable called "var-name" with the value "var-value".
+Creates a new variable group called "ADOPSvars" in the project "ADOPSproj" in the default organization, creating a variable called "var-name" with the value "var-value".
 
 ## PARAMETERS
 

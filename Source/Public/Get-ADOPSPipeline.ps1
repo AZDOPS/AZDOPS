@@ -1,4 +1,4 @@
-function Get-AZDOPSPipeline {
+function Get-ADOPSPipeline {
     [CmdletBinding()]
     param (
         [Parameter()]
@@ -15,10 +15,10 @@ function Get-AZDOPSPipeline {
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
-        $OrgInfo = GetAZDOPSHeader -Organization $Organization
+        $OrgInfo = GetADOPSHeader -Organization $Organization
     }
     else {
-        $OrgInfo = GetAZDOPSHeader
+        $OrgInfo = GetADOPSHeader
         $Organization = $OrgInfo['Organization']
     }
 
@@ -30,7 +30,7 @@ function Get-AZDOPSPipeline {
         Organization = $Organization
     }
 
-    $AllPipelines = (InvokeAZDOPSRestMethod @InvokeSplat).value
+    $AllPipelines = (InvokeADOPSRestMethod @InvokeSplat).value
 
     if ($PSBoundParameters.ContainsKey('Name')) {
         $Pipelines = $AllPipelines | Where-Object {$_.name -eq $Name}
@@ -51,7 +51,7 @@ function Get-AZDOPSPipeline {
             Organization = $Organization
         }
     
-        $result = InvokeAZDOPSRestMethod @InvokeSplat
+        $result = InvokeADOPSRestMethod @InvokeSplat
 
         $return += $result
     }

@@ -1,11 +1,11 @@
 ---
-external help file: AZDOPS-help.xml
-Module Name: AZDOPS
+external help file: ADOPS-help.xml
+Module Name: ADOPS
 online version:
 schema: 2.0.0
 ---
 
-# New-AZDOPSUserStory
+# New-ADOPSUserStory
 
 ## SYNOPSIS
 Create User Story in DevOps Project
@@ -13,7 +13,7 @@ Create User Story in DevOps Project
 ## SYNTAX
 
 ```
-New-AZDOPSUserStory -Organization <String> -ProjectName <String> -Title <String> [-Description <String>]
+New-ADOPSUserStory -Organization <String> -ProjectName <String> -Title <String> [-Description <String>]
  [-Tags <String>] [-Priority <String>] [<CommonParameters>]
 ```
 
@@ -24,14 +24,14 @@ Creates a User Story (Work Item) in an Azure DevOps Project.
 
 ### Example 1
 ```powershell
-New-AZDOPSUserStory -Organization 'myOrganization' -ProjectName 'myProject' -Title 'My user story' -Description 'User story description' -Tags 'AZDOPS' -Priority 1
+New-ADOPSUserStory -Organization 'myOrganization' -ProjectName 'myProject' -Title 'My user story' -Description 'User story description' -Tags 'ADOPS' -Priority 1
 ```
 
 Creates a user story with the title 'My user story' in the DevOps Project 'myProject'.
 
 ### Example 2
 ```powershell
-New-AZDOPSUserStory -Organization 'myOrganization' -ProjectName 'myProject' -Title 'My user story' -Description 'User story description' -Tags 'AZDOPS,Important' -Priority 1
+New-ADOPSUserStory -Organization 'myOrganization' -ProjectName 'myProject' -Title 'My user story' -Description 'User story description' -Tags 'ADOPS,Important' -Priority 1
 ```
 
 Creates a user story with multiple tags.

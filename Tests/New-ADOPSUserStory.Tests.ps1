@@ -1,54 +1,54 @@
 #Requires -Module @{ ModuleName = 'Pester'; ModuleVersion = '5.3.1' }
 
-Remove-Module AZDOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\AZDOPS
+Remove-Module ADOPS -ErrorAction SilentlyContinue
+Import-Module $PSScriptRoot\..\Source\ADOPS
 
-InModuleScope -ModuleName AZDOPS {
-    Describe 'New-AZDOPSUserStory tests' {
+InModuleScope -ModuleName ADOPS {
+    Describe 'New-ADOPSUserStory tests' {
 
         Context 'Parameters' {
             It 'Should have parameter Organization' {
-                (Get-Command New-AZDOPSUserStory).Parameters.Keys | Should -Contain 'Organization'
+                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Organization'
             }
             It 'Should have parameter ProjectName' {
-                (Get-Command New-AZDOPSUserStory).Parameters.Keys | Should -Contain 'ProjectName'
+                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'ProjectName'
             }
             It 'ProjectName should be required' {
-                (Get-Command New-AZDOPSUserStory).Parameters['ProjectName'].Attributes.Mandatory | Should -Be $true
+                (Get-Command New-ADOPSUserStory).Parameters['ProjectName'].Attributes.Mandatory | Should -Be $true
             }
             It 'Should have parameter Title' {
-                (Get-Command New-AZDOPSUserStory).Parameters.Keys | Should -Contain 'Title'
+                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Title'
             }
             It 'Title should be required' {
-                (Get-Command New-AZDOPSUserStory).Parameters['Title'].Attributes.Mandatory | Should -Be $true
+                (Get-Command New-ADOPSUserStory).Parameters['Title'].Attributes.Mandatory | Should -Be $true
             }
             It 'Should have parameter Description' {
-                (Get-Command New-AZDOPSUserStory).Parameters.Keys | Should -Contain 'Description'
+                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Description'
             }
             It 'Description should not be required' {
-                (Get-Command New-AZDOPSUserStory).Parameters['Description'].Attributes.Mandatory | Should -Be $false
+                (Get-Command New-ADOPSUserStory).Parameters['Description'].Attributes.Mandatory | Should -Be $false
             }
             It 'Should have parameter Tags' {
-                (Get-Command New-AZDOPSUserStory).Parameters.Keys | Should -Contain 'Tags'
+                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Tags'
             }
             It 'Tags should not be required' {
-                (Get-Command New-AZDOPSUserStory).Parameters['Tags'].Attributes.Mandatory | Should -Be $false
+                (Get-Command New-ADOPSUserStory).Parameters['Tags'].Attributes.Mandatory | Should -Be $false
             }
             It 'Should have parameter Priority' {
-                (Get-Command New-AZDOPSUserStory).Parameters.Keys | Should -Contain 'Priority'
+                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Priority'
             }
             It 'Priority should not be required' {
-                (Get-Command New-AZDOPSUserStory).Parameters['Priority'].Attributes.Mandatory | Should -Be $false
+                (Get-Command New-ADOPSUserStory).Parameters['Priority'].Attributes.Mandatory | Should -Be $false
             }
         }
     }
 }
 
-Describe 'New-AZDOPSUserStory' {
+Describe 'New-ADOPSUserStory' {
     Context 'Creating new user story' {
         BeforeAll {
-            InModuleScope -ModuleName AZDOPS {
-                Mock -CommandName GetAZDOPSHeader -ModuleName AZDOPS -MockWith {
+            InModuleScope -ModuleName ADOPS {
+                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
                     @{
                         Header       = @{
                             'Authorization' = 'Basic Base64=='
@@ -56,7 +56,7 @@ Describe 'New-AZDOPSUserStory' {
                         Organization = $OrganizationName
                     }
                 } -ParameterFilter { $OrganizationName -eq 'Organization' }
-                Mock -CommandName GetAZDOPSHeader -ModuleName AZDOPS -MockWith {
+                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
                     @{
                         Header       = @{
                             'Authorization' = 'Basic Base64=='
@@ -65,7 +65,7 @@ Describe 'New-AZDOPSUserStory' {
                     }
                 }
 
-                Mock -CommandName InvokeAZDOPSRestMethod -MockWith {
+                Mock -CommandName InvokeADOPSRestMethod -MockWith {
                     return $InvokeSplat
                 }
             }
@@ -80,22 +80,22 @@ Describe 'New-AZDOPSUserStory' {
             }
         }
         
-        It 'Should have called mock InvokeAZDOPSRestMethod' {
-            $TesRes = New-AZDOPSUserStory @TestRunSplat
-            Should -Invoke -CommandName 'InvokeAZDOPSRestMethod' -Exactly 1 -ModuleName AZDOPS
+        It 'Should have called mock InvokeADOPSRestMethod' {
+            $TesRes = New-ADOPSUserStory @TestRunSplat
+            Should -Invoke -CommandName 'InvokeADOPSRestMethod' -Exactly 1 -ModuleName ADOPS
         }
-        It 'Should have called mock GetAZDOPSHeader' {
-            $TesRes = New-AZDOPSUserStory @TestRunSplat
-            Should -Invoke -CommandName 'GetAZDOPSHeader' -Exactly 1 -ModuleName AZDOPS
+        It 'Should have called mock GetADOPSHeader' {
+            $TesRes = New-ADOPSUserStory @TestRunSplat
+            Should -Invoke -CommandName 'GetADOPSHeader' -Exactly 1 -ModuleName ADOPS
         }
         
         It 'Verifying post object, ContentType' {
-            $TesRes = New-AZDOPSUserStory @TestRunSplat
+            $TesRes = New-ADOPSUserStory @TestRunSplat
             $TesRes.ContentType | Should -Be "application/json-patch+json"
         }
         It 'Verifying post object, Body' {
             $DesiredReslt = '[{"op":"add","path":"/fields/System.Title","value":"USTitle"},{"op":"add","path":"/fields/System.Description","value":"USDescription"},{"op":"add","path":"/fields/System.Tags","value":"USTags"},{"op":"add","path":"/fields/Microsoft.VSTS.Common.Priority","value":"USPrio"}]'
-            $TesRes = (New-AZDOPSUserStory @TestRunSplat).Body | ConvertFrom-Json | ConvertTo-Json -Compress
+            $TesRes = (New-ADOPSUserStory @TestRunSplat).Body | ConvertFrom-Json | ConvertTo-Json -Compress
             $TesRes | Should -Be $DesiredReslt
         }
     }

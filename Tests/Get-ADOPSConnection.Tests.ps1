@@ -1,18 +1,18 @@
-Remove-Module AZDOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\AZDOPS
+Remove-Module ADOPS -ErrorAction SilentlyContinue
+Import-Module $PSScriptRoot\..\Source\ADOPS
 
 
-Describe 'Get-AZDOPSConnection' {
+Describe 'Get-ADOPSConnection' {
     Context 'Function tests' {
         It 'We have a function' {
-            Get-Command Get-AZDOPSConnection -Module AZDOPS | Should -Not -BeNullOrEmpty
+            Get-Command Get-ADOPSConnection -Module ADOPS | Should -Not -BeNullOrEmpty
         }
     }
 
     Context 'Verifying returned values' {
         BeforeAll {
-            InModuleScope -ModuleName AZDOPS -ScriptBlock {
-                $Script:AZDOPSCredentials = @{
+            InModuleScope -ModuleName ADOPS -ScriptBlock {
+                $Script:ADOPSCredentials = @{
                     'org1' = @{
                         Credential = [pscredential]::new('DummyUser1',(ConvertTo-SecureString -String 'DummyPassword1' -AsPlainText -Force))
                         Default = $false
@@ -26,11 +26,11 @@ Describe 'Get-AZDOPSConnection' {
         }
         
         It 'Given we have two connections, both connections should be returned' {
-            (Get-AZDOPSConnection).Count | Should -Be 2
+            (Get-ADOPSConnection).Count | Should -Be 2
         }
 
         It 'Verifying the first returned organization matches the set variable' {
-            (Get-AZDOPSConnection)['org1'].Credential.Username | Should -Be 'DummyUser1'
+            (Get-ADOPSConnection)['org1'].Credential.Username | Should -Be 'DummyUser1'
         }
     }
 }

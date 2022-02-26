@@ -1,11 +1,11 @@
 ---
-external help file: AZDOPS-help.xml
-Module Name: AZDOPS
+external help file: ADOPS-help.xml
+Module Name: ADOPS
 online version:
 schema: 2.0.0
 ---
 
-# Remove-AZDOPSVariableGroup
+# Remove-ADOPSVariableGroup
 
 ## SYNOPSIS
 
@@ -14,7 +14,7 @@ Removes a variable group from Azure DevOps.
 ## SYNTAX
 
 ```powershell
-Remove-AZDOPSVariableGroup [[-Organization] <String>] [-Project] <String> [-VariableGroupName] <String>
+Remove-ADOPSVariableGroup [[-Organization] <String>] [-Project] <String> [-VariableGroupName] <String>
  [<CommonParameters>]
 ```
 
@@ -27,18 +27,18 @@ Removes a variable group from Azure DevOps.
 ### Example 1
 
 ```powershell
-Remove-AZDOPSVariableGroup -Organization 'azdops' -Project 'azdopsproj' -VariableGroupName 'ExampleVarGroup'
+Remove-ADOPSVariableGroup -Organization 'ADOPS' -Project 'ADOPSproj' -VariableGroupName 'ExampleVarGroup'
 ```
 
-Removes the variable group called "ExampleVarGroup" from the project "azdopsproj" in the organization "azdops".
+Removes the variable group called "ExampleVarGroup" from the project "ADOPSproj" in the organization "ADOPS".
 
 ### Example 2
 
 ```powershell
-Remove-AZDOPSVariableGroup -Project 'azdopsproj' -VariableGroupName 'ExampleVarGroup'
+Remove-ADOPSVariableGroup -Project 'ADOPSproj' -VariableGroupName 'ExampleVarGroup'
 ```
 
-Removes the variable group called "ExampleVarGroup" from the project "azdopsproj" in the default organization.
+Removes the variable group called "ExampleVarGroup" from the project "ADOPSproj" in the default organization.
 
 ## PARAMETERS
 

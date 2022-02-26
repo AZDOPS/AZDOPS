@@ -1,4 +1,4 @@
-function New-AZDOPSVariableGroup {
+function New-ADOPSVariableGroup {
     [CmdletBinding()]
     param (
         [Parameter(ParameterSetName = 'VariableSingle')]
@@ -31,14 +31,14 @@ function New-AZDOPSVariableGroup {
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
-        $Org = GetAZDOPSHeader -Organization $Organization
+        $Org = GetADOPSHeader -Organization $Organization
     }
     else {
-        $Org = GetAZDOPSHeader
+        $Org = GetADOPSHeader
         $Organization = $Org['Organization']
     }
 
-    $ProjectInfo = Get-AZDOPSProject -Organization $Organization -Project $Project
+    $ProjectInfo = Get-ADOPSProject -Organization $Organization -Project $Project
 
     $URI = "https://dev.azure.com/${Organization}/_apis/distributedtask/variablegroups?api-version=7.1-preview.2"
     $method = 'POST'
@@ -79,5 +79,5 @@ function New-AZDOPSVariableGroup {
         } | ConvertTo-Json -Depth 10
     }
 
-    InvokeAZDOPSRestMethod -Uri $Uri -Method $Method -Body $Body -Organization $Organization
+    InvokeADOPSRestMethod -Uri $Uri -Method $Method -Body $Body -Organization $Organization
 }

@@ -1,5 +1,5 @@
-function Get-AZDOPSConnection {
+function Get-ADOPSConnection {
     param ()
     
-    $Script:AZDOPSCredentials
+    $Script:ADOPSCredentials
 }

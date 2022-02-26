@@ -1,4 +1,4 @@
-function Start-AZDOPSPipeline {
+function Start-ADOPSPipeline {
     param (
         [Parameter(Mandatory)]
         [string]$Name,
@@ -14,14 +14,14 @@ function Start-AZDOPSPipeline {
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
-        $Org = GetAZDOPSHeader -Organization $Organization
+        $Org = GetADOPSHeader -Organization $Organization
     }
     else {
-        $Org = GetAZDOPSHeader
+        $Org = GetADOPSHeader
     }
 
     $AllPipelinesURI = "https://dev.azure.com/$($Org['Organization'])/$Project/_apis/pipelines?api-version=7.1-preview.1"
-    $AllPipelines = InvokeAZDOPSRestMethod -Method Get -Uri $AllPipelinesURI -Organization $Org['Organization']
+    $AllPipelines = InvokeADOPSRestMethod -Method Get -Uri $AllPipelinesURI -Organization $Org['Organization']
     $PipelineID = ($AllPipelines.value | Where-Object -Property Name -EQ $Name).id
 
     if ([string]::IsNullOrEmpty($PipelineID)) {
@@ -38,5 +38,5 @@ function Start-AZDOPSPipeline {
         Organization = $Org['Organization']
     }
 
-    InvokeAZDOPSRestMethod @InvokeSplat
+    InvokeADOPSRestMethod @InvokeSplat
 }

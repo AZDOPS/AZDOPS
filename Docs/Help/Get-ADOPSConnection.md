@@ -1,11 +1,11 @@
 ---
-external help file: AZDOPS-help.xml
-Module Name: AZDOPS
+external help file: ADOPS-help.xml
+Module Name: ADOPS
 online version:
 schema: 2.0.0
 ---
 
-# Get-AZDOPSConnection
+# Get-ADOPSConnection
 
 ## SYNOPSIS
 Gets all established connections to Azure DevOps.
@@ -13,7 +13,7 @@ Gets all established connections to Azure DevOps.
 ## SYNTAX
 
 ```
-Get-AZDOPSConnection
+Get-ADOPSConnection
 ```
 
 ## DESCRIPTION
@@ -23,7 +23,7 @@ This commands lists all established connections to Azure DevOps.
 
 ### Example 1
 ```powershell
-PS C:\> Get-AZDOPSConnection
+PS C:\> Get-ADOPSConnection
 
 Name                           Value
 ----                           -----

@@ -1,11 +1,11 @@
 #Requires -Module @{ ModuleName = 'Pester'; ModuleVersion = '5.3.1' }
 
-Remove-Module AZDOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\AZDOPS -Force
+Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
+Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
 BeforeAll {
-    InModuleScope -ModuleName 'AZDOPS' {
-        Remove-Variable AZDOPSCredentials -Scope 'Script' -ErrorAction SilentlyContinue
+    InModuleScope -ModuleName 'ADOPS' {
+        Remove-Variable ADOPSCredentials -Scope 'Script' -ErrorAction SilentlyContinue
     }
 }
 
@@ -16,61 +16,61 @@ Describe 'Creating connection variable' {
             $DummyPassword = 'DummyPassword'
             $DummyOrg = 'DummyOrg'
 
-            Mock -CommandName InvokeAZDOPSRestMethod -MockWith {} -ModuleName AZDOPS
-            Connect-AZDOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg
+            Mock -CommandName InvokeADOPSRestMethod -MockWith {} -ModuleName ADOPS
+            Connect-ADOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg
         }
 
-        It 'Should create a AZDOPSCredentials variable' {
-            InModuleScope -ModuleName 'AZDOPS' {
-                Get-Variable -Name 'AZDOPSCredentials' -Scope 'Script' | Should -Not -BeNullOrEmpty
+        It 'Should create a ADOPSCredentials variable' {
+            InModuleScope -ModuleName 'ADOPS' {
+                Get-Variable -Name 'ADOPSCredentials' -Scope 'Script' | Should -Not -BeNullOrEmpty
             }
         }
-        It 'AZDOPSCredentials variable Should be a hashtable' {
-            InModuleScope -ModuleName 'AZDOPS' {
-                $script:AZDOPSCredentials.GetType().Name | Should -Be 'hashtable'
+        It 'ADOPSCredentials variable Should be a hashtable' {
+            InModuleScope -ModuleName 'ADOPS' {
+                $script:ADOPSCredentials.GetType().Name | Should -Be 'hashtable'
             }
         }
         It 'Variable should contain one conenction' {
-            InModuleScope -ModuleName 'AZDOPS' {
-                $script:AZDOPSCredentials.Keys.Count | Should -Be 1
+            InModuleScope -ModuleName 'ADOPS' {
+                $script:ADOPSCredentials.Keys.Count | Should -Be 1
             }
         }
         It 'Should have set one default conenction' {
-            InModuleScope -ModuleName 'AZDOPS' {
-                $r = $script:AZDOPSCredentials.Keys | Where-Object {$AZDOPSCredentials[$_].Default -eq $true}
+            InModuleScope -ModuleName 'ADOPS' {
+                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
                 $r.Count | Should -Be 1 -Because 'If this is the first connection we create we should always set it as default'
             }
         }
 
         It 'Variable should be encrypted (PSCredential)' {
-            InModuleScope -ModuleName 'AZDOPS' {
-                $r = $script:AZDOPSCredentials.Keys | Where-Object {$AZDOPSCredentials[$_].Default -eq $true}
-                $res = $AZDOPSCredentials[$r]
+            InModuleScope -ModuleName 'ADOPS' {
+                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $res = $ADOPSCredentials[$r]
                 $res.Credential| Should -BeOfType [pscredential]
             }
         }
         It 'Username should be set' {
-            InModuleScope -ModuleName 'AZDOPS' -Parameters @{'DummyUser' = $DummyUser} {
-                $r = $script:AZDOPSCredentials.Keys | Where-Object {$AZDOPSCredentials[$_].Default -eq $true}
-                $res = $AZDOPSCredentials[$r]
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyUser' = $DummyUser} {
+                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $res = $ADOPSCredentials[$r]
                 $res.Credential.UserName | Should -Be $DummyUser
             }
         }
         It 'Password should be set' {
-            InModuleScope -ModuleName 'AZDOPS' -Parameters @{'DummyPassword' = $DummyPassword} {
-                $r = $script:AZDOPSCredentials.Keys | Where-Object {$AZDOPSCredentials[$_].Default -eq $true}
-                $res = $AZDOPSCredentials[$r]
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyPassword' = $DummyPassword} {
+                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $res = $ADOPSCredentials[$r]
                 $res.Credential.GetNetworkCredential().Password| Should -Be $DummyPassword
             }
         }
         It 'AzDoOrganization should be set as key' {
-            InModuleScope -ModuleName 'AZDOPS' -Parameters @{'DummyOrg' = $DummyOrg} {
-                $r = $script:AZDOPSCredentials.Keys | Where-Object {$AZDOPSCredentials[$_].Default -eq $true}
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyOrg' = $DummyOrg} {
+                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
                 $r | Should -Be $DummyOrg
             }
         }
         It 'Should have called mock' {
-            Should -Invoke InvokeAZDOPSRestMethod -Exactly 1 -Scope Context -ModuleName AZDOPS
+            Should -Invoke InvokeADOPSRestMethod -Exactly 1 -Scope Context -ModuleName ADOPS
         }
     }
 
@@ -80,23 +80,23 @@ Describe 'Creating connection variable' {
             $DummyPassword = 'DummyPassword2'
             $DummyOrg = 'DummyOrg2'
 
-            Mock -CommandName InvokeAZDOPSRestMethod -MockWith {} -ModuleName AZDOPS
-            Connect-AZDOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg
+            Mock -CommandName InvokeADOPSRestMethod -MockWith {} -ModuleName ADOPS
+            Connect-ADOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg
         }
 
         It 'Variable should contain two conenctions' {
-            InModuleScope -ModuleName 'AZDOPS' {
-                $script:AZDOPSCredentials.Keys.Count | Should -Be 2
+            InModuleScope -ModuleName 'ADOPS' {
+                $script:ADOPSCredentials.Keys.Count | Should -Be 2
             }
         }
         It 'Should add this connection to connection list' {
-            InModuleScope -ModuleName 'AZDOPS' -Parameters @{'DummyOrg' = $DummyOrg} {
-                $script:AZDOPSCredentials.Keys | Should -Contain $DummyOrg
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyOrg' = $DummyOrg} {
+                $script:ADOPSCredentials.Keys | Should -Contain $DummyOrg
             }
         }
         It 'Should have only have one default conenction' {
-            InModuleScope -ModuleName 'AZDOPS' {
-                $r = $script:AZDOPSCredentials.Keys | Where-Object {$AZDOPSCredentials[$_].Default -eq $true}
+            InModuleScope -ModuleName 'ADOPS' {
+                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
                 $r.Count | Should -Be 1
             }
         }
@@ -108,31 +108,31 @@ Describe 'Creating connection variable' {
             $DummyPassword = 'DummyPassword3'
             $DummyOrg = 'DummyOrg3'
 
-            Mock -CommandName InvokeAZDOPSRestMethod -MockWith {} -ModuleName AZDOPS
-            Connect-AZDOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg -Default
+            Mock -CommandName InvokeADOPSRestMethod -MockWith {} -ModuleName ADOPS
+            Connect-ADOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg -Default
         }
 
         It 'Variable should contain three conenctions' {
-            InModuleScope -ModuleName 'AZDOPS' {
-                $script:AZDOPSCredentials.Keys.Count | Should -Be 3
+            InModuleScope -ModuleName 'ADOPS' {
+                $script:ADOPSCredentials.Keys.Count | Should -Be 3
             }
         }
         It 'Should add this connection to connection list' {
-            InModuleScope -ModuleName 'AZDOPS' -Parameters @{'DummyOrg' = $DummyOrg} {
-                $script:AZDOPSCredentials.Keys | Should -Contain $DummyOrg
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyOrg' = $DummyOrg} {
+                $script:ADOPSCredentials.Keys | Should -Contain $DummyOrg
             
             }
         }
         It 'Should have only have one default conenction' {
-            InModuleScope -ModuleName 'AZDOPS' {
-                $r = $script:AZDOPSCredentials.Keys | Where-Object {$AZDOPSCredentials[$_].Default -eq $true}
+            InModuleScope -ModuleName 'ADOPS' {
+                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
                 $r.Count | Should -Be 1
             }
         }
         It "Username of default connection should be set to $DummyUser" {
-            InModuleScope -ModuleName 'AZDOPS' -Parameters @{'DummyUser' = $DummyUser} {
-                $r = $script:AZDOPSCredentials.Keys | Where-Object {$AZDOPSCredentials[$_].Default -eq $true}
-                $res = $AZDOPSCredentials[$r]
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyUser' = $DummyUser} {
+                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $res = $ADOPSCredentials[$r]
                 $res.Credential.UserName | Should -Be $DummyUser
             }
         }
@@ -142,35 +142,35 @@ Describe 'Creating connection variable' {
 
 Describe 'Verifying parameters' {
     BeforeAll {
-        Remove-Module AZDOPS -Force -ErrorAction SilentlyContinue
-        Import-Module $PSScriptRoot\..\Source\AZDOPS -Force
+        Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
+        Import-Module $PSScriptRoot\..\Source\ADOPS -Force
     }
     It 'Should have parameter Username' {
-        (Get-Command Connect-AZDOPS).Parameters.Keys | Should -Contain 'Username'
+        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'Username'
     }
     It 'Username should be required' {
-        (Get-Command Connect-AZDOPS).Parameters['Username'].Attributes.Mandatory | Should -Be $true
+        (Get-Command Connect-ADOPS).Parameters['Username'].Attributes.Mandatory | Should -Be $true
     }
     
     It 'Should have parameter PersonalAccessToken' {
-        (Get-Command Connect-AZDOPS).Parameters.Keys | Should -Contain 'PersonalAccessToken'
+        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'PersonalAccessToken'
     }
     It 'PersonalAccessToken should be required' {
-        (Get-Command Connect-AZDOPS).Parameters['PersonalAccessToken'].Attributes.Mandatory | Should -Be $true
+        (Get-Command Connect-ADOPS).Parameters['PersonalAccessToken'].Attributes.Mandatory | Should -Be $true
     }
     
     It 'Should have parameter Organization' {
-        (Get-Command Connect-AZDOPS).Parameters.Keys | Should -Contain 'Organization'
+        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'Organization'
     }
     It 'Organization should be required' {
-        (Get-Command Connect-AZDOPS).Parameters['Organization'].Attributes.Mandatory | Should -Be $true
+        (Get-Command Connect-ADOPS).Parameters['Organization'].Attributes.Mandatory | Should -Be $true
     }
     
     It 'Should have parameter Default' {
-        (Get-Command Connect-AZDOPS).Parameters.Keys | Should -Contain 'Default'
+        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'Default'
     }
     It 'Default should be switch' {
-        (Get-Command Connect-AZDOPS).Parameters['Default'].SwitchParameter | Should -Be $true
+        (Get-Command Connect-ADOPS).Parameters['Default'].SwitchParameter | Should -Be $true
     }
 }
 
@@ -179,13 +179,13 @@ Describe 'Bugfixes' {
         it 'If a console variable is set it should not throw error' {
             # One of the variable checks lacked the script: prefix
             # If you had the same variable name set in console it errored out with "Cannot index into a null array."
-            Mock -CommandName InvokeAZDOPSRestMethod -MockWith {} -ModuleName AZDOPS
-            $global:AZDOPSCredentials = @{ MyOrg = 'Variable' }  
+            Mock -CommandName InvokeADOPSRestMethod -MockWith {} -ModuleName ADOPS
+            $global:ADOPSCredentials = @{ MyOrg = 'Variable' }  
             
-            {Connect-AZDOPS -Username 'DummyUser1' -PersonalAccessToken 'MyPatGoesHere' -Organization 'MyOrg'} | Should -Not -Throw
+            {Connect-ADOPS -Username 'DummyUser1' -PersonalAccessToken 'MyPatGoesHere' -Organization 'MyOrg'} | Should -Not -Throw
         }
         AfterAll {  
-            Remove-Variable -Name AZDOPSCredentials -Scope Global
+            Remove-Variable -Name ADOPSCredentials -Scope Global
         }
     }
 }

@@ -1,11 +1,11 @@
 ---
-external help file: AZDOPS-help.xml
-Module Name: AZDOPS
+external help file: ADOPS-help.xml
+Module Name: ADOPS
 online version:
 schema: 2.0.0
 ---
 
-# Get-AZDOPSRepository
+# Get-ADOPSRepository
 
 ## SYNOPSIS
 
@@ -14,7 +14,7 @@ Gets one or more repositories from a project in Azure DevOps.
 ## SYNTAX
 
 ```powershell
-Get-AZDOPSRepository [[-Organization] <String>] [-Project] <String> [[-Repository] <String>]
+Get-ADOPSRepository [[-Organization] <String>] [-Project] <String> [[-Repository] <String>]
  [<CommonParameters>]
 ```
 
@@ -27,18 +27,18 @@ Gets one or more repositories from a project in Azure DevOps.
 ### Example 1
 
 ```powershell
-PS C:\> Get-AZDOPSRepository -Organization 'azdops' -Project 'azdopsproj'
+PS C:\> Get-ADOPSRepository -Organization 'ADOPS' -Project 'ADOPSproj'
 ```
 
-Gets all repositories from the project "azdopsproj" in the organization "azdops".
+Gets all repositories from the project "ADOPSproj" in the organization "ADOPS".
 
 ### Example 2
 
 ```powershell
-PS C:\> Get-AZDOPSRepository -Project 'azdopsproj' -Repository 'azdopsrepo'
+PS C:\> Get-ADOPSRepository -Project 'ADOPSproj' -Repository 'ADOPSrepo'
 ```
 
-Gets the repository "azdopsrepo" from the project "azdopsproj", from the organization set as default amongst the established Azure DevOps connections.
+Gets the repository "ADOPSrepo" from the project "ADOPSproj", from the organization set as default amongst the established Azure DevOps connections.
 
 ## PARAMETERS
 

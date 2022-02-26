@@ -1,11 +1,11 @@
 ---
-external help file: AZDOPS-help.xml
-Module Name: AZDOPS
+external help file: ADOPS-help.xml
+Module Name: ADOPS
 online version:
 schema: 2.0.0
 ---
 
-# Get-AZDOPSPipeline
+# Get-ADOPSPipeline
 
 ## SYNOPSIS
 Get a specific pipeline or all pipelines in a specific DevOps project.
@@ -13,7 +13,7 @@ Get a specific pipeline or all pipelines in a specific DevOps project.
 ## SYNTAX
 
 ```
-Get-AZDOPSPipeline [[-Name] <String>] [-Project] <String> [[-Organization] <String>] [<CommonParameters>]
+Get-ADOPSPipeline [[-Name] <String>] [-Project] <String> [[-Organization] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -23,7 +23,7 @@ Lists a specific Pipeline or all Pipelines in a Specific Project.
 
 ### Example 1
 ```powershell
-PS C:\> Get-AZDOPSPipeline -Organization $OrganizationName -Project $Project -Name $Name
+PS C:\> Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $Name
 
 ```
 
@@ -31,7 +31,7 @@ Get pipeline with name $Name from $Project.
 
 ### Example 2
 ```powershell
-PS C:\> Get-AZDOPSPipeline -Organization $OrganizationName -Project $Project
+PS C:\> Get-ADOPSPipeline -Organization $OrganizationName -Project $Project
 
 ```
 
@@ -39,7 +39,7 @@ List all Pipelines in $Project
 
 ### Example 3
 ```powershell
-PS C:\> Get-AZDOPSPipeline -Project $Project
+PS C:\> Get-ADOPSPipeline -Project $Project
 
 ```
 

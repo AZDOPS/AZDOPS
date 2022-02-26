@@ -1,6 +1,6 @@
 #Requires -Modules 'InvokeBuild', 'PlatyPS', 'Pester'
 
-[string]$ModuleName = 'AZDOPS'
+[string]$ModuleName = 'ADOPS'
 [string]$ModuleSourcePath = "$PSScriptRoot\Source"
 [string]$HelpSourcePath = "$PSScriptRoot\Docs\Help"
 

@@ -1,11 +1,11 @@
 ---
-external help file: AZDOPS-help.xml
-Module Name: AZDOPS
+external help file: ADOPS-help.xml
+Module Name: ADOPS
 online version:
 schema: 2.0.0
 ---
 
-# Disconnect-AZDOPS
+# Disconnect-ADOPS
 
 ## SYNOPSIS
 
@@ -14,7 +14,7 @@ Remove an established connection to Azure DevOps.
 ## SYNTAX
 
 ```powershell
-Disconnect-AZDOPS [[-Organization] <String>] [<CommonParameters>]
+Disconnect-ADOPS [[-Organization] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -26,15 +26,15 @@ Remove an established connection to Azure DevOps.
 ### Example 1
 
 ```powershell
-PS C:\> Disconnect-AZDOPS -Organization 'azdops'
+PS C:\> Disconnect-ADOPS -Organization 'ADOPS'
 ```
 
-Removes the established connection to the organization "azdops".
+Removes the established connection to the organization "ADOPS".
 
 ### Example 2
 
 ```powershell
-PS C:\> Disconnect-AZDOPS
+PS C:\> Disconnect-ADOPS
 ```
 
 Removes the established connection without specifying organization, if there is only one.

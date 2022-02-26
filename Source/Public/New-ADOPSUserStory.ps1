@@ -1,4 +1,4 @@
-function New-AZDOPSUserStory {
+function New-ADOPSUserStory {
   [CmdletBinding()]
   param (
 
@@ -26,10 +26,10 @@ function New-AZDOPSUserStory {
   )
 
   if (-not [string]::IsNullOrEmpty($Organization)) {
-    $Org = GetAZDOPSHeader -Organization $Organization
+    $Org = GetADOPSHeader -Organization $Organization
   }
   else {
-    $Org = GetAZDOPSHeader
+    $Org = GetADOPSHeader
     $Organization = $Org['Organization']
   }
 
@@ -69,5 +69,5 @@ function New-AZDOPSUserStory {
     Organization  = $Organization
   }
 
-  InvokeAZDOPSRestMethod @InvokeSplat
+  InvokeADOPSRestMethod @InvokeSplat
 }

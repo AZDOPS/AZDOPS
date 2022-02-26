@@ -1,4 +1,4 @@
-# AZDOPS
+# ADOPS
 
 This repository contains functions for creating and maintaining Azure DevOps environments with support for multiple environment connections.
 

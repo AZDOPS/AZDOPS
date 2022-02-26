@@ -1,4 +1,4 @@
-function Get-AZDOPSRepository {
+function Get-ADOPSRepository {
     [CmdletBinding()]
     param(
         [Parameter()]
@@ -11,10 +11,10 @@ function Get-AZDOPSRepository {
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
-        $OrgInfo = GetAZDOPSHeader -Organization $Organization
+        $OrgInfo = GetADOPSHeader -Organization $Organization
     }
     else {
-        $OrgInfo = GetAZDOPSHeader
+        $OrgInfo = GetADOPSHeader
         $Organization = $OrgInfo['Organization']
     }
 
@@ -25,7 +25,7 @@ function Get-AZDOPSRepository {
         $Uri = "https://dev.azure.com/$Organization/$Project/_apis/git/repositories?api-version=7.1-preview.1"
     }
     
-    $result = InvokeAZDOPSRestMethod -Uri $Uri -Method Get -Organization $Organization
+    $result = InvokeADOPSRestMethod -Uri $Uri -Method Get -Organization $Organization
 
     if ($result.psobject.properties.name -contains 'value') {
         Write-Output -InputObject $result.value

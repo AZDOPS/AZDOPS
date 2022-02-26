@@ -1,11 +1,11 @@
 ---
-external help file: AZDOPS-help.xml
-Module Name: AZDOPS
+external help file: ADOPS-help.xml
+Module Name: ADOPS
 online version:
 schema: 2.0.0
 ---
 
-# Connect-AZDOPS
+# Connect-ADOPS
 
 ## SYNOPSIS
 
@@ -14,7 +14,7 @@ Establish a connection to Azure DevOps using a PAT.
 ## SYNTAX
 
 ```powershell
-Connect-AZDOPS [-Username] <String> [-PersonalAccessToken] <String> [-Organization] <String> [-Default]
+Connect-ADOPS [-Username] <String> [-PersonalAccessToken] <String> [-Organization] <String> [-Default]
  [<CommonParameters>]
 ```
 
@@ -29,7 +29,7 @@ Can replace an existing connection by specifying the same organization again.
 ### Example 1
 
 ```powershell
-Connect-AZDOPS -Username 'john.doe@AZDOPS.com' -PersonalAccessToken '<myPersonalAccessToken>' -Organization 'AZDOPS'
+Connect-ADOPS -Username 'john.doe@ADOPS.com' -PersonalAccessToken '<myPersonalAccessToken>' -Organization 'ADOPS'
 ```
 
 Connect to Azure DevOps organization using a personal access token.
@@ -37,7 +37,7 @@ Connect to Azure DevOps organization using a personal access token.
 ### Example 2
 
 ```powershell
-Connect-AZDOPS -Username 'john.doe@AZDOPS.com' -PersonalAccessToken '<myPersonalAccessToken>' -Organization 'AZDOPS' -Default
+Connect-ADOPS -Username 'john.doe@ADOPS.com' -PersonalAccessToken '<myPersonalAccessToken>' -Organization 'ADOPS' -Default
 ```
 
 Connect to Azure DevOps organization using a personal access token and setting it as default organization.
