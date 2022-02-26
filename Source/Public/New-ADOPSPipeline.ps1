@@ -1,4 +1,4 @@
-function New-AZDOPSPipeline {
+function New-ADOPSPipeline {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
