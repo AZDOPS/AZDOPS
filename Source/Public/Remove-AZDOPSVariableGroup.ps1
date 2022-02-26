@@ -5,7 +5,7 @@ function Remove-AZDOPSVariableGroup {
         [string]$Organization,
 
         [Parameter(Mandatory)]
-        [string]$ProjectName,
+        [string]$Project,
 
         [Parameter(Mandatory)]
         [string]$VariableGroupName
@@ -19,7 +19,7 @@ function Remove-AZDOPSVariableGroup {
         $Organization = $Org['Organization']
     }
 
-    $Uri = "https://dev.azure.com/$Organization/$ProjectName/_apis/distributedtask/variablegroups?api-version=7.1-preview.2"
+    $Uri = "https://dev.azure.com/$Organization/$Project/_apis/distributedtask/variablegroups?api-version=7.1-preview.2"
     $VariableGroups = (InvokeAZDOPSRestMethod -Uri $Uri -Method 'Get' -Organization $Organization).value
 
     $GroupToRemove = $VariableGroups | Where-Object name -eq $VariableGroupName
@@ -27,7 +27,7 @@ function Remove-AZDOPSVariableGroup {
         throw "Could not find group $VariableGroupName! Groups found: $($VariableGroups.name -join ', ')."
     }
     
-    $ProjectId = (Get-AZDOPSProject -Organization $Organization -ProjectName $ProjectName).id
+    $ProjectId = (Get-AZDOPSProject -Organization $Organization -Project $Project).id
 
     $URI = "https://dev.azure.com/$Organization/_apis/distributedtask/variablegroups/$($GroupToRemove.id)?projectIds=$ProjectId&api-version=7.1-preview.2"
     $null = InvokeAZDOPSRestMethod -Uri $Uri -Method 'Delete' -Organization $Organization

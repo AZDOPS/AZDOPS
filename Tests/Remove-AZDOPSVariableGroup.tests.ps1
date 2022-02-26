@@ -63,20 +63,20 @@ InModuleScope -ModuleName AZDOPS {
                 }
 
                 $OrganizationName = 'DummyOrg'
-                $ProjectName = 'DummyProject'
+                $Project = 'DummyProject'
                 $VariableGroupName = 'DummyGroup'
             }
 
             It 'uses InvokeAZDOPSRestMethod two times' {
-                Remove-AZDOPSVariableGroup -ProjectName $ProjectName -VariableGroupName $VariableGroupName
+                Remove-AZDOPSVariableGroup -Project $Project -VariableGroupName $VariableGroupName
 
                 Should -Invoke 'InvokeAZDOPSRestMethod' -ModuleName 'AZDOPS' -Exactly -Times 2
             }
             It 'returns empty output after removing variable group' {
-                Remove-AZDOPSVariableGroup -ProjectName $ProjectName -VariableGroupName $VariableGroupName | Should -BeNullOrEmpty
+                Remove-AZDOPSVariableGroup -Project $Project -VariableGroupName $VariableGroupName | Should -BeNullOrEmpty
             }
             It 'should not throw with mandatory parameters' {
-                { Remove-AZDOPSVariableGroup -ProjectName $ProjectName -VariableGroupName $VariableGroupName } | Should -Not -Throw
+                { Remove-AZDOPSVariableGroup -Project $Project -VariableGroupName $VariableGroupName } | Should -Not -Throw
             }
         }
 
@@ -87,11 +87,11 @@ InModuleScope -ModuleName AZDOPS {
             It 'Organization should not be required' {
                 (Get-Command Remove-AZDOPSVariableGroup).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
             }
-            It 'Should have parameter ProjectName' {
-                (Get-Command Remove-AZDOPSVariableGroup).Parameters.Keys | Should -Contain 'ProjectName'
+            It 'Should have parameter Project' {
+                (Get-Command Remove-AZDOPSVariableGroup).Parameters.Keys | Should -Contain 'Project'
             }
-            It 'ProjectName should be required' {
-                (Get-Command Remove-AZDOPSVariableGroup).Parameters['ProjectName'].Attributes.Mandatory | Should -Be $true
+            It 'Project should be required' {
+                (Get-Command Remove-AZDOPSVariableGroup).Parameters['Project'].Attributes.Mandatory | Should -Be $true
             }
             It 'Should have parameter VariableGroupName' {
                 (Get-Command Remove-AZDOPSVariableGroup).Parameters.Keys | Should -Contain 'VariableGroupName'
