@@ -20,7 +20,7 @@ function New-ADOPSPipeline {
 
         [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [string]$PipelineGroupFolder,
+        [string]$FolderPath,
 
         [Parameter()]
         [ValidateNotNullOrEmpty()]
@@ -28,17 +28,17 @@ function New-ADOPSPipeline {
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
-        $OrgInfo = GetAZDOPSHeader -Organization $Organization
+        $OrgInfo = GetADOPSHeader -Organization $Organization
     }
     else {
-        $OrgInfo = GetAZDOPSHeader
+        $OrgInfo = GetADOPSHeader
         $Organization = $OrgInfo['Organization']
     }
 
     $Uri = "https://dev.azure.com/$Organization/$Project/_apis/pipelines?api-version=7.1-preview.1"
 
     try {
-        $RepositoryID = (Get-AZDOPSRepository -Organization $Organization -Project $Project -Repository $Repository -ErrorAction Stop).id
+        $RepositoryID = (Get-ADOPSRepository -Organization $Organization -Project $Project -Repository $Repository -ErrorAction Stop).id
     }
     catch {
         throw "The specified Repository $Repository was not found."
@@ -46,7 +46,7 @@ function New-ADOPSPipeline {
 
     $Body = @{
         "name" = $Name
-        "folder" = "\$PipelineGroupFolder"
+        "folder" = "\$FolderPath"
         "configuration" = @{
             "type" = "yaml"
             "path" = $YamlPath
@@ -65,6 +65,6 @@ function New-ADOPSPipeline {
         Body         = $Body 
     }
 
-    InvokeAZDOPSRestMethod @InvokeSplat
+    InvokeADOPSRestMethod @InvokeSplat
 
 }

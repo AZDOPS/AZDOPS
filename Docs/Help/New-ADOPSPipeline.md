@@ -1,6 +1,6 @@
 ---
-external help file: AZDOPS-help.xml
-Module Name: AZDOPS
+external help file: ADOPS-help.xml
+Module Name: ADOPS
 online version:
 schema: 2.0.0
 ---
@@ -14,7 +14,7 @@ Create a new pipeline from a existing yaml file in your repository.
 
 ```
 New-ADOPSPipeline [-Name] <String> [-Project] <String> [-YamlPath] <String> [-Repository] <String>
- [[-PipelineGroupFolder] <String>] [[-Organization] <String>] [<CommonParameters>]
+ [[-FolderPath] <String>] [[-Organization] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,7 +31,7 @@ Create pipeline in $ProjectName
 
 ### Example 2
 ```powershell
-PS C:\> New-ADOPSPipeline -Name $PipelineName -Project $ProjectName -YamlPath 'pipelines/pipeline1.yaml' -Repository $RepositoryName -PipelineGroupFolder 'folder1\folder2'
+PS C:\> New-ADOPSPipeline -Name $PipelineName -Project $ProjectName -YamlPath 'pipelines/pipeline1.yaml' -Repository $RepositoryName -FolderPath 'folder1\folder2'
 ```
 
 Create pipeline in $ProjectName and use Default Organization and put the pipeline in subfolder folder2 under DevOps Pipelines.
@@ -68,7 +68,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PipelineGroupFolder
+### -FolderPath
 Folderpath to add your pipelines to under Devops Pipelines.
 Like: PipelineFolder or PipelineFolder1\PipelineSubFolder2
 

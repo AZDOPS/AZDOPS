@@ -1,7 +1,7 @@
-Remove-Module AZDOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\AZDOPS
+Remove-Module ADOPS -ErrorAction SilentlyContinue
+Import-Module $PSScriptRoot\..\Source\ADOPS
 
-InModuleScope -ModuleName AZDOPS {
+InModuleScope -ModuleName ADOPS {
     Describe 'New-ADOPSPipeline tests' {
         Context 'Creating Pipeline' {
             BeforeAll {
@@ -12,7 +12,7 @@ InModuleScope -ModuleName AZDOPS {
                 $YamlPath = 'DummyYamlPath/file.yaml'
                 $Repository = 'DummyRepo'
 
-                Mock -CommandName GetAZDOPSHeader -ModuleName AZDOPS -MockWith {
+                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
                     @{
                         Header       = @{
                             'Authorization' = 'Basic Base64=='
@@ -20,7 +20,7 @@ InModuleScope -ModuleName AZDOPS {
                         Organization = $OrganizationName
                     }
                 } -ParameterFilter { $OrganizationName -eq $OrganizationName }
-                Mock -CommandName GetAZDOPSHeader -ModuleName AZDOPS -MockWith {
+                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
                     @{
                         Header       = @{
                             'Authorization' = 'Basic Base64=='
@@ -29,13 +29,13 @@ InModuleScope -ModuleName AZDOPS {
                     }
                 }
                 
-                Mock -CommandName InvokeAZDOPSRestMethod -ModuleName AZDOPS -MockWith {
+                Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                     return $InvokeSplat
                 } -ParameterFilter { $method -eq 'Post' }
-                Mock -CommandName Get-AZDOPSRepository -ModuleName AZDOPS -MockWith {
+                Mock -CommandName Get-ADOPSRepository -ModuleName ADOPS -MockWith {
                     throw
                 } -ParameterFilter { $Repository -eq 'MissingRepo' }
-                Mock -CommandName Get-AZDOPSRepository -ModuleName AZDOPS -MockWith {
+                Mock -CommandName Get-ADOPSRepository -ModuleName ADOPS -MockWith {
                     return @'
                     {
                         "id": "39956c9b-d818-4338-8d99-f5e6004bdb72",
@@ -62,16 +62,16 @@ InModuleScope -ModuleName AZDOPS {
 '@ | ConvertFrom-Json
                 }
             }
-            It 'uses InvokeAZDOPSRestMethod one time' {
+            It 'uses InvokeADOPSRestMethod one time' {
                 New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath $YamlPath -Repository $Repository
-                Should -Invoke 'InvokeAZDOPSRestMethod' -ModuleName 'AZDOPS' -Exactly -Times 1
+                Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
             }
-            It 'uses Get-AZDOPSRepository one time' {
+            It 'uses Get-ADOPSRepository one time' {
                 New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath $YamlPath -Repository $Repository
-                Should -Invoke 'Get-AZDOPSRepository' -ModuleName 'AZDOPS' -Exactly -Times 1
+                Should -Invoke 'Get-ADOPSRepository' -ModuleName 'ADOPS' -Exactly -Times 1
             }
             It 'returns output after getting pipeline' {
-                New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath $YamlPath -Repository $Repository | Should -BeOfType [pscustomobject] -Because 'InvokeAZDOPSRestMethod should convert the json to pscustomobject'
+                New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath $YamlPath -Repository $Repository | Should -BeOfType [pscustomobject] -Because 'InvokeADOPSRestMethod should convert the json to pscustomobject'
             }
             It 'should not throw with mandatory parameters' {
                 { New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath $YamlPath -Repository $Repository} | Should -Not -Throw
@@ -118,11 +118,11 @@ InModuleScope -ModuleName AZDOPS {
             It 'Repository should be required' {
                 (Get-Command New-ADOPSPipeline).Parameters['Repository'].Attributes.Mandatory | Should -Be $true
             }
-            It 'Should have parameter PipelineGroupFolder' {
-                (Get-Command New-ADOPSPipeline).Parameters.Keys | Should -Contain 'PipelineGroupFolder'
+            It 'Should have parameter FolderPath' {
+                (Get-Command New-ADOPSPipeline).Parameters.Keys | Should -Contain 'FolderPath'
             }
-            It 'PipelineGroupFolder should not be required' {
-                (Get-Command New-ADOPSPipeline).Parameters['PipelineGroupFolder'].Attributes.Mandatory | Should -Be $false
+            It 'FolderPath should not be required' {
+                (Get-Command New-ADOPSPipeline).Parameters['FolderPath'].Attributes.Mandatory | Should -Be $false
             }
         }
     }
