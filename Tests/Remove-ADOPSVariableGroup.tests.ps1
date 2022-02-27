@@ -78,6 +78,9 @@ InModuleScope -ModuleName ADOPS {
             It 'should not throw with mandatory parameters' {
                 { Remove-ADOPSVariableGroup -Project $Project -VariableGroupName $VariableGroupName } | Should -Not -Throw
             }
+            It 'should throw if VariableGroupName Name is invalid' {
+                { Remove-ADOPSVariableGroup -Organization $OrganizationName -Project $Project -VariableGroupName 'MissingVariableGroupName'} | Should -Throw
+            }
         }
 
         Context 'Parameters' {
