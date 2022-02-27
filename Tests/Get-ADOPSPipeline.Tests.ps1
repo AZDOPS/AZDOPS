@@ -90,6 +90,12 @@ InModuleScope -ModuleName ADOPS {
             It 'should not throw with mandatory parameters' {
                 { Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName } | Should -Not -Throw
             }
+            It 'should not throw without Organization parameter' {
+                { Get-ADOPSPipeline -Project $Project -Name $PipeName } | Should -Not -Throw
+            }
+            It 'should throw if pipeline name does not exist' {
+                { Get-ADOPSPipeline -Project $Project -Name 'MissingPipeline' } | Should -Throw
+            }
             It 'returns single output after getting pipeline' {
                 (Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName).count | Should -Be 1
             }
