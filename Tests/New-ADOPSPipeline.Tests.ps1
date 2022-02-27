@@ -12,22 +12,7 @@ InModuleScope -ModuleName ADOPS {
                 $YamlPath = 'DummyYamlPath/file.yaml'
                 $Repository = 'DummyRepo'
 
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = $OrganizationName
-                    }
-                } -ParameterFilter { $OrganizationName -eq $OrganizationName }
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = $OrganizationName
-                    }
-                }
+                . "$PSScriptRoot\Mocks\GetADOPSHeader.mock.ps1" -OrganizationName $OrganizationName
                 
                 Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                     return $InvokeSplat
