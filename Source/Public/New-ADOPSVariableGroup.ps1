@@ -36,11 +36,11 @@ function New-ADOPSVariableGroup {
     )
 
     if ([string]::IsNullOrEmpty($Organization)) {
-        $Org = GetAZDOPSHeader
+        $Org = GetADOPSHeader
         $Organization = $Org['Organization']
     }
     else {
-        $Org = GetAZDOPSHeader -Organization $Organization
+        $Org = GetADOPSHeader -Organization $Organization
     }
 
     $ProjectInfo = Get-ADOPSProject -Organization $Organization -Project $Project
