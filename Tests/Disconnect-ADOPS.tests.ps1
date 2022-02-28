@@ -67,6 +67,18 @@ Describe 'Disconnect-ADOPS tests' {
                 $Script:ADOPSCredentials.Count | Should -BeExactly 0
             }
         }
+
+        Context 'Validate throw when no Connections.' {
+            BeforeAll {
+                $Script:ADOPSCredentials = $null
+            }
+
+            It 'should throw when no Connections is availiable' {
+                $Script:ADOPSCredentials.Count | Should -BeExactly 0
+                { Disconnect-ADOPS } | Should -Throw
+                $Script:ADOPSCredentials.Count | Should -BeExactly 0
+            }
+        }
     }
 
     Context 'Verifying parameters' {
