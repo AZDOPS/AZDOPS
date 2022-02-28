@@ -54,7 +54,7 @@ PS C:\> $Hashtable = @(
 PS C:\> New-ADOPSVariableGroup -Project 'ADOPSproj' -Organization 'ADOPS' -VariableGroupName 'ADOPSvars' -Description 'vargroup example' -VariableHashtable $Hashtable
 ```
 
-Creates a new variable group called "ADOPSvars" in the project "ADOPSproj" in the organization "ADOPS" with a description, providing a hashtable to create a non-secret variable called "var-name" with the value "var-value".
+Creates a new variable group called "ADOPSvars" in the project "ADOPSproj" in the organization "ADOPS" with a description, providing a hashtable to create one non-secret variable called "Key2" with the value "Key2Value" and one secret variable called "Key1" with the value "Key1Value".
 
 ### Example 2
 
