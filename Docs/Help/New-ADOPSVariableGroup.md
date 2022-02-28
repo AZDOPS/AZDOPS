@@ -38,12 +38,20 @@ The command only supports a single variable being created together with the vari
 ### Example 1
 
 ```powershell
-PS C:\> New-ADOPSVariableGroup -Project 'ADOPSproj' -Organization 'ADOPS' -VariableGroupName 'ADOPSvars' -Description 'vargroup example' -VariableHashtable @{
-    'var-name' = @{
-        'value' = 'var-value'
-        'isSecret' = $false
-    }
-}
+PS C:\> $Hashtable = @(
+            @{
+                Name     = "Key1"
+                value    = "Key1Value"
+                IsSecret = $true
+            },
+            @{       
+                Name     = "Key2"
+                value    = "Key2Value"
+                IsSecret = $false
+            }
+        )
+
+PS C:\> New-ADOPSVariableGroup -Project 'ADOPSproj' -Organization 'ADOPS' -VariableGroupName 'ADOPSvars' -Description 'vargroup example' -VariableHashtable $Hashtable
 ```
 
 Creates a new variable group called "ADOPSvars" in the project "ADOPSproj" in the organization "ADOPS" with a description, providing a hashtable to create a non-secret variable called "var-name" with the value "var-value".
@@ -141,12 +149,21 @@ Accept wildcard characters: False
 ### -VariableHashtable
 
 A hashtable containing the variable to be created with the variable group.
-@{
-    'exampleName' = @{
-        'value' = 'exampleValue'
-        'isSecret' = $false
+
+```powershell
+@(
+    @{
+        Name     = "Key1"
+        value    = "Key1Value"
+        IsSecret = $true
+    },
+    @{
+        Name     = "Key2"
+        value    = "Key2Value"
+        IsSecret = $false
     }
-}
+)
+```
 
 ```yaml
 Type: Hashtable

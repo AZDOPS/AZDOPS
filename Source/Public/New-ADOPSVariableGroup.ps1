@@ -6,7 +6,7 @@ function New-ADOPSVariableGroup {
         [string]$Organization,
 
         [Parameter(Mandatory, ParameterSetName = 'VariableSingle')]
-        
+
         [Parameter(Mandatory, ParameterSetName = 'VariableHashtable')]
         [string]$Project,
 
@@ -30,7 +30,7 @@ function New-ADOPSVariableGroup {
         [ValidateScript(
             {
                 $_ | ForEach-Object { $_.Keys -Contains 'Name' -and $_.Keys -Contains 'IsSecret' -and $_.Keys -Contains 'Value' -and $_.Keys.count -eq 3 }
-            }, 
+            },
             ErrorMessage = 'The hashtable must contain the following keys: Name, IsSecret, Value')]
         [hashtable[]]$VariableHashtable
     )
@@ -70,13 +70,14 @@ function New-ADOPSVariableGroup {
     }
     else {
 
-        $Variables = [hashtable]::new()
+        $Variables = @{}
         foreach ($Hashtable in $VariableHashtable) {
             $Variables.Add(
                 $Hashtable.Name, @{
                     isSecret = $Hashtable.IsSecret
                     value    = $Hashtable.Value
-                })
+                }
+            )
         }
 
         $Body = @{
