@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<plasterManifest schemaVersion="1.1"
+            templateType="Project"
+            xmlns="http://www.microsoft.com/schemas/PowerShell/Plaster/v1">
+      <metadata>
+            <name>PowerShellCmdletTemplate</name>
+            <id>8c7207cb-3d93-4131-908c-665307eec714</id>
+            <version>1.0.0</version>
+            <title>PowerShell Cmdlet</title>
+            <description>Creates a PowerShell script Cmdlet.</description>
+            <author>PwrOps</author>
+            <tags>Cmdlet, Tests</tags>
+      </metadata>
+      <parameters>
+
+            <parameter name='CmdletName'
+                        type='text'
+                        prompt='Enter the name of the Cmdlet'/>
+            
+            <parameter  name='Type'
+                        type='choice'
+                        prompt='Public or Private Cmdlet'
+                        store='text' >
+                  <choice label='&amp;Public'
+                        help="Public Cmdlet folder."
+                        value="Public"/>
+                  <choice label='P&amp;rivate'
+                        help="Private Cmdlet folder."
+                        value="Private"/>
+            </parameter>   
+
+      </parameters>
+
+      <content>
+            <message>&#10;&#10;Scaffolding your PowerShell Cmdlet...&#10;&#10;&#10;</message>
+
+            <templateFile condition="$PLASTER_PARAM_Type -eq 'Public'"
+                  source='templates\Cmdlet.ps1'
+                  destination='Source\Public\${PLASTER_PARAM_CmdletName}.ps1' />
+
+            <templateFile condition="$PLASTER_PARAM_Type -eq 'Private'"
+                  source='templates\Cmdlet.ps1'
+                  destination='Source\Private\${PLASTER_PARAM_CmdletName}.ps1' />
+
+            <templateFile source='templates\CmdletTests.ps1'
+                  destination='Tests\${PLASTER_PARAM_CmdletName}.Tests.ps1' />
+            
+            <modify path='Tests\${PLASTER_PARAM_CmdletName}.Tests.ps1'
+                  condition="$PLASTER_PARAM_Type -eq 'Private'" >
+                  <replace>
+                        <original>(?s)    Mock -CommandName InvokeADOPSRestMethod.*-Exactly -Times 1.            }</original>
+                        <substitute expand='true'>}</substitute>
+                  </replace>
+            </modify>
+
+            <modify path='Source\Private\${PLASTER_PARAM_CmdletName}.ps1'
+                  condition="$PLASTER_PARAM_Type -eq 'Private'" >
+                  <replace>
+                        <original>(?s)    \$Uri.*InvokeADOPSRestMethod @InvokeSplat</original>
+                        <substitute expand='true'></substitute>
+                  </replace>
+            </modify>
+            
+            <message>
+
+Your new PowerShell Cmdlet: '$PLASTER_PARAM_CmdletName' has been created.
+
+A Pester test has been created to validate Cmdlet '$PLASTER_PARAM_CmdletName' Code. 
+Add additional tests to the script Validate the Cmdlet.
+
+            </message>
+
+      </content>
+</plasterManifest>
