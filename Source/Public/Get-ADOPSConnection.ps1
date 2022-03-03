@@ -1,5 +1,15 @@
 function Get-ADOPSConnection {
-    param ()
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [ValidateNotNullOrEmpty()]
+        [string]$Organization
+    )
     
-    $Script:ADOPSCredentials
+    if (-not [string]::IsNullOrEmpty($Organization)) {
+        $Script:ADOPSCredentials.GetEnumerator() | Where-Object { $_.Key -eq $Organization}
+    }
+    else {
+        $Script:ADOPSCredentials
+    }
 }
