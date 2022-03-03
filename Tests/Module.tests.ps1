@@ -54,6 +54,22 @@ Describe "Module $ModuleName" {
             param ( $Count )
             $Count | Should -BeGreaterThan 0 -Because 'functions should exist'
         }
+        It "Public function '<Function>' should have parameter Organization." -TestCases $PublicTestCases {
+            param ( $Function )
+            (Get-Command $Function).Parameters.Keys | Should -Contain 'Organization'
+        }
+        It "Public function '<Function>' should have a CmdLet file in correct place." -TestCases $PublicTestCases {
+            param ( $Function )
+            Test-Path -Path "$ScriptDirectory\..\Source\Public\$Function.ps1" -PathType Leaf | Should -Be $true
+        }
+        It "Public function '<Function>' should have a test file." -TestCases $PublicTestCases {
+            param ( $Function )
+            Test-Path -Path "$ScriptDirectory\$Function.Tests.ps1" -PathType Leaf | Should -Be $true
+        }
+        It "Public function '<Function>' should have a Docs/Help file." -TestCases $PublicTestCases {
+            param ( $Function )
+            Test-Path -Path "$ScriptDirectory\..\Docs\Help\$Function.md" -PathType Leaf | Should -Be $true
+        }
 
         # This test only works on compiled psd1 files, and can tbe run in current build script. needs to be revisited.
         # It "Public function '<Function>' has been exported" -TestCases $PublicTestCases {
@@ -68,6 +84,14 @@ Describe "Module $ModuleName" {
             It "Private function '<Function>' has not been exported" -TestCases $PrivateTestCases {
                 param ( $Function,  $ExportedFunctions)
                 $ExportedFunctions | Should -Not -Contain $Function -Because 'the file is not in the Public folder'
+            }
+            It "Private function '<Function>' should have a CmdLet file in correct place." -TestCases $PrivateTestCases {
+                param ( $Function )
+                Test-Path -Path "$ScriptDirectory\..\Source\Private\$Function.ps1" -PathType Leaf | Should -Be $true
+            }
+            It "Private function '<Function>' should have a test file." -TestCases $PrivateTestCases {
+                param ( $Function )
+                Test-Path -Path "$ScriptDirectory\$Function.Tests.ps1" -PathType Leaf | Should -Be $true
             }
         }
     }
