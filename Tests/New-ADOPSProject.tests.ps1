@@ -80,7 +80,7 @@ InModuleScope -ModuleName ADOPS {
                 New-ADOPSProject -Organization $OrganizationName -Name $Project -Visibility 'Public' | Should -BeOfType [pscustomobject] -Because 'InvokeADOPSRestMethod should convert the json to pscustomobject'
             }
             It 'should not throw with mandatory parameters' {
-                { New-ADOPSProject -Organization $OrganizationName -Name $Project -Visibility 'Public' } | Should -Not -Throw
+                { New-ADOPSProject -Name $Project -Visibility 'Public' } | Should -Not -Throw
             }
             It 'should throw with invalid Visibility parameter' {
                 { New-ADOPSProject -Organization $OrganizationName -Name $Project -Visibility 'DummyVisibility' } | Should -Throw
@@ -94,6 +94,10 @@ InModuleScope -ModuleName ADOPS {
             It 'should not throw with Basic ProcessTypeName parameter' {
                 { New-ADOPSProject -Organization $OrganizationName -Name $Project -ProcessTypeName "Basic" -Visibility 'Private' } | Should -Not -Throw
             }
+            It 'returns Description output if Description is set.' {
+                (New-ADOPSProject -Organization $OrganizationName -Name $Project -Visibility 'Public' -Description 'DummyDescription').Body | ConvertFrom-Json | Select-Object -ExpandProperty Description | Should -Be 'DummyDescription'
+            }
+
         }
 
         Context 'Parameters' {

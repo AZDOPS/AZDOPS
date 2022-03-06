@@ -189,3 +189,13 @@ Describe 'Bugfixes' {
         }
     }
 }
+
+Describe 'Validating try catch.' {
+    Context 'Connect-ADOPS' {
+        it 'Should trow if InvokeADOPSRestMethod returns error.' {
+            Mock -CommandName InvokeADOPSRestMethod -MockWith {return throw} -ModuleName ADOPS
+            
+            {Connect-ADOPS -Username 'DummyUser1' -PersonalAccessToken 'MyPatGoesHere' -Organization 'MyOrg'} | Should -Throw
+        }
+    }
+}
