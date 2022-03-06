@@ -16,10 +16,18 @@ if (Test-Path -Path "$ScriptDirectory\..\Source\Public" -PathType Container) {
     $PublicFunctions = $PublicFiles.Name -replace '\.ps1$'
 
     $PublicTestCases = @()
+    $ParametersTestCases = @()
     foreach ($PublicFunction in $PublicFunctions) {
         $PublicTestCases += @{
             Function = $PublicFunction
             ExportedFunctions = $ExportedFunctions
+        }
+        $Parameters = (Get-Command $PublicFunction).Parameters.Keys | Where-Object { $_ -notin [System.Management.Automation.Cmdlet]::CommonParameters }
+        foreach ($Parameter in $Parameters) {
+            $ParametersTestCases += @{
+                Function = $PublicFunction
+                Parameter = $Parameter
+            }
         }
     }
 }
@@ -69,6 +77,10 @@ Describe "Module $ModuleName" {
         It "Public function '<Function>' should have a Docs/Help file." -TestCases $PublicTestCases {
             param ( $Function )
             Test-Path -Path "$ScriptDirectory\..\Docs\Help\$Function.md" -PathType Leaf | Should -Be $true
+        }
+        It "Docs/Help file for '<Function>' contains parameter '<Parameter>'." -TestCases $ParametersTestCases {
+            param ( $Function, $Parameter )
+            "$ScriptDirectory\..\Docs\Help\$Function.md" | Should -FileContentMatch $Parameter
         }
 
         # This test only works on compiled psd1 files, and can tbe run in current build script. needs to be revisited.
