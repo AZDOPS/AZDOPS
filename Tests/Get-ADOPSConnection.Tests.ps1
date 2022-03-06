@@ -28,7 +28,9 @@ Describe 'Get-ADOPSConnection' {
         It 'Given we have two connections, both connections should be returned' {
             (Get-ADOPSConnection).Count | Should -Be 2
         }
-
+        It 'Should return one connection if Organization parameter is used.' {
+            (Get-ADOPSConnection -Organization 'org1').Count | Should -Be 1
+        }
         It 'Verifying the first returned organization matches the set variable' {
             (Get-ADOPSConnection)['org1'].Credential.Username | Should -Be 'DummyUser1'
         }
