@@ -7,7 +7,7 @@ Describe "New-ADOPSElasticpool" {
             { Get-Command -Name New-ADOPSElasticpool -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
         }
 
-        It 'Has parameter <_>' -TestCases 'Organization', 'Body', 'ProjectId', 'PoolName', 'AuthorizeAllPipelines', 'AutoProvisionProjectPools' {
+        It 'Has parameter <_>' -TestCases 'Organization', 'ElasticPoolObject', 'ProjectId', 'PoolName', 'AuthorizeAllPipelines', 'AutoProvisionProjectPools' {
             (Get-Command -Name New-ADOPSElasticpool).Parameters.Keys | Should -Contain $_
         }
     }
@@ -45,7 +45,7 @@ Describe "New-ADOPSElasticpool" {
                 }
             }
 
-            $body = '{
+            $ElasticPoolObject = '{
                 "serviceEndpointId": "44868479-e856-42bf-9a2b-74bb500d8e36",
                 "serviceEndpointScope": "a36adc0c-a513-4acd-85bf-2c2a7bb62d30",
                 "azureId": "/subscriptions/6713962a-bebb-45c2-97cd-fb0dead95acf/resourceGroups/resourceGroupName/providers/Microsoft.Compute/virtualMachineScaleSets/vmss-test",
@@ -65,11 +65,11 @@ Describe "New-ADOPSElasticpool" {
         }
 
         It "Returns created elastic pool" {
-            New-ADOPSElasticpool -PoolName 'CustomPool' -Body $body -Organization 'DummyOrg' -AuthorizeAllPipelines $true -AutoProvisionProjectPools $true | Should -Not -BeNullOrEmpty
+            New-ADOPSElasticpool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' -AuthorizeAllPipelines $true -AutoProvisionProjectPools $true | Should -Not -BeNullOrEmpty
         }
 
         It "Returns created elastic pool id" {
-            (New-ADOPSElasticpool -PoolName 'CustomPool' -Body $body -Organization 'DummyOrg' -AuthorizeAllPipelines $true -AutoProvisionProjectPools $true).elasticPool.poolid | Should -Be 59
+            (New-ADOPSElasticpool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' -AuthorizeAllPipelines $true -AutoProvisionProjectPools $true).elasticPool.poolid | Should -Be 59
         }
 
     }

@@ -13,7 +13,7 @@ Create an Azure DevOps Elastic pool.
 ## SYNTAX
 
 ```
-New-ADOPSElasticPool [-PoolName] <String> [-Body] <String> [[-Organization] <String>] [[-ProjectId] <Guid>]
+New-ADOPSElasticPool [-PoolName] <String> [-ElasticPoolObject] [[-Organization] <String>] [[-ProjectId] <Guid>]
  [[-AuthorizeAllPipelines] <Boolean>] [[-AutoProvisionProjectPools] <Boolean>] [<CommonParameters>]
 ```
 
@@ -29,7 +29,7 @@ $Params = @{
     AutoProvisionProjectPools = $true
     PoolName = ManagedPool1
 }
-New-ADOPSElasticPool @Params -Body @"
+New-ADOPSElasticPool @Params -ElasticPoolObject @"
 {
   "serviceEndpointId": "44868479-e856-42bf-9a2b-74bb500d8e36",
   "serviceEndpointScope": "421eb3c8-1ca4-4a53-b93c-58997b9eb5e1",
@@ -53,6 +53,23 @@ Create a Azure DevOps Elastic pool that Auto provisions in project and Authorize
 It also attaches to a Virtual Machine Scale Set using the azureId.
 Full description of the request body can be found at: https://docs.microsoft.com/en-us/rest/api/azure/devops/distributedtask/elasticpools/create?view=azure-devops-rest-7.1
 
+
+### Example 2
+```powershell
+$Params = @{
+    AuthorizeAllPipelines = $true
+    AutoProvisionProjectPools = $true
+    PoolName = ManagedPool1
+}
+
+$ElasticPoolObject = New-ADOPSElasticPoolObject -ServiceEndpointId '44868479-e856-42bf-9a2b-74bb500d8e36' -ServiceEndpointScope '421eb3c8-1ca4-4a53-b93c-58997b9eb5e1' -AzureId '/subscriptions/8961f1f1-0bd1-4be0-b73c-6a8f3b304cf6/resourceGroups/ResourceGroupName/providers/Microsoft.Compute/virtualMachineScaleSets/vmss-test'
+
+New-ADOPSElasticPool @Params -ElasticPoolObject $ElasticPoolObject
+```
+To find your serviceEndpointScope, use Get-ADOPSProject as the scope is the project where the Service connection is bound.
+Create a Azure DevOps Elastic pool that Auto provisions in project and Authorizes the pool to be consumed by all pipelines.
+It also attaches to a Virtual Machine Scale Set using the azureId.
+Full description of the request body can be found at: https://docs.microsoft.com/en-us/rest/api/azure/devops/distributedtask/elasticpools/create?view=azure-devops-rest-7.1
 ## PARAMETERS
 
 ### -AuthorizeAllPipelines
@@ -85,8 +102,9 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Body
-The full request body in json or as a pscustom object.
+### -ElasticPoolObject
+The full request body in json or as a pscustom object. 
+The Help function New-ElasticPoolObject can help generate a powershell object/json string.
 
 | Name                 | Type                | Description                                                                   |
 |----------------------|---------------------|-------------------------------------------------------------------------------|
@@ -107,7 +125,6 @@ The full request body in json or as a pscustom object.
 | timeToLiveMinutes    | integer             | The minimum time in minutes to keep idle agents alive                         |
 
 ```yaml
-Type: String
 Parameter Sets: (All)
 Aliases:
 

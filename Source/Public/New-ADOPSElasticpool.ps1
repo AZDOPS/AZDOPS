@@ -4,15 +4,13 @@ function New-ADOPSElasticPool {
         [Parameter(Mandatory)]
         [string]$PoolName,
         
-        # Request body found at https://docs.microsoft.com/en-us/rest/api/azure/devops/distributedtask/elasticpools/create?view=azure-devops-rest-7.1
         [Parameter(Mandatory)]
-        [string]
-        $Body,
+        $ElasticPoolObject,
 
         [string]$Organization,
         
         [Parameter()]
-        [guid]
+        [string]
         $ProjectId,
 
         [Parameter()]
@@ -33,7 +31,7 @@ function New-ADOPSElasticPool {
     }
 
     if ($PSBoundParameters.ContainsKey('ProjectId')) {
-        $Uri = "https://dev.azure.com/$Organization/_apis/distributedtask/elasticpools?poolName=$PoolName`&authorizeAllPipelines=$AuthorizeAllPipelines`&autoProvisionProjectPools=$AutoProvisionProjectPools&projectId={projectId}&api-version=7.1-preview.1"
+        $Uri = "https://dev.azure.com/$Organization/_apis/distributedtask/elasticpools?poolName=$PoolName`&authorizeAllPipelines=$AuthorizeAllPipelines`&autoProvisionProjectPools=$AutoProvisionProjectPools&projectId=$ProjectId&api-version=7.1-preview.1"
     } else {
         $Uri = "https://dev.azure.com/$Organization/_apis/distributedtask/elasticpools?poolName=$PoolName`&authorizeAllPipelines=$AuthorizeAllPipelines`&autoProvisionProjectPools=$AutoProvisionProjectPools&api-version=7.1-preview.1"
     }
