@@ -29,8 +29,8 @@ $Params = @{
     AutoProvisionProjectPools = $true
     PoolName = ManagedPool1
 }
-New-ADOPSElasticPool @Params -Body @"{
-  "poolId": 10,
+New-ADOPSElasticPool @Params -Body @"
+{
   "serviceEndpointId": "44868479-e856-42bf-9a2b-74bb500d8e36",
   "serviceEndpointScope": "421eb3c8-1ca4-4a53-b93c-58997b9eb5e1",
   "azureId": "/subscriptions/d83a7278-278c-4671-9a3e-a4cd81cd1194/resourceGroups/RG-TEST/providers/Microsoft.Compute/virtualMachineScaleSets/vmss-test",
@@ -48,7 +48,7 @@ New-ADOPSElasticPool @Params -Body @"{
 }
 "@
 ```
-
+To find your serviceEndpointScope, use Get-ADOPSProject as the scope is the project where the Service connection is bound.
 Create a Azure DevOps Elastic pool that Auto provisions in project and Authorizes the pool to be consumed by all pipelines.
 It also attaches to a Virtual Machine Scale Set using the azureId.
 Full description of the request body can be found at: https://docs.microsoft.com/en-us/rest/api/azure/devops/distributedtask/elasticpools/create?view=azure-devops-rest-7.1
