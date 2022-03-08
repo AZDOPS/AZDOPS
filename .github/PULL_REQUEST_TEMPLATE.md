@@ -18,4 +18,5 @@ Replace this with a brief description of what this Pull Request fixes, changes, 
 - [ ] Associated it with relevant [issues](https://github.com/ADOPS/ADOPS/issues), for tracking and closure.
 - [ ] Ensured my code/branch is up-to-date with the latest changes in the `main` [branch](https://github.com/ADOPS/ADOPS/tree/main)
 - [ ] Performed testing and provided evidence.
+- [ ] Verified build scripts work.
 - [ ] Updated relevant and associated documentation.
