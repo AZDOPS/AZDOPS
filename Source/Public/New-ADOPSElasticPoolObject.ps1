@@ -1,4 +1,5 @@
 function New-ADOPSElasticPoolObject {
+    [SkipTest('HasOrganizationParameter')]
     [CmdletBinding()]
     param (
         # Service Endpoint Id
