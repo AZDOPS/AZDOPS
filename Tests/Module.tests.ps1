@@ -64,7 +64,7 @@ Describe "Module $ModuleName" {
         }
 
         # This test will only run on functions that does not have the [SkipTest('HasOrganizationParameter')] attribute set.
-        It "Public function '<Function>' should have parameter Organization." -TestCases $PublicTestCases.Where({-Not (Get-Command $_.Function).ScriptBlock.Attributes.Where({$_.TypeID.Name -eq 'SkipTest'}).TestName -contains 'HasOrganizationParameter'}) {
+        It "Public function '<Function>' should have parameter Organization." -TestCases $PublicTestCases.Where({-Not (Get-Command $_.Function).ScriptBlock.Attributes.Where({$_.TypeID.Name -eq 'SkipTest'}).TestNames -contains 'HasOrganizationParameter'}) {
             param ( $Function )
             (Get-Command $Function).Parameters.Keys | Should -Contain 'Organization'
         }

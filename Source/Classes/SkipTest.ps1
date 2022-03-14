@@ -1,8 +1,8 @@
-Class SkipTest : Attribute {
-    [string]$TestName
+class SkipTest : Attribute {
+    [string[]]$TestNames
 
     SkipTest([string[]]$Name)
     {
-        $this.TestName = $Name
+        $this.TestNames = $Name
     }
 }
