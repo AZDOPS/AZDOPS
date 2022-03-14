@@ -42,6 +42,14 @@ task Compile_Module {
 
     $ExportedFunctionList = [System.Collections.Generic.List[string]]::new()
 
+    # Classes
+    Get-ChildItem "$ModuleSourcePath\Classes" *.ps1 | ForEach-Object {
+        $FileContent = Get-Content $_.FullName
+        "#region $($_.BaseName)`n"      | Out-File $PSM1Path -Append
+        $FileContent                    | Out-File $PSM1Path -Append
+        "#endregion $($_.BaseName)`n"   | Out-File $PSM1Path -Append
+    }
+
     # Private functions
     Get-ChildItem "$ModuleSourcePath\Private" *.ps1 | ForEach-Object {
         $FileContent = Get-Content $_.FullName

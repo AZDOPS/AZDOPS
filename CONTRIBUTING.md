@@ -16,6 +16,7 @@ The repo is organized as below:
 
 - **Private** (`Source/Private`): All private functions used by the module.
 - **Public** (`Source/Public`): All functions exported by the module.
+- **Classes** (`Source/Classes`): All classes by the module.
 - **Tests** (`Tests`): Pester tests executed at Pull Request.
 - **Help** (`Docs\Help`): Markdown help files for external help.
 
@@ -32,6 +33,14 @@ Import-Module .\Source\ADOPS.psd1
 The ADOPS module is developed using Test-driven development(TDD) where we aim for full test coverage for all our functions. Make sure that all new features and updates are covered by Pester tests. All tests will be executed when a Pull Request is submitted as a build validation step. PRs with failing tests will not be approved.
 
 [Pester](https://github.com/pester/Pester) is the ubiquitous test and mock framework for PowerShell.
+
+Exclusion of standard tests can be done using the SkipTest attribute (See f.eg New-ADOPSElasticPoolObject)
+
+```PowerShell
+[SkipTest('HasOrganizationParameter')]
+```
+
+Introducing additional exclusions should be discussed in a GitHub issue before implemention.
 
 ### platyPS
 
