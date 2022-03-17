@@ -19,7 +19,9 @@ function New-ADOPSServiceConnection {
 
       [parameter(Mandatory = $false)]
       [ValidateNotNullorEmpty()]
-      [string]$ConnectionName
+      [string]$ConnectionName,
+
+      [string]$Organization
   )
 
   $ServicePrincipalSecret = (Get-Credential -Message "Provide secret for Service Principal." -UserName "ServicePrincipal")
