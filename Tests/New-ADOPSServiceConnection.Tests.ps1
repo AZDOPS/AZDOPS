@@ -5,7 +5,7 @@ Import-Module $PSScriptRoot\..\Source\ADOPS
 Describe 'ADOPSServiceConnection' {
     Context 'Function tests' {
         It 'We have a function' {
-            Get-Command Get-ADOPSServiceConnection -Module ADOPS | Should -Not -BeNullOrEmpty
+            Get-Command New-ADOPSServiceConnection -Module ADOPS | Should -Not -BeNullOrEmpty
         }
     }
 }
