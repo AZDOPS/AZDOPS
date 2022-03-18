@@ -3,12 +3,49 @@ Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
 Describe "Get-ADOPSElasticPool" {
     Context "Function tests" {
+        BeforeAll {
+            InModuleScope -ModuleName ADOPS {
+                Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                    return $InvokeSplat
+                }
+
+                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
+                    @{
+                        Header       = @{
+                            'Authorization' = 'Basic Base64=='
+                        }
+                        Organization = 'DummyOrg'
+                    }
+                }
+            }
+
+        }
+
         It "Function exists" {
             { Get-Command -Name Get-ADOPSElasticPool -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
         }
 
         It 'Has parameter <_>' -TestCases 'Organization', 'PoolId' {
             (Get-Command -Name Get-ADOPSElasticPool).Parameters.Keys | Should -Contain $_
+        }
+
+        It 'Should have called mock' {
+            $r = Get-ADOPSElasticPool 
+            Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
+            Should -Invoke 'GetADOPSHeader' -ModuleName 'ADOPS' -Exactly -Times 1
+        }
+
+        It 'Verifying invoke object, URI, No id given' {
+            $r = Get-ADOPSElasticPool 
+            $r.uri | Should -Be 'https://dev.azure.com/DummyOrg/_apis/distributedtask/elasticpools?api-version=7.1-preview.1'
+        }
+        It 'Verifying invoke object, URI,given specific id' {
+            $r = Get-ADOPSElasticPool -PoolId 666
+            $r.uri | Should -Be 'https://dev.azure.com/DummyOrg/_apis/distributedtask/elasticpools/666?api-version=7.1-preview.1'
+        }
+        It 'Verifying invoke object, method' {
+            $r = Get-ADOPSElasticPool 
+            $r.method | Should -Be 'Get'
         }
     }
 
