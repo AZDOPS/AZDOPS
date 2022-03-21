@@ -14,13 +14,12 @@ function New-ADOPSServiceConnection {
       [string]$ServicePrincipalId,
 
       [parameter(Mandatory = $true)]
-      [ValidateNotNullorEmpty()]
       [string]$Project,
 
-      [parameter(Mandatory = $false)]
-      [ValidateNotNullorEmpty()]
+      [parameter()]
       [string]$ConnectionName,
 
+      [parameter()]
       [string]$Organization
   )
 
