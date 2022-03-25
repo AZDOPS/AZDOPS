@@ -83,31 +83,6 @@ failTaskOnFailedTests: false
             Should -Invoke -CommandName InvokeADOPSRestMethod -Times 1 -Exactly -ModuleName ADOPS
             Should -Invoke -CommandName Get-Content -Times 1 -Exactly -ModuleName ADOPS
         }
-
-        It 'Verify invoke object - Uri' {
-            $r = Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666
-            $r.Uri | Should -Be 'https://dev.azure.com/DummyOrg/DummyProj/_apis/pipelines/666/runs?api-version=7.1-preview.1'
-        }
-        It 'Verify invoke object - Method' {
-            $r = Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666
-            $r.Method | Should -Be 'Post'
-        }
-        It 'Verify invoke object - Body - previewRun' {
-            $r = (Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666).Body | ConvertFrom-Json
-            $r.previewRun | Should -Be $true
-        }
-        It 'Verify invoke object - Body - templateParameters' {
-            $r = (Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666).Body | ConvertFrom-Json
-            $r.templateParameters | Should -BeNullOrEmpty
-        }
-        It 'Verify invoke object - Body - resources' {
-            $r = (Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666).Body | ConvertFrom-Json
-            $r.resources | Should -BeNullOrEmpty
-        }
-        It 'Verify invoke object - Body - yamlOverride' {
-            $r = (Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666).Body | ConvertFrom-Json
-            $r.yamlOverride | Should -Not -BeNullOrEmpty
-        }
     }
 
     Context 'Functionality' {
