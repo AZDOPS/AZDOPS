@@ -31,7 +31,8 @@ InModuleScope -ModuleName ADOPS {
 
             }
             It 'uses InvokeADOPSRestMethod one time.' {
-                <%=$PLASTER_PARAM_CmdletName%> -Organization $OrganizationName | Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
+                <%=$PLASTER_PARAM_CmdletName%> -Organization $OrganizationName 
+                Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
             }
             It 'returns output after getting pipeline' {
                 <%=$PLASTER_PARAM_CmdletName%> -Organization $OrganizationName | Should -BeOfType [pscustomobject] -Because 'InvokeADOPSRestMethod should convert the json to pscustomobject'
