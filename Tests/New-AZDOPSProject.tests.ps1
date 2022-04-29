@@ -68,31 +68,31 @@ InModuleScope -ModuleName AZDOPS {
                 } -ParameterFilter { $method -eq 'Post' }
 
                 $OrganizationName = 'DummyOrg'
-                $ProjectName = 'DummyOrg'
+                $Project = 'DummyOrg'
             }
 
             It 'uses InvokeAZDOPSRestMethod two times' {
-                New-AZDOPSProject -Organization $OrganizationName -Name $ProjectName -Visibility Private
+                New-AZDOPSProject -Organization $OrganizationName -Name $Project -Visibility Private
 
                 Should -Invoke 'InvokeAZDOPSRestMethod' -ModuleName 'AZDOPS' -Exactly -Times 2
             }
             It 'returns output after creating project' {
-                New-AZDOPSProject -Organization $OrganizationName -Name $ProjectName -Visibility 'Public' | Should -BeOfType [pscustomobject] -Because 'InvokeAZDOPSRestMethod should convert the json to pscustomobject'
+                New-AZDOPSProject -Organization $OrganizationName -Name $Project -Visibility 'Public' | Should -BeOfType [pscustomobject] -Because 'InvokeAZDOPSRestMethod should convert the json to pscustomobject'
             }
             It 'should not throw with mandatory parameters' {
-                { New-AZDOPSProject -Organization $OrganizationName -Name $ProjectName -Visibility 'Public' } | Should -Not -Throw
+                { New-AZDOPSProject -Organization $OrganizationName -Name $Project -Visibility 'Public' } | Should -Not -Throw
             }
             It 'should throw with invalid Visibility parameter' {
-                { New-AZDOPSProject -Organization $OrganizationName -Name $ProjectName -Visibility 'DummyVisibility' } | Should -Throw
+                { New-AZDOPSProject -Organization $OrganizationName -Name $Project -Visibility 'DummyVisibility' } | Should -Throw
             }
             It 'should throw with invalid SourceControlType parameter' {
-                { New-AZDOPSProject -Organization $OrganizationName -Name $ProjectName -SourceControlType 'DummySourceControl' -Visibility 'Private' } | Should -Throw
+                { New-AZDOPSProject -Organization $OrganizationName -Name $Project -SourceControlType 'DummySourceControl' -Visibility 'Private' } | Should -Throw
             }
             It 'should throw with invalid ProcessTypeName parameter' {
-                { New-AZDOPSProject -Organization $OrganizationName -Name $ProjectName -ProcessTypeName "Dummy Process" -Visibility 'Private' } | Should -Throw
+                { New-AZDOPSProject -Organization $OrganizationName -Name $Project -ProcessTypeName "Dummy Process" -Visibility 'Private' } | Should -Throw
             }
             It 'should not throw with Basic ProcessTypeName parameter' {
-                { New-AZDOPSProject -Organization $OrganizationName -Name $ProjectName -ProcessTypeName "Basic" -Visibility 'Private' } | Should -Not -Throw
+                { New-AZDOPSProject -Organization $OrganizationName -Name $Project -ProcessTypeName "Basic" -Visibility 'Private' } | Should -Not -Throw
             }
         }
 

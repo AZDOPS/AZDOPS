@@ -1,5 +1,8 @@
-<!-- Thank you for submitting a Pull Request. Please fill out the template below.-->
-# Overview/Summary
+# Contributing a Pull Request
+
+If you haven't already, read the full [contribution guide](https://github.com/AZDOPS/AZDOPS/blob/main/CONTRIBUTING.md). The guide may have changed since the last time you read it, so please double-check. Once you are done and ready to submit your PR, run through the relevant checklist below.
+
+## Overview/Summary
 
 Replace this with a brief description of what this Pull Request fixes, changes, etc.
 
@@ -11,8 +14,8 @@ Replace this with a brief description of what this Pull Request fixes, changes, 
 
 ## As part of this Pull Request I have
 
-- [ ] Checked for duplicate [Pull Requests](https://github.com/bjompen/AZDOPS/pulls)
-- [ ] Associated it with relevant [issues](https://github.com/bjompen/AZDOPS/issues), for tracking and closure.
-- [ ] Ensured my code/branch is up-to-date with the latest changes in the `main` [branch](https://github.com/bjompen/AZDOPS/tree/main)
+- [ ] Checked for duplicate [Pull Requests](https://github.com/AZDOPS/AZDOPS/pulls)
+- [ ] Associated it with relevant [issues](https://github.com/AZDOPS/AZDOPS/issues), for tracking and closure.
+- [ ] Ensured my code/branch is up-to-date with the latest changes in the `main` [branch](https://github.com/AZDOPS/AZDOPS/tree/main)
 - [ ] Performed testing and provided evidence.
 - [ ] Updated relevant and associated documentation.

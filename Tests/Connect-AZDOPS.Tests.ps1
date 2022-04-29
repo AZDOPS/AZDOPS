@@ -3,7 +3,6 @@
 Remove-Module AZDOPS -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\AZDOPS -Force
 
-
 BeforeAll {
     InModuleScope -ModuleName 'AZDOPS' {
         Remove-Variable AZDOPSCredentials -Scope 'Script' -ErrorAction SilentlyContinue
@@ -172,5 +171,21 @@ Describe 'Verifying parameters' {
     }
     It 'Default should be switch' {
         (Get-Command Connect-AZDOPS).Parameters['Default'].SwitchParameter | Should -Be $true
+    }
+}
+
+Describe 'Bugfixes' {
+    Context '#47 - External variables' {
+        it 'If a console variable is set it should not throw error' {
+            # One of the variable checks lacked the script: prefix
+            # If you had the same variable name set in console it errored out with "Cannot index into a null array."
+            Mock -CommandName InvokeAZDOPSRestMethod -MockWith {} -ModuleName AZDOPS
+            $global:AZDOPSCredentials = @{ MyOrg = 'Variable' }  
+            
+            {Connect-AZDOPS -Username 'DummyUser1' -PersonalAccessToken 'MyPatGoesHere' -Organization 'MyOrg'} | Should -Not -Throw
+        }
+        AfterAll {  
+            Remove-Variable -Name AZDOPSCredentials -Scope Global
+        }
     }
 }
