@@ -77,6 +77,10 @@ FunctionsToExport = @(
     'Get-AZDOPSProject',
     'New-AZDOPSVariableGroup',
     'Remove-AZDOPSVariableGroup',
+    'Get-AZDOPSPool',
+    'Get-AZDOPSNode',
+    'Get-AZDOPSElasticPool',
+    'New-AZDOPSElasticPool',
     'Get-AZDOPSRepository',
     'Get-AZDOPSConnection',
     'Get-AZDOPSPipeline'
