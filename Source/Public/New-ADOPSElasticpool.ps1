@@ -36,19 +36,7 @@ function New-ADOPSElasticPool {
         $Uri = "https://dev.azure.com/$Organization/_apis/distributedtask/elasticpools?poolName=$PoolName`&authorizeAllPipelines=$AuthorizeAllPipelines`&autoProvisionProjectPools=$AutoProvisionProjectPools&api-version=7.1-preview.1"
     }
     
-    try {
-        $null = $ElasticPoolObject | ConvertFrom-Json
-    }
-    catch {
-        $ElasticPoolObject = $ElasticPoolObject | ConvertTo-Json -Compress -Depth 10
-    }
-
-    $InvokeSplat = @{
-        Method = 'post'
-        Uri = $Uri
-        Organization = $Organization
-        Body = $ElasticPoolObject
-    }
-    $ElasticPoolInfo = InvokeADOPSRestMethod @InvokeSplat
+    $Method = 'POST'
+    $ElasticPoolInfo = InvokeADOPSRestMethod -Uri $Uri -Method $Method -Organization $Organization -Body $Body
     Write-Output $ElasticPoolInfo
 }

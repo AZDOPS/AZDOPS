@@ -61,11 +61,6 @@ Accept wildcard characters: False
 
 ### -AzureId
 The resource id for the Virtual Machine Scale Set in Azure.
-Retrieved using the Az.Compute module.
-```PowerShell
-Connect-AzAccount
-(Get-AzVmss -VMScaleSetName MyVMSS).Id
-```
 
 ```yaml
 Type: String
@@ -171,7 +166,7 @@ Accept wildcard characters: False
 ```
 
 ### -ServiceEndpointId
-Id of the Service Endpoint used to connect to Azure.
+Id of the Service Endpoint used to connect to Azure
 
 ```yaml
 Type: Guid
@@ -186,8 +181,7 @@ Accept wildcard characters: False
 ```
 
 ### -ServiceEndpointScope
-Scope the Service Endpoint belongs to.
-To find your serviceEndpointScope, use Get-ADOPSProject as the scope is the project where the Service connection is bound.
+Scope the Service Endpoint belongs to
 
 ```yaml
 Type: Guid
