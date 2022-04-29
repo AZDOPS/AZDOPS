@@ -1,40 +1,60 @@
-Remove-Module AZDOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\AZDOPS -Force
+Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
+Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
 Describe "Get-ADOPSNode" {
     Context "Function tests" {
         It "Function exists" {
-            { Get-Command -Name Get-ADOPSNode -Module AZDOPS -ErrorAction Stop } | Should -Not -Throw
+            { Get-Command -Name Get-ADOPSNode -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
         }
 
-        It 'Has parameter <_>' -TestCases 'Organization', 'Project', 'Repository' {
+        It 'Has parameter <_>' -TestCases 'Organization', 'PoolId' {
             (Get-Command -Name Get-ADOPSNode).Parameters.Keys | Should -Contain $_
         }
     }
 
     Context "Function returns repositories" {
         BeforeAll {
-            Mock InvokeAZDOPSRestMethod -ModuleName AZDOPS {
+            Mock InvokeADOPSRestMethod -ModuleName ADOPS {
                 [PSCustomObject]@{
                     Value = @(
                         @{
-                            Id = "84eba821-52d5-4ba8-a50b-63640ce234b8"
+                            poolId         = 10
+                            id             = 3
+                            name           = 'vmss-test000000'
+                            state          = 'idle'
+                            stateChangedOn = '2022-03-07 13:42:06'
+                            desiredState   = 'none'
+                            agentId        = 10
+                            agentState     = @('enabled', 'online')
+                            computeId      = 0
+                            computeState   = 'healthy'
+                            requestId      = ''                    
                         },
                         @{
-                            Id = "250c42f9-f55e-4c64-a11c-d0d83a4f7fcc"
+                            poolId         = 10
+                            id             = 4
+                            name           = 'vmss-test000001'
+                            state          = 'idle'
+                            stateChangedOn = '2022-03-07 13:52:08'
+                            desiredState   = 'none'
+                            agentId        = 12
+                            agentState     = @('enabled', 'online')
+                            computeId      = 1
+                            computeState   = 'healthy'
+                            requestId      = ''                    
                         }
                     )
                 }
             }
-            Mock -CommandName GetAZDOPSHeader -ModuleName AZDOPS -MockWith {
+            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
                 @{
                     Header       = @{
                         'Authorization' = 'Basic Base64=='
                     }
-                    Organization = 'DummyOrg'
+                    Organization = 'MySecondOrg'
                 }
-            } -ParameterFilter { $Organization -eq 'Organization' }
-            Mock -CommandName GetAZDOPSHeader -ModuleName AZDOPS -MockWith {
+            } -ParameterFilter { $Organization -eq 'MySecondOrg' }
+            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
                 @{
                     Header       = @{
                         'Authorization' = 'Basic Base64=='
@@ -44,31 +64,46 @@ Describe "Get-ADOPSNode" {
             }
         }
 
-        It "Returns repositories" {
-            Get-ADOPSNode -Organization 'MyOrg' -Project 'MyProject' | Should -Not -BeNullOrEmpty
-        }
-
-        It "Returns repositories without organization specified" {
-            Get-ADOPSNode -Project 'MyProject' | Should -Not -BeNullOrEmpty
+        It "Returns nodes" {
+            Get-ADOPSNode -Organization 'DummyOrg' -poolId 10 | Should -Not -BeNullOrEmpty
         }
 
         It 'Returns an id' {
-            (Get-ADOPSNode -Organization 'MyOrg' -Project 'MyProject').id | Should -Contain '84eba821-52d5-4ba8-a50b-63640ce234b8'
+            (Get-ADOPSNode -Organization 'DummyOrg' -PoolId 10).id | Should -Contain 3
         }
 
-        It 'Calls InvokeAZDOPSRestMethod with correct parameters when repository is used' {
-            Get-ADOPSNode -Organization 'MyOrg' -Project 'MyProject' -Repository 'MyRepo'
-            Should -Invoke InvokeAZDOPSRestMethod -ModuleName AZDOPS -Times 1 -Exactly -ParameterFilter {$Uri -eq 'https://dev.azure.com/MyOrg/MyProject/_apis/git/repositories/MyRepo?api-version=7.1-preview.1'}
+        It 'Returns a node name' {
+            (Get-ADOPSNode -Organization 'DummyOrg' -PoolId 10).name | Should -Contain 'vmss-test000001'
         }
 
-        It 'Can handle single repository responses from API' {
-            Mock InvokeAZDOPSRestMethod -ModuleName AZDOPS {
+        It 'Calls InvokeADOPSRestMethod with correct parameters when Organization is used' {
+            Get-ADOPSNode -Organization 'MySecondOrg' -PoolId 10
+            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/MySecondOrg/_apis/distributedtask/elasticpools/10/nodes?api-version=7.1-preview.1' }
+        }
+
+        It 'Calls InvokeADOPSRestMethod when only PoolId is used' {
+            Get-ADOPSNode -PoolId 10
+            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/_apis/distributedtask/elasticpools/10/nodes?api-version=7.1-preview.1' }
+        }
+
+        It 'Can handle single node responses from API' {
+            Mock InvokeADOPSRestMethod -ModuleName ADOPS {
                 [PSCustomObject]@{
-                    Name = 'Fisar'
+                    poolId         = 10
+                    id             = 3
+                    name           = 'vmss-test000000'
+                    state          = 'idle'
+                    stateChangedOn = '2022-03-07 13:42:06'
+                    desiredState   = 'none'
+                    agentId        = 10
+                    agentState     = @('enabled', 'online')
+                    computeId      = 0
+                    computeState   = 'healthy'
+                    requestId      = ''                    
                 }
             }
             
-            (Get-ADOPSNode -Organization 'MyOrg' -Project 'MyProject' -Repository 'MyRepo').Name | Should -Be 'Fisar'
+            (Get-ADOPSNode -Organization 'DummyOrg' -PoolId 10).name | Should -Be 'vmss-test000000'
         }
     }
 }

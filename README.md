@@ -1,4 +1,4 @@
-# AZDOPS
+# ADOPS
 
 This repository contains functions for creating and maintaining Azure DevOps environments with support for multiple environment connections.
 
@@ -6,8 +6,15 @@ This project started out as a hackathon around PowerShell and Pester with the go
 
 ## Installation
 
-Currently installed by downloading this repo.
-Will be added to PSGallery as soon as milestone 1 is reached!
+From PSGallery, run 
+
+```PowerShell
+Install-Module ADOPS
+```
+
+_Or_ download this repo and run `Invoke-build` in it to build your own release
+
+_Or_ download this repo and import from ./source/ folder
 
 ## Bug report and feature requests
 
