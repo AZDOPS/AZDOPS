@@ -17,7 +17,7 @@ function <%=$PLASTER_PARAM_CmdletName%> {
     $Uri = ""
     
     $InvokeSplat = @{
-        Method       = ''
+        Method       = 'GET'
         Uri          = $URI
         Organization = $Organization
     }
