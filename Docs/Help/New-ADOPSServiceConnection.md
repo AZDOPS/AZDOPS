@@ -14,7 +14,7 @@ Create an Azure DevOps Service Connection to Azure.
 
 ```
 New-ADOPSServiceConnection [-TenantId] <String> [-SubscriptionName] <String> [-SubscriptionId] <String>
- [-ServicePrincipalId] <String> [-Project] <String> [[-ConnectionName] <String>] [[-Organization] <String>]
+ [-Project] <String> [[-ConnectionName] <String>] [[-Organization] <String>] [-ServicePrincipal] <PSCredential>
  [<CommonParameters>]
 ```
 
@@ -29,7 +29,7 @@ $Params = @{
     TenantId = "32238a3e-4aae-4a9d-a3be-5c2912088b9b"
     SubscriptionName = "My Subscription"
     SubscriptionId = "34dacce0-5332-4b27-a804-4352202aca27"
-    ServicePrincipalId = "ca3f561b-a4c3-474b-9be5-477702a1fedd"
+    ServicePrincipal = Get-Credential
     Project = "My DevOps Project"
     ConnectionName = "My Service Connection Name"
 }
@@ -49,7 +49,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -64,7 +64,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -79,22 +79,22 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 4
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ServicePrincipalId
-Application (client) ID of service principal in Azure AD.
+### -ServicePrincipal
+Azure AD Service principal, Application (Client) ID and valid secret-
 
 ```yaml
-Type: String
+Type: PSCredential
 Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 3
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -158,4 +158,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
 [serviceconnection-create](https://docs.microsoft.com/en-us/rest/api/azure/devops/serviceendpoint/endpoints/create?view=azure-devops-rest-6.0)
