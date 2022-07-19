@@ -1,0 +1,109 @@
+Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
+Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+
+Describe "Get-ADOPSUser" {
+    Context "Function tests" {
+        It "Function exists" {
+            { Get-Command -Name Get-ADOPSUser -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
+        }
+
+        It 'Has parameter <_>' -TestCases 'Organization', 'Name', 'Descriptor' {
+            (Get-Command -Name Get-ADOPSUser).Parameters.Keys | Should -Contain $_
+        }
+    }
+
+    Context "Function returns single user by descriptor" {
+        BeforeAll {
+            Mock InvokeADOPSRestMethod -ModuleName ADOPS {
+                [PSCustomObject]@{
+                    subjectKind    = 'user'
+                    metaType       = 'member'
+                    directoryAlias = 'john.doe'
+                    domain         = 'b3435cb9-0c61-4c5f-aa9d-eb022d95b57f'
+                    principalName  = 'john.doe@example.org'
+                    mailAddress    = 'john.doe@example.org'
+                    origin         = 'aad'
+                    originId       = 'ef317b7a-1db1-4e39-a87e-856a106b4a2f'
+                    displayName    = 'John Doe'
+                    url            = 'https://vssps.dev.azure.com/DummyOrg/_apis/Graph/Users/aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
+                    descriptor     = 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
+                }
+            }
+            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
+                @{
+                    Header       = @{
+                        'Authorization' = 'Basic Base64=='
+                    }
+                    Organization = 'DummyOrg'
+                }
+            }
+        }
+
+        It "Returns user by descriptor" {
+            Get-ADOPSUser -Organization 'DummyOrg' -Descriptor 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U' | Should -Not -BeNullOrEmpty
+        }
+
+        It 'Calls InvokeADOPSRestMethod with the correct query params' {
+            Get-ADOPSUser -Organization 'DummyOrg' -Descriptor 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
+            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq "https://vssps.dev.azure.com/DummyOrg/_apis/graph/users/aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U?api-version=6.0-preview.1" }
+        }
+    }
+
+    Context "Function returns users by query" {
+        BeforeAll {
+            Mock InvokeADOPSRestMethod -ModuleName ADOPS {
+                [PSCustomObject]@{
+                    members = @(
+                        @{
+                            user = @{
+                                subjectKind    = 'user'
+                                metaType       = 'member'
+                                directoryAlias = 'john.doe'
+                                domain         = 'b3435cb9-0c61-4c5f-aa9d-eb022d95b57f'
+                                principalName  = 'john.doe@example.org'
+                                mailAddress    = 'john.doe@example.org'
+                                origin         = 'aad'
+                                originId       = 'ef317b7a-1db1-4e39-a87e-856a106b4a2f'
+                                displayName    = 'John Doe'
+                                url            = 'https://vssps.dev.azure.com/DummyOrg/_apis/Graph/Users/aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
+                                descriptor     = 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
+                            }
+                        }
+                        @{
+                            user = @{
+                                subjectKind    = 'user'
+                                metaType       = 'member'
+                                directoryAlias = 'john.doe2'
+                                domain         = '4fac19ba-89ff-4a26-9f00-ff0ea5df74e8'
+                                principalName  = 'john.doe2@example.org'
+                                mailAddress    = 'john.doe@example.org'
+                                origin         = 'aad'
+                                originId       = '47a0d6f2-dd29-4b7c-b28a-9088bbd76612'
+                                displayName    = 'John Doe2'
+                                url            = 'https://vssps.dev.azure.com/DummyOrg/_apis/Graph/Users/aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U2'
+                                descriptor     = 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U2'
+                            }
+                        }
+                    )
+                }
+            }
+            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
+                @{
+                    Header       = @{
+                        'Authorization' = 'Basic Base64=='
+                    }
+                    Organization = 'DummyOrg'
+                }
+            }
+        }
+
+        It "Returns users by query string" {
+            Get-ADOPSUser -Organization 'DummyOrg' -Name 'something' | Should -Not -BeNullOrEmpty
+        }
+
+        It 'Calls InvokeADOPSRestMethod with the correct query pararms' {
+            Get-ADOPSUser -Organization 'DummyOrg' -Name 'john'
+            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq "https://vsaex.dev.azure.com/DummyOrg/_apis/UserEntitlements?`$filter=name eq 'john'&`$orderBy=name Ascending&api-version=6.0-preview.3" }
+        }
+    }
+}
