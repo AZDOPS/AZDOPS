@@ -40,6 +40,7 @@ Describe 'Test-ADOPSYamlFile' {
                         Organization = 'DummyOrg'
                     }
                 } -ParameterFilter { $Organization -eq 'Organization' }
+                
                 Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
                     @{
                         Header       = @{
@@ -96,6 +97,7 @@ failTaskOnFailedTests: false
                         Organization = 'DummyOrg'
                     }
                 } -ParameterFilter { $Organization -eq 'Organization' }
+                
                 Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
                     @{
                         Header       = @{
@@ -129,6 +131,20 @@ testResultsFiles: |
 failTaskOnFailedTests: false          
 '@
                 }
+
+                Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                    $errorDetails =  '{"typeName": "Exception", "message": "Some Error."}'
+                    $statusCode = 400
+                    $response = New-Object System.Net.Http.HttpResponseMessage $statusCode
+                    $exception = New-Object Microsoft.PowerShell.Commands.HttpResponseException "$statusCode ($($response.ReasonPhrase))", $response
+                    $errorCategory = [System.Management.Automation.ErrorCategory]::InvalidOperation
+                    $errorID = 'WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeWebRequestCommand'
+                    $targetObject = $null
+                    $errorRecord = New-Object Management.Automation.ErrorRecord $exception, $errorID, $errorCategory, $targetObject
+                    $errorRecord.ErrorDetails = $errorDetails
+                
+                    Throw $errorRecord
+                } -ParameterFilter { $method -eq 'post' -and $Uri -like '*/22/runs?*' }
             }
 
         }
@@ -150,6 +166,8 @@ failTaskOnFailedTests: false
             {Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666} | Should -not -Throw
         }
 
-        #TODO: How to test error handling with HTTP response?
+        It 'Should throw if yaml file is not valid' {
+            {Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yaml' -PipelineId 22} | Should -Throw -ExpectedMessage '400 (Bad Request)'
+        }
     }
 }

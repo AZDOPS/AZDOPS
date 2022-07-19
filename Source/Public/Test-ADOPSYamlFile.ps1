@@ -59,10 +59,3 @@ function Test-ADOPSYamlFile {
         }
     }
 }
-
-# Hämta default branch 
-## ( Get-ADOPSRepository -Project bjornsundling -Repository PSConfLab ).defaultBranch
-# Hämta pipelineId
-## $PipelineId = Get-ADOPSPipeline -Project bjornsundling | Select-Object -First 1 -ExpandProperty Id
-
-
