@@ -54,7 +54,7 @@ Describe "Get-ADOPSUser" {
                     }
                     StatusCode = 200
                     Headers    = @{
-                        'X-MS-ContinuationToken' = 'page2Token'
+                        'X-MS-ContinuationToken' = @('page2Token')
                     }
                 }
             }
