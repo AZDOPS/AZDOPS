@@ -22,7 +22,10 @@ if (Test-Path -Path "$ScriptDirectory\..\Source\Public" -PathType Container) {
             Function = $PublicFunction
             ExportedFunctions = $ExportedFunctions
         }
-        $Parameters = (Get-Command $PublicFunction).Parameters.Keys | Where-Object { $_ -notin [System.Management.Automation.Cmdlet]::CommonParameters }
+        $Parameters = (Get-Command $PublicFunction).Parameters.GetEnumerator() | Where-Object {
+            $_.Key -notin [System.Management.Automation.Cmdlet]::CommonParameters -and
+            $_.Value.Attributes.DontShow -eq $false
+        } | Select-Object -ExpandProperty Key
         foreach ($Parameter in $Parameters) {
             $ParametersTestCases += @{
                 Function = $PublicFunction
