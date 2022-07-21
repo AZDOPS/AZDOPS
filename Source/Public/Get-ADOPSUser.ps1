@@ -32,9 +32,9 @@ function Get-ADOPSUser {
         if($Response.Headers.ContainsKey('X-MS-ContinuationToken')) {
             Write-Verbose "Found continuationToken. Will fetch more users."
             $parameters = [hashtable]$PSBoundParameters
-            $parameters.Add('ContinuationToken', "$($Response.Headers['X-MS-ContinuationToken'])")
+            $parameters.Add('ContinuationToken', $Response.Headers['X-MS-ContinuationToken']?[0])
             $Users.AddRange((Get-ADOPSUser @parameters))
-        }
+        }   
         Write-Output $Users
     }
     elseif ($PSCmdlet.ParameterSetName -eq 'Name') {
