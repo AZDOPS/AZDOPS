@@ -127,8 +127,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-https://docs.microsoft.com/en-us/rest/api/azure/devops/memberentitlementmanagement/user-entitlements/search-user-entitlements?view=azure-devops-rest-6.0
-
-https://docs.microsoft.com/en-us/rest/api/azure/devops/graph/users/get?view=azure-devops-rest-6.0
-
-https://docs.microsoft.com/en-us/rest/api/azure/devops/graph/users/list?view=azure-devops-rest-6.0
+[user-entitlements/search-user-entitlements](https://docs.microsoft.com/en-us/rest/api/azure/devops/memberentitlementmanagement/user-entitlements/search-user-entitlements?view=azure-devops-rest-6.0)
+[users/get](https://docs.microsoft.com/en-us/rest/api/azure/devops/graph/users/get?view=azure-devops-rest-6.0)
+[users/list](https://docs.microsoft.com/en-us/rest/api/azure/devops/graph/users/list?view=azure-devops-rest-6.0)
