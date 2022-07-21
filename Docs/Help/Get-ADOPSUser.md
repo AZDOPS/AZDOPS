@@ -9,11 +9,17 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Fetch user(s) by name or descriptor
+Fetch one or more users
 
 ## SYNTAX
 
-### Name (Default)
+### All (Default)
+
+```
+Get-ADOPSUser [-Organization <String>] [<CommonParameters>]
+```
+
+### Name
 
 ```
 Get-ADOPSUser [-Name] <String> [-Organization <String>] [<CommonParameters>]
@@ -34,12 +40,20 @@ Fetch user(s) by name or descriptor
 ### Example 1
 
 ```powershell
+PS C:\> Get-ADOPSUser
+```
+
+Fetch all users.
+
+### Example 2
+
+```powershell
 PS C:\> Get-ADOPSUser -Name 'john doe'
 ```
 
 Search for anyone that has `john doe` in it's name, display name or email.
 
-### Example 2
+### Example 3
 
 ```powershell
 PS C:\> Get-ADOPSUser -Descriptor 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
@@ -115,4 +129,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 https://docs.microsoft.com/en-us/rest/api/azure/devops/memberentitlementmanagement/user-entitlements/search-user-entitlements?view=azure-devops-rest-6.0
 
-https://docs.microsoft.com/en-us/rest/api/azure/devops/graph/users/get?view=azure-devops-rest-6.0&viewFallbackFrom=azure-devops-rest-7.0
+https://docs.microsoft.com/en-us/rest/api/azure/devops/graph/users/get?view=azure-devops-rest-6.0
+
+https://docs.microsoft.com/en-us/rest/api/azure/devops/graph/users/list?view=azure-devops-rest-6.0
