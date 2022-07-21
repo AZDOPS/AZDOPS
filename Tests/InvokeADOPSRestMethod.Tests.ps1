@@ -27,6 +27,9 @@ InModuleScope -ModuleName ADOPS {
             It 'Should have parameter ContentType' {
                 (Get-Command InvokeADOPSRestMethod).Parameters.Keys | Should -Contain 'ContentType'
             }
+            It 'Should have parameter FullResponse' {
+                (Get-Command InvokeADOPSRestMethod).Parameters.Keys | Should -Contain 'FullResponse'
+            }
             
             It 'Uri should be mandatory' {
                 (Get-Command InvokeADOPSRestMethod).Parameters['uri'].Attributes.Mandatory | Should -Be $true
@@ -122,6 +125,32 @@ InModuleScope -ModuleName ADOPS {
                     {InvokeADOPSRestMethod @PostObject} | Should -Throw
                     Should -Invoke Invoke-RestMethod -ModuleName ADOPS -Exactly 1
                     Should -Invoke GetADOPSHeader -ModuleName ADOPS -Exactly 1
+                }
+            }
+
+            Context 'Returning data' {
+                It 'Switch FullResponse should return Content, Headers, StatusCode' {
+                    Mock -CommandName GetADOPSHeader -MockWith {
+                        @{
+                            Header = @{
+                                "Authorization" = "Basic RHVtbXlVc2VyMjpEdW1teVBhc3N3b3JkMg=="
+                            }
+                            Organization = "org2"
+                        }
+                    } -ModuleName ADOPS
+                    Mock -CommandName Invoke-RestMethod -ModuleName ADOPS -MockWith {
+                        Set-Variable -Scope Script -Name $PesterBoundParameters.ResponseHeadersVariable -Value @{ 'X-Test' = 'Foo' }
+                        Set-Variable -Scope Script -Name $PesterBoundParameters.StatusCodeVariable -Value 200
+                        return @{foo = 'bar'}
+                    }
+    
+                    $response = InvokeADOPSRestMethod @PostObject -FullResponse
+                    Should -Invoke Invoke-RestMethod -ModuleName ADOPS -Exactly 1
+                    Should -Invoke GetADOPSHeader -ModuleName ADOPS -Exactly 1
+
+                    $response.Content | Should -Not -BeNullOrEmpty
+                    $response.Headers | Should -Not -BeNullOrEmpty
+                    $response.StatusCode | Should -Not -BeNullOrEmpty
                 }
             }
         }
