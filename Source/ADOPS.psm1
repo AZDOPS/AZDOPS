@@ -28,6 +28,7 @@ foreach ($file in (Get-ChildItem "$PSScriptRoot\Public\*.ps1"))
 	try {
 		Write-Verbose "Importing $($file.FullName)"
 		. $file.FullName
+		Export-ModuleMember -Function $file.BaseName
 	}
 	catch {
 		Write-Error "Failed to import '$($file.FullName)'. $_"
