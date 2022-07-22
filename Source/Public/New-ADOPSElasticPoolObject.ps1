@@ -65,6 +65,10 @@ function New-ADOPSElasticPoolObject {
         $OutputType = 'pscustomobject'
     )
 
+    if ($DesiredIdle -gt $MaxCapacity) {
+        throw "The desired idle count cannot be larger than the max capacity."
+    }
+
     $ElasticPoolObject = [PSCustomObject]@{
         serviceEndpointId = $ServiceEndpointId
         serviceEndpointScope = $ServiceEndpointScope
