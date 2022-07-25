@@ -1,8 +1,10 @@
 Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
-Describe 'Get-ADOPSWiki' {
+Describe 'Remove-ADOPSRepository' {
     BeforeAll {
+        $RepositoryID = '72199bdd-39ff-4bea-a1ce-f0058e82c18c'
+
         Mock GetADOPSHeader -ModuleName ADOPS -MockWith {
             @{
                 Organization = "myorg"
@@ -19,27 +21,27 @@ Describe 'Get-ADOPSWiki' {
 
     Context "General function tests" {
         It "Function exist" {
-            { Get-Command -Name Get-ADOPSWiki -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
+            { Get-Command -Name Remove-ADOPSRepository -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
         }
 
-        It "Contains non mandatory parameter: <_>" -TestCases 'Organization', 'WikiId' {
-            Get-Command -Name Get-ADOPSWiki | Should -HaveParameter $_
+        It "Contains non mandatory parameter: <_>" -TestCases 'Organization' {
+            Get-Command -Name Remove-ADOPSRepository | Should -HaveParameter $_
         }
 
-        It "Contains mandatory parameter: <_>" -TestCases 'Project' {
-            Get-Command -Name Get-ADOPSWiki | Should -HaveParameter $_ -Mandatory
+        It "Contains mandatory parameter: <_>" -TestCases 'Project', 'RepositoryID' {
+            Get-Command -Name Remove-ADOPSRepository | Should -HaveParameter $_ -Mandatory
         }
     }
 
     Context "Functionality" {
 
         It 'Should get organization from GetADOPSHeader when organization parameter is used' {
-            Get-ADOPSWiki -Organization 'anotherorg' -Project 'myproj' 
+            Remove-ADOPSRepository -Organization 'anotherorg' -Project 'myproj' -RepositoryID $RepositoryID
             Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 1 -Exactly
         }
 
         It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
-            Get-ADOPSWiki -Project 'myproj'
+            Remove-ADOPSRepository -Project 'myproj' -RepositoryID $RepositoryID
             Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 0 -Exactly
             Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
         }
@@ -56,7 +58,7 @@ Describe 'Get-ADOPSWiki' {
                 }
             }
 
-            $r = Get-ADOPSWiki -Project 'myproj'
+            $r = Remove-ADOPSRepository -Project 'myproj' -RepositoryID $RepositoryID
             $r.name | Should -Be 'HasValue'
         }
 
@@ -66,34 +68,25 @@ Describe 'Get-ADOPSWiki' {
                     name = "HasNoValue"
                 }
             }
-            $r = Get-ADOPSWiki -Project 'myproj'
+            $r = Remove-ADOPSRepository -Project 'myproj' -RepositoryID $RepositoryID
             $r.name | Should -Be 'HasNoValue'
         }
         
-        It 'Verifying URI, no WikiID given' {
+        It 'Verifying URI' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $URI
             }
 
-            $r = Get-ADOPSWiki -Project 'myproj'
-            $r | Should -Be 'https://dev.azure.com/myorg/myproj/_apis/wiki/wikis?api-version=7.1-preview.2'
-        }
-
-        It 'Verifying URI, WikiID given' {
-            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
-                return $URI
-            }
-
-            $r = Get-ADOPSWiki -Project 'myproj' -WikiId 'MyWiki'
-            $r | Should -Be 'https://dev.azure.com/myorg/myproj/_apis/wiki/wikis/MyWiki?api-version=7.1-preview.2'
+            $r = Remove-ADOPSRepository -Project 'myproj' -RepositoryID $RepositoryID
+            $r | Should -Be "https://dev.azure.com/myorg/myproj/_apis/git/repositories/${RepositoryID}?api-version=7.1-preview.1"
         }
 
         It 'Verifying method' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $Method
             }
-            $r = Get-ADOPSWiki -Project 'myproj'
-            $r | Should -Be 'Get'
+            $r = Remove-ADOPSRepository -Project 'myproj' -RepositoryID $RepositoryID
+            $r | Should -Be 'Delete'
         }
     }
 }
