@@ -1,16 +1,16 @@
 function New-ADOPSRepository {
     param (
-        [Parameter()]
+        [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [string]$Organization,
+        [string]$Name,
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string]$Project,
 
-        [Parameter(Mandatory)]
+        [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [string]$Name
+        [string]$Organization
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {

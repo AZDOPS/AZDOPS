@@ -1,14 +1,14 @@
 function Remove-ADOPSVariableGroup {
     [CmdletBinding()]
     param (
-        [Parameter()]
-        [string]$Organization,
+        [Parameter(Mandatory)]
+        [string]$VariableGroupName,
 
         [Parameter(Mandatory)]
         [string]$Project,
 
-        [Parameter(Mandatory)]
-        [string]$VariableGroupName
+        [Parameter()]
+        [string]$Organization
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {

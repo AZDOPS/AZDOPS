@@ -1,9 +1,6 @@
 function Test-ADOPSYamlFile {
     [CmdletBinding()]
     param (
-        [Parameter()]
-        [string]$Organization,
-
         [Parameter(Mandatory)]
         [string]$Project,
 
@@ -14,7 +11,10 @@ function Test-ADOPSYamlFile {
         [string]$File,
 
         [Parameter(Mandatory)]
-        [int]$PipelineId
+        [int]$PipelineId,
+
+        [Parameter()]
+        [string]$Organization
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {

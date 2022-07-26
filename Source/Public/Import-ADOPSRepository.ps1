@@ -1,24 +1,20 @@
 function Import-ADOPSRepository {
     [CmdLetBinding(DefaultParameterSetName='RepositoryName')]
     param (
-        [Parameter(ParameterSetName = 'RepositoryName')]
-        [Parameter(ParameterSetName = 'RepositoryId')]
-        $Organization,
+        [Parameter(Mandatory)]
+        [string]$GitSource,
 
+        [Parameter(Mandatory, ParameterSetName = 'RepositoryId')]
+        [string]$RepositoryId,
         
         [Parameter(Mandatory, ParameterSetName = 'RepositoryName')]
-        [Parameter(Mandatory, ParameterSetName = 'RepositoryId')]
+        [string]$RepositoryName,
+
+        [Parameter(Mandatory)]
         [string]$Project,
 
-        [Parameter(Mandatory, ParameterSetName = 'RepositoryName')]
-        [Parameter(Mandatory, ParameterSetName = 'RepositoryId')]
-        $GitSource,
-        
-        [Parameter(Mandatory, ParameterSetName = 'RepositoryId')]
-        $RepositoryId,
-        
-        [Parameter(Mandatory, ParameterSetName = 'RepositoryName')]
-        $RepositoryName
+        [Parameter()]
+        [string]$Organization
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {

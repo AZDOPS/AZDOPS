@@ -1,28 +1,24 @@
 function New-ADOPSUserStory {
   [CmdletBinding()]
   param (
-
-    [Parameter(Mandatory,
-      ParameterSetName = "Default")]
-    [string]$Organization,
-
-    [Parameter(Mandatory,
-      ParameterSetName = "Default")]
-    [string]$ProjectName,
-
-    [Parameter(Mandatory,
-      ParameterSetName = "Default")]
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
     [string]$Title,
 
-    [Parameter(ParameterSetName = "Default")]
+    [Parameter(Mandatory)]
+    [string]$ProjectName,
+
+    [Parameter()]
     [string]$Description,
 
-    [Parameter(ParameterSetName = "Default")]
-    [string]$Tags,        
+    [Parameter()]
+    [string]$Tags,
 
-    [Parameter(ParameterSetName = "Default")]
-    [string]$Priority
+    [Parameter()]
+    [string]$Priority,
 
+    [Parameter()]
+    [string]$Organization
   )
 
   if (-not [string]::IsNullOrEmpty($Organization)) {

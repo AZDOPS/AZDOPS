@@ -65,11 +65,11 @@ Describe "New-ADOPSElasticpool" {
         }
 
         It "Returns created elastic pool" {
-            New-ADOPSElasticpool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' -AuthorizeAllPipelines $true -AutoProvisionProjectPools $true | Should -Not -BeNullOrEmpty
+            New-ADOPSElasticpool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' -AuthorizeAllPipelines -AutoProvisionProjectPools | Should -Not -BeNullOrEmpty
         }
 
         It "Returns created elastic pool id" {
-            (New-ADOPSElasticpool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' -AuthorizeAllPipelines $true -AutoProvisionProjectPools $true).elasticPool.poolid | Should -Be 59
+            (New-ADOPSElasticpool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' -AuthorizeAllPipelines -AutoProvisionProjectPools).elasticPool.poolid | Should -Be 59
         }
 
     }

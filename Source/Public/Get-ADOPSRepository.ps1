@@ -1,13 +1,14 @@
 function Get-ADOPSRepository {
     [CmdletBinding()]
     param(
-        [Parameter()]
-        [string]$Organization,
-
         [Parameter(Mandatory)]
         [string]$Project,
 
-        [string]$Repository
+        [Parameter()]
+        [string]$Repository,
+
+        [Parameter()]
+        [string]$Organization
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {

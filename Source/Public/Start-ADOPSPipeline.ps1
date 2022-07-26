@@ -7,10 +7,10 @@ function Start-ADOPSPipeline {
         [string]$Project,
 
         [Parameter()]
-        [string]$Organization,
+        [string]$Branch = 'main',
 
         [Parameter()]
-        [string]$Branch = 'main'
+        [string]$Organization
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {

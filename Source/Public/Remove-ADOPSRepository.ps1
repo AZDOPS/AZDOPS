@@ -1,14 +1,14 @@
 function Remove-ADOPSRepository {
     [CmdletBinding()]
     param(
-        [Parameter()]
-        [string]$Organization,
+        [Parameter(Mandatory)]
+        [string]$RepositoryID,
 
         [Parameter(Mandatory)]
         [string]$Project,
 
-        [Parameter(Mandatory)]
-        [string]$RepositoryID
+        [Parameter()]
+        [string]$Organization
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {

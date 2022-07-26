@@ -1,23 +1,23 @@
 function New-ADOPSWiki {
     [CmdletBinding()]
     param (
-        [Parameter()]
-        [string]$Organization,
-
-        [Parameter(Mandatory)]
-        [string]$Project,
-
         [Parameter(Mandatory)]
         [string]$WikiName,
         
         [Parameter(Mandatory)]
         [string]$WikiRepository,
 
+        [Parameter(Mandatory)]
+        [string]$Project,
+
         [Parameter()]
         [string]$WikiRepositoryPath = '/',
         
         [Parameter()]
-        [string]$GitBranch = 'main'
+        [string]$GitBranch = 'main',
+
+        [Parameter()]
+        [string]$Organization
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {

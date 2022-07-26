@@ -1,11 +1,11 @@
 function Get-ADOPSNode {
     [CmdletBinding()]
     param (
-        [Parameter()]
-        [string]$Organization,
-
         [Parameter(Mandatory)]
-        [int32]$PoolId
+        [int32]$PoolId,
+
+        [Parameter()]
+        [string]$Organization
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {

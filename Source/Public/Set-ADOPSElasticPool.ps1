@@ -7,8 +7,8 @@ function Set-ADOPSElasticPool {
         [Parameter(Mandatory)]
         $ElasticPoolObject,
 
+        [Parameter()]
         [string]$Organization
-
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
@@ -21,7 +21,7 @@ function Set-ADOPSElasticPool {
 
     $Uri = "https://dev.azure.com/$Organization/_apis/distributedtask/elasticpools/$PoolId`?api-version=7.1-preview.1"
 
-    if ($ElasticPoolObject.gettype().name -eq 'String') {
+    if ($ElasticPoolObject.GetType().Name -eq 'String') {
         $Body = $ElasticPoolObject
     }
     else {

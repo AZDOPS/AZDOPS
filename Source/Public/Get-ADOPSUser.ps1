@@ -3,10 +3,13 @@ function Get-ADOPSUser {
     param (
         [Parameter(Mandatory, ParameterSetName = 'Name', Position = 0)]
         [string]$Name,
+
         [Parameter(Mandatory, ParameterSetName = 'Descriptor', Position = 0)]
         [string]$Descriptor,
+
         [Parameter()]
         [string]$Organization,
+
         [Parameter(ParameterSetName = 'Default', DontShow)]
         [string]$ContinuationToken
     )

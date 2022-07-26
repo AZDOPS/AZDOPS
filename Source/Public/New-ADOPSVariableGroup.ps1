@@ -1,17 +1,7 @@
 function New-ADOPSVariableGroup {
     [CmdletBinding()]
     param (
-        [Parameter(ParameterSetName = 'VariableSingle')]
-        [Parameter(ParameterSetName = 'VariableHashtable')]
-        [string]$Organization,
-
-        [Parameter(Mandatory, ParameterSetName = 'VariableSingle')]
-
-        [Parameter(Mandatory, ParameterSetName = 'VariableHashtable')]
-        [string]$Project,
-
-        [Parameter(Mandatory, ParameterSetName = 'VariableSingle')]
-        [Parameter(Mandatory, ParameterSetName = 'VariableHashtable')]
+        [Parameter(Mandatory)]
         [string]$VariableGroupName,
 
         [Parameter(Mandatory, ParameterSetName = 'VariableSingle')]
@@ -20,11 +10,11 @@ function New-ADOPSVariableGroup {
         [Parameter(Mandatory, ParameterSetName = 'VariableSingle')]
         [string]$VariableValue,
 
+        [Parameter(Mandatory)]
+        [string]$Project,
+
         [Parameter(ParameterSetName = 'VariableSingle')]
         [switch]$IsSecret,
-
-        [Parameter()]
-        [string]$Description,
 
         [Parameter(Mandatory, ParameterSetName = 'VariableHashtable')]
         [ValidateScript(
@@ -32,7 +22,13 @@ function New-ADOPSVariableGroup {
                 $_ | ForEach-Object { $_.Keys -Contains 'Name' -and $_.Keys -Contains 'IsSecret' -and $_.Keys -Contains 'Value' -and $_.Keys.count -eq 3 }
             },
             ErrorMessage = 'The hashtable must contain the following keys: Name, IsSecret, Value')]
-        [hashtable[]]$VariableHashtable
+        [hashtable[]]$VariableHashtable,
+
+        [Parameter()]
+        [string]$Description,
+
+        [Parameter()]
+        [string]$Organization
     )
 
     if ([string]::IsNullOrEmpty($Organization)) {
