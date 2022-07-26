@@ -13,7 +13,7 @@ Gets one or more Azure DevOps Elastic Pools.
 ## SYNTAX
 
 ```
-Get-ADOPSElasticPool [[-Organization] <String>] [[-PoolId] <Int32>] [<CommonParameters>]
+Get-ADOPSElasticPool [[-PoolId] <Int32>] [[-Organization] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -46,7 +46,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 0
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -61,7 +61,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

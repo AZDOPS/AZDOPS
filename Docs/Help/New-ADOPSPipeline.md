@@ -38,8 +38,24 @@ Create pipeline in $ProjectName and use Default Organization and put the pipelin
 
 ## PARAMETERS
 
+### -FolderPath
+Folderpath to add your pipelines to under Devops Pipelines.
+Like: PipelineFolder or PipelineFolder1\PipelineSubFolder2
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Name
-Name of the pipeline. 
+Name of the pipeline.
 
 ```yaml
 Type: String
@@ -63,22 +79,6 @@ Aliases:
 
 Required: False
 Position: 5
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -FolderPath
-Folderpath to add your pipelines to under Devops Pipelines.
-Like: PipelineFolder or PipelineFolder1\PipelineSubFolder2
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

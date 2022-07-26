@@ -13,7 +13,7 @@ Create a new Azure DevOps Git repository
 ## SYNTAX
 
 ```
-New-ADOPSRepository [[-Organization] <String>] [-Project] <String> [-Name] <String> [<CommonParameters>]
+New-ADOPSRepository [-Name] <String> [-Project] <String> [[-Organization] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -39,7 +39,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 2
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -54,7 +54,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 0
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

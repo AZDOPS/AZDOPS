@@ -13,20 +13,17 @@ Fetch one or more users
 
 ## SYNTAX
 
-### All (Default)
-
+### Default (Default)
 ```
 Get-ADOPSUser [-Organization <String>] [<CommonParameters>]
 ```
 
 ### Name
-
 ```
 Get-ADOPSUser [-Name] <String> [-Organization <String>] [<CommonParameters>]
 ```
 
 ### Descriptor
-
 ```
 Get-ADOPSUser [-Descriptor] <String> [-Organization <String>] [<CommonParameters>]
 ```
@@ -112,7 +109,6 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS

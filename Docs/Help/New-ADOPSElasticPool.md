@@ -13,8 +13,8 @@ Create an Azure DevOps Elastic pool.
 ## SYNTAX
 
 ```
-New-ADOPSElasticPool [-PoolName] <String> [-ElasticPoolObject] [[-Organization] <String>] [[-ProjectId] <Guid>]
- [[-AuthorizeAllPipelines] <Boolean>] [[-AutoProvisionProjectPools] <Boolean>] [<CommonParameters>]
+New-ADOPSElasticPool [-PoolName] <String> [-ElasticPoolObject] <Object> [[-ProjectId] <String>]
+ [-AuthorizeAllPipelines] [-AutoProvisionProjectPools] [[-Organization] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -48,11 +48,11 @@ New-ADOPSElasticPool @Params -ElasticPoolObject @"
 }
 "@
 ```
+
 To find your serviceEndpointScope, use Get-ADOPSProject as the scope is the project where the Service connection is bound.
 Create a Azure DevOps Elastic pool that Auto provisions in project and Authorizes the pool to be consumed by all pipelines.
 It also attaches to a Virtual Machine Scale Set using the azureId.
 Full description of the request body can be found at: https://docs.microsoft.com/en-us/rest/api/azure/devops/distributedtask/elasticpools/create?view=azure-devops-rest-7.1
-
 
 ### Example 2
 ```powershell
@@ -66,22 +66,24 @@ $ElasticPoolObject = New-ADOPSElasticPoolObject -ServiceEndpointId '44868479-e85
 
 New-ADOPSElasticPool @Params -ElasticPoolObject $ElasticPoolObject
 ```
+
 To find your serviceEndpointScope, use Get-ADOPSProject as the scope is the project where the Service connection is bound.
 Create a Azure DevOps Elastic pool that Auto provisions in project and Authorizes the pool to be consumed by all pipelines.
 It also attaches to a Virtual Machine Scale Set using the azureId.
 Full description of the request body can be found at: https://docs.microsoft.com/en-us/rest/api/azure/devops/distributedtask/elasticpools/create?view=azure-devops-rest-7.1
+
 ## PARAMETERS
 
 ### -AuthorizeAllPipelines
 Setting to determine if all pipelines are authorized to use this TaskAgentPool by default.
 
 ```yaml
-Type: Boolean
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -91,19 +93,19 @@ Accept wildcard characters: False
 Setting to automatically provision TaskAgentQueues in every project for the new pool.
 
 ```yaml
-Type: Boolean
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -ElasticPoolObject
-The full request body in json or as a pscustom object. 
+The full request body in json or as a pscustom object.
 The Help function New-ElasticPoolObject can help generate a powershell object/json string.
 
 | Name                 | Type                | Description                                                                   |
@@ -125,6 +127,7 @@ The Help function New-ElasticPoolObject can help generate a powershell object/js
 | timeToLiveMinutes    | integer             | The minimum time in minutes to keep idle agents alive                         |
 
 ```yaml
+Type: Object
 Parameter Sets: (All)
 Aliases:
 
@@ -144,7 +147,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -169,12 +172,12 @@ Accept wildcard characters: False
 If provided, a new TaskAgentQueue will be created in the specified project.
 
 ```yaml
-Type: Guid
+Type: String
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -193,4 +196,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
 [elasticpools-create](https://docs.microsoft.com/en-us/rest/api/azure/devops/distributedtask/elasticpools/create?view=azure-devops-rest-7.1)

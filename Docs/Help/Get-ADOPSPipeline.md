@@ -24,7 +24,6 @@ Lists a specific Pipeline or all Pipelines in a Specific Project.
 ### Example 1
 ```powershell
 PS C:\> Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $Name
-
 ```
 
 Get pipeline with name $Name from $Project.
@@ -32,7 +31,6 @@ Get pipeline with name $Name from $Project.
 ### Example 2
 ```powershell
 PS C:\> Get-ADOPSPipeline -Organization $OrganizationName -Project $Project
-
 ```
 
 List all Pipelines in $Project
@@ -40,7 +38,6 @@ List all Pipelines in $Project
 ### Example 3
 ```powershell
 PS C:\> Get-ADOPSPipeline -Project $Project
-
 ```
 
 List all Pipelines in $Project and uses Default Organization.
@@ -48,7 +45,7 @@ List all Pipelines in $Project and uses Default Organization.
 ## PARAMETERS
 
 ### -Name
-Name of the pipeline. 
+Name of the pipeline.
 
 ```yaml
 Type: String
