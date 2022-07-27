@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 
 InModuleScope -ModuleName ADOPS {
@@ -30,7 +32,7 @@ InModuleScope -ModuleName ADOPS {
             It 'Should have parameter FullResponse' {
                 (Get-Command InvokeADOPSRestMethod).Parameters.Keys | Should -Contain 'FullResponse'
             }
-            
+
             It 'Uri should be mandatory' {
                 (Get-Command InvokeADOPSRestMethod).Parameters['uri'].Attributes.Mandatory | Should -Be $true
             }
@@ -115,13 +117,13 @@ InModuleScope -ModuleName ADOPS {
                     Mock -CommandName Invoke-RestMethod -ModuleName ADOPS -MockWith {
                         return '<html lang="en-US">
                         <head><title>
-                        
+
                                     Azure DevOps Services | Sign In
-                        
+
                         </title><meta http-equiv="X-UA-Compatible" content="IE=11;&#32;IE=10;&#32;IE=9;&#32;IE=8" />
                             <link rel="SHORTCUT ICON" href="/favicon.ico"/>'
                     }
-    
+
                     {InvokeADOPSRestMethod @PostObject} | Should -Throw
                     Should -Invoke Invoke-RestMethod -ModuleName ADOPS -Exactly 1
                     Should -Invoke GetADOPSHeader -ModuleName ADOPS -Exactly 1
@@ -143,7 +145,7 @@ InModuleScope -ModuleName ADOPS {
                         Set-Variable -Scope Script -Name $PesterBoundParameters.StatusCodeVariable -Value 200
                         return @{foo = 'bar'}
                     }
-    
+
                     $response = InvokeADOPSRestMethod @PostObject -FullResponse
                     Should -Invoke Invoke-RestMethod -ModuleName ADOPS -Exactly 1
                     Should -Invoke GetADOPSHeader -ModuleName ADOPS -Exactly 1

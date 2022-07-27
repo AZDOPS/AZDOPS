@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe "Get-ADOPSPool" {
     Context "Function tests" {
@@ -132,7 +134,7 @@ Describe "Get-ADOPSPool" {
                     options       = 'none'
                 }
             }
-            
+
             (Get-ADOPSPool -Organization 'DummyOrg' -PoolId 8).name | Should -Be 'Hosted Ubuntu 1604'
         }
     }

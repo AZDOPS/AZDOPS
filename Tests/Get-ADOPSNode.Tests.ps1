@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe "Get-ADOPSNode" {
     Context "Function tests" {
@@ -28,7 +30,7 @@ Describe "Get-ADOPSNode" {
                             agentState     = @('enabled', 'online')
                             computeId      = 0
                             computeState   = 'healthy'
-                            requestId      = ''                    
+                            requestId      = ''
                         },
                         @{
                             poolId         = 10
@@ -41,7 +43,7 @@ Describe "Get-ADOPSNode" {
                             agentState     = @('enabled', 'online')
                             computeId      = 1
                             computeState   = 'healthy'
-                            requestId      = ''                    
+                            requestId      = ''
                         }
                     )
                 }
@@ -99,10 +101,10 @@ Describe "Get-ADOPSNode" {
                     agentState     = @('enabled', 'online')
                     computeId      = 0
                     computeState   = 'healthy'
-                    requestId      = ''                    
+                    requestId      = ''
                 }
             }
-            
+
             (Get-ADOPSNode -Organization 'DummyOrg' -PoolId 10).name | Should -Be 'vmss-test000000'
         }
     }

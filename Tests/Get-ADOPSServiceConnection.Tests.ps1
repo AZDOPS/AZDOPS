@@ -1,5 +1,7 @@
-Remove-Module ADOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 InModuleScope -ModuleName ADOPS {
     Describe 'Get-ADOPSServiceConnection tests' {
@@ -68,7 +70,7 @@ InModuleScope -ModuleName ADOPS {
 
             }
             It 'uses InvokeADOPSRestMethod one time.' {
-                Get-ADOPSServiceConnection -Organization $OrganizationName -Project $Project -Name $SCName  
+                Get-ADOPSServiceConnection -Organization $OrganizationName -Project $Project -Name $SCName
                 Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
             }
             It 'returns output after getting pipeline' {

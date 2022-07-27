@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe 'Get-ADOPSWiki' {
     BeforeAll {
@@ -13,7 +15,7 @@ Describe 'Get-ADOPSWiki' {
                 Organization = "anotherOrg"
             }
         }
-        
+
         Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
     }
 
@@ -34,7 +36,7 @@ Describe 'Get-ADOPSWiki' {
     Context "Functionality" {
 
         It 'Should get organization from GetADOPSHeader when organization parameter is used' {
-            Get-ADOPSWiki -Organization 'anotherorg' -Project 'myproj' 
+            Get-ADOPSWiki -Organization 'anotherorg' -Project 'myproj'
             Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 1 -Exactly
         }
 
@@ -69,7 +71,7 @@ Describe 'Get-ADOPSWiki' {
             $r = Get-ADOPSWiki -Project 'myproj'
             $r.name | Should -Be 'HasNoValue'
         }
-        
+
         It 'Verifying URI, no WikiID given' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $URI

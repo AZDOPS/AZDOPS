@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 BeforeAll {
     InModuleScope -ModuleName 'ADOPS' {
@@ -139,10 +141,6 @@ Describe 'Creating connection variable' {
 
 
 Describe 'Verifying parameters' {
-    BeforeAll {
-        Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-        Import-Module $PSScriptRoot\..\Source\ADOPS -Force
-    }
     It 'Should have parameter Username' {
         (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'Username'
     }

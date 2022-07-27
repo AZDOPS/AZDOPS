@@ -1,6 +1,7 @@
-Remove-Module ADOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS
-
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe 'ADOPSServiceConnection' {
     Context 'Function tests' {

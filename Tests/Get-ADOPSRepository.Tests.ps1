@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe "Get-ADOPSRepository" {
     Context "Function tests" {
@@ -67,7 +69,7 @@ Describe "Get-ADOPSRepository" {
                     Name = 'Fisar'
                 }
             }
-            
+
             (Get-ADOPSRepository -Organization 'MyOrg' -Project 'MyProject' -Repository 'MyRepo').Name | Should -Be 'Fisar'
         }
     }

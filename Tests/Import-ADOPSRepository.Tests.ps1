@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe 'Import-ADOPSRepository' {
     Context 'Command structure' {
@@ -51,7 +53,7 @@ Describe 'Import-ADOPSRepository' {
                         Organization = 'DummyOrg'
                     }
                 }
-                
+
                 Mock -CommandName InvokeADOPSRestMethod  -ModuleName ADOPS -MockWith {
                     return $InvokeSplat
                 }
@@ -66,7 +68,7 @@ Describe 'Import-ADOPSRepository' {
             $r = Import-ADOPSRepository -GitSource 'GitSource' -RepositoryName 'RepoName' -Project 'DummyProj'
             Should -Invoke -CommandName GetADOPSHeader -ModuleName ADOPS
         }
-        
+
         It 'Invoke should be correct, Verifying method "Post"' {
             $r = Import-ADOPSRepository -GitSource 'GitSource' -RepositoryName 'RepoName' -Project 'DummyProj'
             $r.Method | Should -Be 'Post'

@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 InModuleScope -ModuleName ADOPS {
     BeforeAll {
@@ -15,7 +17,7 @@ InModuleScope -ModuleName ADOPS {
         }
     }
 
-    
+
     Describe 'GetADOPSHeader' {
         Context 'Given no input, should return the default connection' {
             It 'Should return credential value of default organization, org2' {
@@ -37,10 +39,6 @@ InModuleScope -ModuleName ADOPS {
 }
 
 Describe 'Verifying parameters' {
-    BeforeAll {
-        Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-        Import-Module $PSScriptRoot\..\Source\ADOPS -Force
-    }
     It 'Should have parameter Organization' {
         InModuleScope -ModuleName 'ADOPS' {
             (Get-Command GetADOPSHeader).Parameters.Keys | Should -Contain 'Organization'

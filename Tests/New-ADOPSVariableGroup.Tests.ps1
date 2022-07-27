@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe "New-ADOPSVariableGroup" {
     Context "General function tests" {
@@ -63,6 +65,6 @@ Describe "New-ADOPSVariableGroup" {
 
         It "Should invoke corret Uri when organization is used" {
             (New-ADOPSVariableGroup -Organization "someorg" -Project "myproject" -VariableGroupName "mygroup" -VariableName "myvar" -VariableValue "myvalue").Uri | Should -Be "https://dev.azure.com/someorg/_apis/distributedtask/variablegroups?api-version=7.1-preview.2"
-        }        
+        }
     }
 }

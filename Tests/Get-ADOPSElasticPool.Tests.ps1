@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe "Get-ADOPSElasticPool" {
     Context "Function tests" {
@@ -118,7 +120,7 @@ Describe "Get-ADOPSElasticPool" {
                     timeToLiveMinutes    = 15
                 }
             }
-            
+
             (Get-ADOPSElasticPool -Organization 'DummyOrg' -PoolId 10).poolId | Should -Be 10
         }
     }

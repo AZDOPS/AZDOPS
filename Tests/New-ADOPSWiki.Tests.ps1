@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe "New-ADOPSWiki" {
     BeforeAll {
@@ -57,7 +59,7 @@ Describe "New-ADOPSWiki" {
             New-ADOPSWiki -Project 'myproject' -WikiName 'MyWikiName' -WikiRepository 'MyWikiRepo'
             Should -Invoke Get-ADOPSProject -ModuleName ADOPS -Times 1 -Exactly
         }
-        
+
         It 'Should call Get-ADOPSRepository once to get Repository id' {
             New-ADOPSWiki -Project 'myproject' -WikiName 'MyWikiName' -WikiRepository 'MyWikiRepo'
             Should -Invoke Get-ADOPSRepository -ModuleName ADOPS -Times 1 -Exactly

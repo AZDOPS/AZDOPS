@@ -1,6 +1,7 @@
-Remove-Module ADOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS
-
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe 'Get-ADOPSConnection' {
     Context 'Function tests' {
@@ -24,7 +25,7 @@ Describe 'Get-ADOPSConnection' {
                 }
             }
         }
-        
+
         It 'Given we have two connections, both connections should be returned' {
             (Get-ADOPSConnection).Count | Should -Be 2
         }

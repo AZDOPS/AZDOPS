@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe "Set-ADOPSElasticPool" {
     Context "Function tests" {
@@ -16,7 +18,7 @@ Describe "Set-ADOPSElasticPool" {
         BeforeAll {
             Mock InvokeADOPSRestMethod -ModuleName ADOPS {
                 [PSCustomObject]@{
-                    elasticPool =                                                                                                             
+                    elasticPool =
                     @{
                         poolId               = 59
                         serviceEndpointId    = '44868479-e856-42bf-9a2b-74bb500d8e36'

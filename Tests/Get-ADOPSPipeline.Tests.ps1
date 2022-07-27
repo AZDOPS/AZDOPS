@@ -1,5 +1,7 @@
-Remove-Module ADOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 InModuleScope -ModuleName ADOPS {
     Describe 'Get-ADOPSPipeline tests' {
@@ -9,7 +11,7 @@ InModuleScope -ModuleName ADOPS {
                 $OrganizationName = 'DummyOrg'
                 $Project = 'DummyProject'
                 $PipeName = 'DummyPipe1'
-                
+
                 Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
                     @{
                         Header       = @{

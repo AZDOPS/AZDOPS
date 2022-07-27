@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe 'Remove-ADOPSRepository' {
     BeforeAll {
@@ -15,7 +17,7 @@ Describe 'Remove-ADOPSRepository' {
                 Organization = "anotherOrg"
             }
         }
-        
+
         Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
     }
 
@@ -71,7 +73,7 @@ Describe 'Remove-ADOPSRepository' {
             $r = Remove-ADOPSRepository -Project 'myproj' -RepositoryID $RepositoryID
             $r.name | Should -Be 'HasNoValue'
         }
-        
+
         It 'Verifying URI' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $URI

@@ -1,5 +1,7 @@
-Remove-Module ADOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 InModuleScope -ModuleName ADOPS {
     Describe 'New-ADOPSPipeline tests' {
@@ -28,7 +30,7 @@ InModuleScope -ModuleName ADOPS {
                         Organization = $OrganizationName
                     }
                 }
-                
+
                 Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                     return $InvokeSplat
                 } -ParameterFilter { $method -eq 'Post' }
@@ -126,4 +128,4 @@ InModuleScope -ModuleName ADOPS {
             }
         }
     }
-} 
+}

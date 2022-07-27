@@ -1,12 +1,14 @@
-Remove-Module ADOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe 'Test-ADOPSYamlFile' {
     Context 'Parameters' {
         It 'Should have parameter Name' {
             (Get-Command Test-ADOPSYamlFile).Parameters.Keys | Should -Contain 'Organization'
         }
-        
+
         It 'Should have parameter Project' {
             (Get-Command Test-ADOPSYamlFile).Parameters.Keys | Should -Contain 'Project'
         }
@@ -20,7 +22,7 @@ Describe 'Test-ADOPSYamlFile' {
         It 'File should be mandatory' {
             (Get-Command Test-ADOPSYamlFile).Parameters['File'].Attributes.Mandatory | Should -Be $true
         }
-        
+
         It 'Should have parameter PipelineId' {
             (Get-Command Test-ADOPSYamlFile).Parameters.Keys | Should -Contain 'PipelineId'
         }
@@ -40,7 +42,7 @@ Describe 'Test-ADOPSYamlFile' {
                         Organization = 'DummyOrg'
                     }
                 } -ParameterFilter { $Organization -eq 'Organization' }
-                
+
                 Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
                     @{
                         Header       = @{
@@ -71,7 +73,7 @@ inputs:
 testResultsFormat: NUnit
 testResultsFiles: |
     **\test*.xml
-failTaskOnFailedTests: false          
+failTaskOnFailedTests: false
 '@
                 }
             }
@@ -97,7 +99,7 @@ failTaskOnFailedTests: false
                         Organization = 'DummyOrg'
                     }
                 } -ParameterFilter { $Organization -eq 'Organization' }
-                
+
                 Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
                     @{
                         Header       = @{
@@ -128,7 +130,7 @@ inputs:
 testResultsFormat: NUnit
 testResultsFiles: |
     **\test*.xml
-failTaskOnFailedTests: false          
+failTaskOnFailedTests: false
 '@
                 }
 
@@ -142,7 +144,7 @@ failTaskOnFailedTests: false
                     $targetObject = $null
                     $errorRecord = New-Object Management.Automation.ErrorRecord $exception, $errorID, $errorCategory, $targetObject
                     $errorRecord.ErrorDetails = $errorDetails
-                
+
                     Throw $errorRecord
                 } -ParameterFilter { $method -eq 'post' -and $Uri -like '*/22/runs?*' }
             }
@@ -155,7 +157,7 @@ failTaskOnFailedTests: false
             Should -Invoke -CommandName InvokeADOPSRestMethod -Times 1 -Exactly -ModuleName ADOPS
             Should -Invoke -CommandName Get-Content -Times 1 -Exactly -ModuleName ADOPS
         }
-        
+
         It 'Should throw if file is not of type .yaml or .yml' {
             {Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.bad' -PipelineId 666} | Should -Throw
         }
