@@ -1,5 +1,3 @@
-#Requires -Module @{ ModuleName = 'Pester'; ModuleVersion = '5.3.1' }
-
 Remove-Module ADOPS -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS
 
@@ -71,7 +69,7 @@ Describe 'New-ADOPSUserStory' {
             }
 
             $TestRunSplat = @{
-                Organization = 'DummyOrg' 
+                Organization = 'DummyOrg'
                 ProjectName = 'DummyProj'
                 Title = 'USTitle'
                 Description = 'USDescription'
@@ -79,7 +77,7 @@ Describe 'New-ADOPSUserStory' {
                 Priority = 'USPrio'
             }
         }
-        
+
         It 'Should have called mock InvokeADOPSRestMethod' {
             $TesRes = New-ADOPSUserStory @TestRunSplat
             Should -Invoke -CommandName 'InvokeADOPSRestMethod' -Exactly 1 -ModuleName ADOPS
@@ -88,7 +86,7 @@ Describe 'New-ADOPSUserStory' {
             $TesRes = New-ADOPSUserStory @TestRunSplat
             Should -Invoke -CommandName 'GetADOPSHeader' -Exactly 1 -ModuleName ADOPS
         }
-        
+
         It 'Verifying post object, ContentType' {
             $TesRes = New-ADOPSUserStory @TestRunSplat
             $TesRes.ContentType | Should -Be "application/json-patch+json"

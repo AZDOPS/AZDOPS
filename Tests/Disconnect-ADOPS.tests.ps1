@@ -1,5 +1,3 @@
-#Requires -Module @{ ModuleName = 'Pester'; ModuleVersion = '5.3.1' }
-
 Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
@@ -86,7 +84,7 @@ Describe 'Disconnect-ADOPS tests' {
             Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
             Import-Module $PSScriptRoot\..\Source\ADOPS -Force
         }
-        
+
         It 'Should have the parameter Organization' {
             (Get-Command Disconnect-ADOPS).Parameters.Keys | Should -Contain 'Organization'
         }
