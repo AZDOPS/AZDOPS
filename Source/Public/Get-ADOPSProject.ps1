@@ -2,10 +2,10 @@ function Get-ADOPSProject {
     [CmdletBinding()]
     param (
         [Parameter()]
-        [string]$Organization,
+        [string]$Project,
 
         [Parameter()]
-        [string]$Project
+        [string]$Organization
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {

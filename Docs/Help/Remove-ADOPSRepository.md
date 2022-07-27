@@ -13,7 +13,7 @@ Deletes a repository from an Azure DevOps organization.
 ## SYNTAX
 
 ```
-Remove-ADOPSRepository [[-Organization] <String>] [-Project] <String> [-RepositoryID] <String>
+Remove-ADOPSRepository [-RepositoryID] <String> [-Project] <String> [[-Organization] <String>]
  [<CommonParameters>]
 ```
 
@@ -40,7 +40,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 0
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -70,7 +70,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 2
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

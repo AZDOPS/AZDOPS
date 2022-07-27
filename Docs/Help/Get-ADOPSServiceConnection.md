@@ -25,7 +25,6 @@ Lists a specific ServiceConnection or all ServiceConnections in a Project.
 ### Example 1
 ```powershell
 PS C:\> Get-ADOPSServiceConnection -Organization $OrganizationName -Project $Project -Name $Name
-
 ```
 
 Get ServiceConnection with name $Name from $Project.
@@ -33,7 +32,6 @@ Get ServiceConnection with name $Name from $Project.
 ### Example 2
 ```powershell
 PS C:\> Get-ADOPSServiceConnection -Organization $OrganizationName -Project $Project
-
 ```
 
 List all ServiceConnection in $Project
@@ -41,7 +39,6 @@ List all ServiceConnection in $Project
 ### Example 3
 ```powershell
 PS C:\> Get-ADOPSServiceConnection -Project $Project
-
 ```
 
 List all ServiceConnection in $Project and uses Default Organization.
@@ -49,7 +46,7 @@ List all ServiceConnection in $Project and uses Default Organization.
 ## PARAMETERS
 
 ### -Name
-Name of the ServiceConnection.
+{{ Fill Name Description }}
 
 ```yaml
 Type: String

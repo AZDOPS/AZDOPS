@@ -14,7 +14,7 @@ Create an Azure DevOps Service Connection to Azure.
 
 ```
 New-ADOPSServiceConnection [-TenantId] <String> [-SubscriptionName] <String> [-SubscriptionId] <String>
- [-Project] <String> [[-ConnectionName] <String>] [[-Organization] <String>] [-ServicePrincipal] <PSCredential>
+ [-Project] <String> [[-ConnectionName] <String>] [-ServicePrincipal] <PSCredential> [[-Organization] <String>]
  [<CommonParameters>]
 ```
 
@@ -64,7 +64,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -94,7 +94,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 6
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

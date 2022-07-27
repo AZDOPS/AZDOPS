@@ -16,7 +16,7 @@ Creates an Elastic pool object that can be used.
 New-ADOPSElasticPoolObject [-ServiceEndpointId] <Guid> [-ServiceEndpointScope] <Guid> [-AzureId] <String>
  [[-OsType] <String>] [[-MaxCapacity] <Int32>] [[-DesiredIdle] <Int32>] [[-RecycleAfterEachUse] <Boolean>]
  [[-DesiredSize] <Int32>] [[-AgentInteractiveUI] <Boolean>] [[-TimeToLiveMinues] <Int32>]
- [[-MaxSavedNodeCount] <Int32>] [<CommonParameters>]
+ [[-MaxSavedNodeCount] <Int32>] [[-OutputType] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -27,7 +27,7 @@ Creates an Elastic pool object that can be used.
 ### Example 1
 ```powershell
 $AzureDevOpsProject = Get-ADOPSProject -Project 'Azure'
-$AzureVMSS = Get-AzVmss -VMScaleSetName 'vmss-test' 
+$AzureVMSS = Get-AzVmss -VMScaleSetName 'vmss-test'
 New-ADOPSElasticPoolObject -ServiceEndpointId '44868479-e856-42bf-9a2b-74bb500d8e36' -ServiceEndpointScope $AzureDevOpsProject.Id -AzureId $AzureVMSS.id
 ```
 
@@ -68,7 +68,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 3
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -141,11 +141,27 @@ Operating system type of the nodes in the pool
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: Linux, Windows
+Accepted values: linux, windows
 
 Required: False
-Position: 2
+Position: 3
 Default value: linux
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputType
+In what format should the output be in.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: json, pscustomobject
+
+Required: False
+Position: 11
+Default value: pscustomobject
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -210,22 +226,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -OutputType
-In what format should the output be in.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-Accepted values: json, pscustomobject
-
-Required: False
-Position: 10
-Default value: pscustomobject
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -239,4 +239,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
 [elasticpools-create](https://docs.microsoft.com/en-us/rest/api/azure/devops/distributedtask/elasticpools/create?view=azure-devops-rest-7.1)

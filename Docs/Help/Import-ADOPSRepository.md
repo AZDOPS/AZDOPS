@@ -14,13 +14,13 @@ Import an external public git repo to Azure DevOps repos.
 
 ### RepositoryName (Default)
 ```
-Import-ADOPSRepository [-Organization <Object>] -Project <String> -GitSource <Object> -RepositoryName <Object>
+Import-ADOPSRepository -GitSource <String> -RepositoryName <String> -Project <String> [-Organization <String>]
  [<CommonParameters>]
 ```
 
 ### RepositoryId
 ```
-Import-ADOPSRepository [-Organization <Object>] -Project <String> -GitSource <Object> -RepositoryId <Object>
+Import-ADOPSRepository -GitSource <String> -RepositoryId <String> -Project <String> [-Organization <String>]
  [<CommonParameters>]
 ```
 
@@ -43,7 +43,7 @@ This command will import all data from the `https://github.com/AZDOPS/AZDOPS.git
 The source repo to fetch. Must be a public accessable http or https link.
 
 ```yaml
-Type: Object
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -58,7 +58,7 @@ Accept wildcard characters: False
 Your Azure DevOps organization.
 
 ```yaml
-Type: Object
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -89,7 +89,7 @@ Repository id where to import the GitSource.
 This must be an empty Azure DevOps repository.
 
 ```yaml
-Type: Object
+Type: String
 Parameter Sets: RepositoryId
 Aliases:
 
@@ -105,7 +105,7 @@ Repository name where to import the GitSource.
 This must be an empty Azure DevOps repository.
 
 ```yaml
-Type: Object
+Type: String
 Parameter Sets: RepositoryName
 Aliases:
 

@@ -1,13 +1,13 @@
 function Get-ADOPSWiki {
     param (
-        [Parameter()]
-        [string]$Organization,
-
         [Parameter(Mandatory)]
         [string]$Project,
 
         [Parameter()]
-        [string]$WikiId
+        [string]$WikiId,
+
+        [Parameter()]
+        [string]$Organization
     )
  
     if (-not [string]::IsNullOrEmpty($Organization)) {

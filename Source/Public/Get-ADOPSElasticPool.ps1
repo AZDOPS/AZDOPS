@@ -2,11 +2,10 @@ function Get-ADOPSElasticPool {
     [CmdletBinding()]
     param (
         [Parameter()]
-        [string]$Organization,
+        [int32]$PoolId,
 
         [Parameter()]
-        [int32]$PoolId
-
+        [string]$Organization
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {

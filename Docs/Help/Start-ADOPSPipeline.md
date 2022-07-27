@@ -13,7 +13,7 @@ Starts an Azure DevOps Pipeline.
 ## SYNTAX
 
 ```
-Start-ADOPSPipeline [-Name] <String> [-Project] <String> [[-Organization] <String>] [[-Branch] <String>]
+Start-ADOPSPipeline [-Name] <String> [-Project] <String> [[-Branch] <String>] [[-Organization] <String>]
  [<CommonParameters>]
 ```
 
@@ -40,7 +40,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -70,7 +70,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

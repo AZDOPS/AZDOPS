@@ -7,20 +7,17 @@ function New-ADOPSElasticPool {
         [Parameter(Mandatory)]
         $ElasticPoolObject,
 
-        [string]$Organization,
-        
         [Parameter()]
-        [string]
-        $ProjectId,
+        [string]$ProjectId,
 
         [Parameter()]
-        [boolean]
-        $AuthorizeAllPipelines = $false,
+        [switch]$AuthorizeAllPipelines,
 
         [Parameter()]
-        [boolean]
-        $AutoProvisionProjectPools = $false
+        [switch]$AutoProvisionProjectPools,
 
+        [Parameter()]
+        [string]$Organization
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {

@@ -13,18 +13,16 @@ Creates a new variable group in an Azure DevOps project.
 
 ## SYNTAX
 
-### VariableHashtable
-
-```powershell
-New-ADOPSVariableGroup [-Organization <String>] -Project <String> -VariableGroupName <String>
- [-Description <String>] [-VariableHashtable <Hashtable[]>] [<CommonParameters>]
+### VariableSingle
+```
+New-ADOPSVariableGroup -VariableGroupName <String> -VariableName <String> -VariableValue <String>
+ -Project <String> [-IsSecret] [-Description <String>] [-Organization <String>] [<CommonParameters>]
 ```
 
-### VariableSingle
-
-```powershell
-New-ADOPSVariableGroup [-Organization <String>] -Project <String> -VariableGroupName <String>
- [-VariableName <String>] [-VariableValue <String>] [-IsSecret] [-Description <String>] [<CommonParameters>]
+### VariableHashtable
+```
+New-ADOPSVariableGroup -VariableGroupName <String> -Project <String> -VariableHashtable <Hashtable[]>
+ [-Description <String>] [-Organization <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -44,7 +42,7 @@ PS C:\> $Hashtable = @(
                 value    = "Key1Value"
                 IsSecret = $true
             },
-            @{       
+            @{
                 Name     = "Key2"
                 value    = "Key2Value"
                 IsSecret = $false
@@ -150,7 +148,8 @@ Accept wildcard characters: False
 
 A hashtable containing the variable to be created with the variable group.
 
-```powershell
+
+
 @(
     @{
         Name     = "Key1"
@@ -163,10 +162,9 @@ A hashtable containing the variable to be created with the variable group.
         IsSecret = $false
     }
 )
-```
 
 ```yaml
-Type: Hashtable
+Type: Hashtable[]
 Parameter Sets: VariableHashtable
 Aliases:
 
@@ -210,7 +208,6 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS

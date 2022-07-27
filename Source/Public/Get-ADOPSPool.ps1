@@ -1,27 +1,18 @@
 function Get-ADOPSPool {
     [CmdletBinding(DefaultParameterSetName = 'All')]
     param (
-        [Parameter(ParameterSetName = 'PoolId')]
-        [Parameter(ParameterSetName = 'PoolName')]
-        [Parameter(ParameterSetName = 'All')]
-        [string]$Organization,
-
-        [Parameter(
-            Mandatory = $true,
-            ParameterSetName = 'PoolId'
-        )]
+        [Parameter(Mandatory, ParameterSetName = 'PoolId')]
         [int32]$PoolId,
 
-        [Parameter(
-            Mandatory = $true,
-            ParameterSetName = 'PoolName'
-        )]
+        [Parameter(Mandatory, ParameterSetName = 'PoolName')]
         [string]$PoolName,
 
         # Include legacy pools
         [Parameter(ParameterSetName = 'All')]
-        [switch]
-        $IncludeLegacy
+        [switch]$IncludeLegacy,
+
+        [Parameter()]
+        [string]$Organization
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {

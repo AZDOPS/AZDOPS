@@ -37,7 +37,7 @@ Generates a Elastic pool object using the New-ADOPSElasticPoolObject function an
 ## PARAMETERS
 
 ### -ElasticPoolObject
-The full request body in json or as a pscustom object. 
+The full request body in json or as a pscustom object.
 The Help function New-ElasticPoolObject can help generate a powershell object/json string.
 
 | Name                 | Type                | Description                                                                   |

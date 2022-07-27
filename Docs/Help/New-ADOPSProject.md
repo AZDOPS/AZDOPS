@@ -13,7 +13,7 @@ Creates a new project in Azure DevOps.
 
 ## SYNTAX
 
-```powershell
+```
 New-ADOPSProject [-Name] <String> [[-Description] <String>] [-Visibility] <String>
  [[-SourceControlType] <String>] [[-ProcessTypeName] <String>] [[-Organization] <String>] [<CommonParameters>]
 ```
@@ -50,22 +50,6 @@ Creates a new, private project called "ADOPSproj" with an existing, custom proce
 
 ## PARAMETERS
 
-### -Name
-
-The name of the new project.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Description
 
 The description of the new project.
@@ -82,6 +66,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Name
+
+The name of the new project.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Organization
 
 The organization to create the project in.
@@ -93,23 +93,6 @@ Aliases:
 
 Required: False
 Position: 5
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Visibility
-
-The visibility of the project.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-Accepted values: Private, Public
-
-Required: True
-Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -150,8 +133,24 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### CommonParameters
+### -Visibility
 
+The visibility of the project.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: Private, Public
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS

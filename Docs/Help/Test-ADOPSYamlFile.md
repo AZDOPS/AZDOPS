@@ -13,7 +13,7 @@ Test a yaml file against the Azure DevOps schema validator.
 ## SYNTAX
 
 ```
-Test-ADOPSYamlFile [[-Organization] <String>] [-Project] <String> [-File] <String> [-PipelineId] <Int32>
+Test-ADOPSYamlFile [-Project] <String> [-File] <String> [-PipelineId] <Int32> [[-Organization] <String>]
  [<CommonParameters>]
 ```
 
@@ -44,7 +44,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 2
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -59,19 +59,19 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 0
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -PipelineId
-Pipeline Id to run the verification against. 
+Pipeline Id to run the verification against.
 Can be found by running the command
 
-```PowerShell
+
+
 Get-ADOPSPipeline -Project MyProject -Name MyPipelineName
-```
 
 ```yaml
 Type: Int32
@@ -79,7 +79,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 3
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -94,7 +94,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 1
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

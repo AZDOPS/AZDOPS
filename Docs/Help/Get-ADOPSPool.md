@@ -14,17 +14,17 @@ Get one or more Azure DevOps Agent pools.
 
 ### All (Default)
 ```
-Get-ADOPSPool [-Organization <String>] [-IncludeLegacy] [<CommonParameters>]
-```
-
-### PoolName
-```
-Get-ADOPSPool [-Organization <String>] -PoolName <String> [<CommonParameters>]
+Get-ADOPSPool [-IncludeLegacy] [-Organization <String>] [<CommonParameters>]
 ```
 
 ### PoolId
 ```
-Get-ADOPSPool [-Organization <String>] -PoolId <Int32> [<CommonParameters>]
+Get-ADOPSPool -PoolId <Int32> [-Organization <String>] [<CommonParameters>]
+```
+
+### PoolName
+```
+Get-ADOPSPool -PoolName <String> [-Organization <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -128,4 +128,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
 [get-agent-pools](https://docs.microsoft.com/en-us/rest/api/azure/devops/distributedtask/pools/get-agent-pools?view=azure-devops-rest-7.1)

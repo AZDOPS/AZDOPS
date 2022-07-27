@@ -13,7 +13,7 @@ Establish a connection to Azure DevOps using a PAT.
 
 ## SYNTAX
 
-```powershell
+```
 Connect-ADOPS [-Username] <String> [-PersonalAccessToken] <String> [-Organization] <String> [-Default]
  [<CommonParameters>]
 ```
@@ -109,7 +109,6 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
