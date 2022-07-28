@@ -19,6 +19,11 @@ InModuleScope -ModuleName ADOPS {
 
 
     Describe 'GetADOPSHeader' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Organization' }
+        ) {
+            Get-Command -Name GetADOPSHeader | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
         Context 'Given no input, should return the default connection' {
             It 'Should return credential value of default organization, org2' {
                 (GetADOPSHeader).Header.Authorization | Should -BeLike "basic*"
@@ -34,14 +39,6 @@ InModuleScope -ModuleName ADOPS {
             It 'Token should contain organization name' {
                 (GetADOPSHeader -Organization 'org1').Organization | Should -Be 'org1'
             }
-        }
-    }
-}
-
-Describe 'Verifying parameters' {
-    It 'Should have parameter Organization' {
-        InModuleScope -ModuleName 'ADOPS' {
-            (Get-Command GetADOPSHeader).Parameters.Keys | Should -Contain 'Organization'
         }
     }
 }

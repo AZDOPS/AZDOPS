@@ -4,28 +4,13 @@ BeforeDiscovery {
 }
 
 Describe 'Start-ADOPSPipeline' {
-    Context 'Parameters' {
-        It 'Should have parameter Name' {
-            (Get-Command Start-ADOPSPipeline).Parameters.Keys | Should -Contain 'Name'
-        }
-        It 'Name should be mandatory' {
-            (Get-Command Start-ADOPSPipeline).Parameters['Name'].Attributes.Mandatory | Should -Be $true
-        }
-
-        It 'Should have parameter Project' {
-            (Get-Command Start-ADOPSPipeline).Parameters.Keys | Should -Contain 'Project'
-        }
-        It 'Project should be mandatory' {
-            (Get-Command Start-ADOPSPipeline).Parameters['Project'].Attributes.Mandatory | Should -Be $true
-        }
-
-        It 'Should have parameter Organization' {
-            (Get-Command Start-ADOPSPipeline).Parameters.Keys | Should -Contain 'Organization'
-        }
-
-        It 'Should have parameter Branch' {
-            (Get-Command Start-ADOPSPipeline).Parameters.Keys | Should -Contain 'Branch'
-        }
+    It 'Has parameter <_.Name>' -TestCases @(
+        @{ Name = 'Name'; Mandatory = $true }
+        @{ Name = 'Project'; Mandatory = $true }
+        @{ Name = 'Branch'; }
+        @{ Name = 'Organization'; }
+    ) {
+        Get-Command -Name Start-ADOPSPipeline | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context 'Starting pipeline' {

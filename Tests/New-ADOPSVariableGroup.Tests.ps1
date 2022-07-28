@@ -4,16 +4,17 @@ BeforeDiscovery {
 }
 
 Describe "New-ADOPSVariableGroup" {
-    Context "General function tests" {
-        It "Function exist" {
-            { Get-Command -Name New-ADOPSVariableGroup -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-    }
-
-    Context "Check that we have all the parameters we need" {
-        It "Contains parameter: <_>" -TestCases 'Organization', 'Project', 'VariableGroupName', 'VariableName', 'VariableValue', 'IsSecret', 'Description', 'VariableHashtable' {
-            (Get-Command -Name New-ADOPSVariableGroup).Parameters.Keys | Should -Contain $_
-        }
+    It 'Has parameter <_.Name>' -TestCases @(
+        @{ Name = 'VariableGroupName'; Mandatory = $true }
+        @{ Name = 'VariableName'; Mandatory = $true }
+        @{ Name = 'VariableValue'; Mandatory = $true }
+        @{ Name = 'Project'; Mandatory = $true }
+        @{ Name = 'VariableHashTable'; Mandatory = $true }
+        @{ Name = 'IsSecret'; Type = [switch] }
+        @{ Name = 'Description'; }
+        @{ Name = 'Organization'; }
+    ) {
+        Get-Command -Name New-ADOPSVariableGroup | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context "Adding variable group" {

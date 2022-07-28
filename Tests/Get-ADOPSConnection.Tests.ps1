@@ -4,10 +4,10 @@ BeforeDiscovery {
 }
 
 Describe 'Get-ADOPSConnection' {
-    Context 'Function tests' {
-        It 'We have a function' {
-            Get-Command Get-ADOPSConnection -Module ADOPS | Should -Not -BeNullOrEmpty
-        }
+    It 'Has parameter <_.Name>' -TestCases @(
+        @{ Name = 'Organization'; }
+    ) {
+        Get-Command -Name Get-ADOPSConnection | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context 'Verifying returned values' {

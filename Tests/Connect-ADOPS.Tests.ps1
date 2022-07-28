@@ -141,32 +141,13 @@ Describe 'Creating connection variable' {
 
 
 Describe 'Verifying parameters' {
-    It 'Should have parameter Username' {
-        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'Username'
-    }
-    It 'Username should be required' {
-        (Get-Command Connect-ADOPS).Parameters['Username'].Attributes.Mandatory | Should -Be $true
-    }
-
-    It 'Should have parameter PersonalAccessToken' {
-        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'PersonalAccessToken'
-    }
-    It 'PersonalAccessToken should be required' {
-        (Get-Command Connect-ADOPS).Parameters['PersonalAccessToken'].Attributes.Mandatory | Should -Be $true
-    }
-
-    It 'Should have parameter Organization' {
-        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'Organization'
-    }
-    It 'Organization should be required' {
-        (Get-Command Connect-ADOPS).Parameters['Organization'].Attributes.Mandatory | Should -Be $true
-    }
-
-    It 'Should have parameter Default' {
-        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'Default'
-    }
-    It 'Default should be switch' {
-        (Get-Command Connect-ADOPS).Parameters['Default'].SwitchParameter | Should -Be $true
+    It 'Has parameter <_.Name>' -TestCases @(
+        @{ Name = 'Username'; Mandatory = $true }
+        @{ Name = 'PersonalAccessToken'; Mandatory = $true }
+        @{ Name = 'Organization'; Mandatory = $true }
+        @{ Name = 'Default'; Type = [switch] }
+    ) {
+        Get-Command -Name Connect-ADOPS | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 }
 

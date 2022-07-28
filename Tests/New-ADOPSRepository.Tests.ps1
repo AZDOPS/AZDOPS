@@ -4,22 +4,12 @@ BeforeDiscovery {
 }
 
 Describe 'New-ADOPSRepository' {
-    Context 'Command structure' {
-        BeforeAll {
-            $r  = Get-Command -Name New-ADOPSRepository -Module ADOPS
-        }
-        It 'Command should exist' {
-            $r | Should -Not -BeNullOrEmpty
-        }
-        It 'Has parameter <_>' -TestCases 'Organization', 'Project', 'Name' {
-            $r.Parameters.Keys | Should -Contain $_
-        }
-        It 'Name should be mandatory' {
-            (Get-Command New-ADOPSRepository).Parameters['Name'].Attributes.Mandatory | Should -Be $true
-        }
-        It 'Project should be mandatory' {
-            (Get-Command New-ADOPSRepository).Parameters['Project'].Attributes.Mandatory | Should -Be $true
-        }
+    It 'Has parameter <_.Name>' -TestCases @(
+        @{ Name = 'Name'; Mandatory = $true }
+        @{ Name = 'Project'; Mandatory = $true }
+        @{ Name = 'Organization'; }
+    ) {
+        Get-Command -Name New-ADOPSRepository | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context 'Running command' {

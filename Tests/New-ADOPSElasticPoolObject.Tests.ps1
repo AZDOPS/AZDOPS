@@ -4,14 +4,21 @@ BeforeDiscovery {
 }
 
 Describe "New-ADOPSElasticPoolObject" {
-    Context "Function tests" {
-        It "Function exists" {
-            { Get-Command -Name New-ADOPSElasticPoolObject -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-
-        It 'Has parameter <_>' -TestCases 'ServiceEndpointId', 'ServiceEndpointScope', 'AzureId', 'OsType', 'MaxCapacity', 'DesiredIdle', 'RecycleAfterEachUse', 'DesiredSize', 'AgentInteractiveUI', 'TimeToLiveMinues', 'MaxSavedNodeCount', 'OutputType' {
-            (Get-Command -Name New-ADOPSElasticPoolObject).Parameters.Keys | Should -Contain $_
-        }
+    It 'Has parameter <_.Name>' -TestCases @(
+        @{ Name = 'ServiceEndpointId'; Mandatory = $true }
+        @{ Name = 'ServiceEndpointScope'; Mandatory = $true }
+        @{ Name = 'AzureId'; Mandatory = $true }
+        @{ Name = 'OsType'; }
+        @{ Name = 'MaxCapacity'; }
+        @{ Name = 'DesiredIdle'; }
+        @{ Name = 'RecycleAfterEachUse'; }
+        @{ Name = 'DesiredSize'; }
+        @{ Name = 'AgentInteractiveUI'; }
+        @{ Name = 'TimeToLiveMinues'; }
+        @{ Name = 'MaxSavedNodeCount'; }
+        @{ Name = 'OutputType'; }
+    ) {
+        Get-Command -Name New-ADOPSElasticPoolObject | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context "Function returns created elastic pool" {

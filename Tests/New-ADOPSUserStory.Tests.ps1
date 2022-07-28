@@ -3,48 +3,17 @@ BeforeDiscovery {
     Initialize-TestSetup
 }
 
-InModuleScope -ModuleName ADOPS {
-    Describe 'New-ADOPSUserStory tests' {
-
-        Context 'Parameters' {
-            It 'Should have parameter Organization' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Organization'
-            }
-            It 'Should have parameter ProjectName' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'ProjectName'
-            }
-            It 'ProjectName should be required' {
-                (Get-Command New-ADOPSUserStory).Parameters['ProjectName'].Attributes.Mandatory | Should -Be $true
-            }
-            It 'Should have parameter Title' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Title'
-            }
-            It 'Title should be required' {
-                (Get-Command New-ADOPSUserStory).Parameters['Title'].Attributes.Mandatory | Should -Be $true
-            }
-            It 'Should have parameter Description' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Description'
-            }
-            It 'Description should not be required' {
-                (Get-Command New-ADOPSUserStory).Parameters['Description'].Attributes.Mandatory | Should -Be $false
-            }
-            It 'Should have parameter Tags' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Tags'
-            }
-            It 'Tags should not be required' {
-                (Get-Command New-ADOPSUserStory).Parameters['Tags'].Attributes.Mandatory | Should -Be $false
-            }
-            It 'Should have parameter Priority' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Priority'
-            }
-            It 'Priority should not be required' {
-                (Get-Command New-ADOPSUserStory).Parameters['Priority'].Attributes.Mandatory | Should -Be $false
-            }
-        }
-    }
-}
-
 Describe 'New-ADOPSUserStory' {
+    It 'Has parameter <_.Name>' -TestCases @(
+        @{ Name = 'Title'; Mandatory = $true }
+        @{ Name = 'ProjectName'; Mandatory = $true }
+        @{ Name = 'Description'; }
+        @{ Name = 'Tags'; }
+        @{ Name = 'Priority'; }
+        @{ Name = 'Organization'; }
+    ) {
+        Get-Command -Name New-ADOPSUserStory | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    }
     Context 'Creating new user story' {
         BeforeAll {
             InModuleScope -ModuleName ADOPS {

@@ -5,6 +5,13 @@ BeforeDiscovery {
 
 InModuleScope -ModuleName ADOPS {
     Describe 'Get-ADOPSServiceConnection tests' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Name'; }
+            @{ Name = 'Project'; Mandatory = $true }
+            @{ Name = 'Organization' }
+        ) {
+            Get-Command -Name Get-ADOPSServiceConnection | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
         Context 'Command tests' {
             BeforeAll {
 
@@ -88,22 +95,6 @@ InModuleScope -ModuleName ADOPS {
             It 'returns multiple outputs after getting pipelines' {
                 (Get-ADOPSServiceConnection -Organization $OrganizationName -Project $Project).count | Should -Be 2
             }
-        }
-
-        Context 'Parameters' {
-            It 'Should have parameter Organization' {
-                (Get-Command Get-ADOPSServiceConnection).Parameters.Keys | Should -Contain 'Organization'
-            }
-            It 'Organization should not be required' {
-                (Get-Command Get-ADOPSServiceConnection).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
-            }
-            It 'Should have parameter Project' {
-                (Get-Command Get-ADOPSServiceConnection).Parameters.Keys | Should -Contain 'Project'
-            }
-            It 'Should have parameter Name' {
-                (Get-Command Get-ADOPSServiceConnection).Parameters.Keys | Should -Contain 'Name'
-            }
-
         }
     }
 }

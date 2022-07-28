@@ -4,7 +4,14 @@ BeforeDiscovery {
 }
 
 InModuleScope -ModuleName ADOPS {
-    Describe 'Remove-ADOPSVariableGroup tests' {
+    Describe 'Remove-ADOPSVariableGroup' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'VariableGroupName'; Mandatory = $true }
+            @{ Name = 'Project'; }
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name Remove-ADOPSVariableGroup | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
         Context 'Removing variable group' {
             BeforeAll {
                 Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
@@ -82,27 +89,6 @@ InModuleScope -ModuleName ADOPS {
             }
             It 'should throw if VariableGroupName Name is invalid' {
                 { Remove-ADOPSVariableGroup -Organization $OrganizationName -Project $Project -VariableGroupName 'MissingVariableGroupName'} | Should -Throw
-            }
-        }
-
-        Context 'Parameters' {
-            It 'Should have parameter Organization' {
-                (Get-Command Remove-ADOPSVariableGroup).Parameters.Keys | Should -Contain 'Organization'
-            }
-            It 'Organization should not be required' {
-                (Get-Command Remove-ADOPSVariableGroup).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
-            }
-            It 'Should have parameter Project' {
-                (Get-Command Remove-ADOPSVariableGroup).Parameters.Keys | Should -Contain 'Project'
-            }
-            It 'Project should be required' {
-                (Get-Command Remove-ADOPSVariableGroup).Parameters['Project'].Attributes.Mandatory | Should -Be $true
-            }
-            It 'Should have parameter VariableGroupName' {
-                (Get-Command Remove-ADOPSVariableGroup).Parameters.Keys | Should -Contain 'VariableGroupName'
-            }
-            It 'VariableGroupName should not be required' {
-                (Get-Command Remove-ADOPSVariableGroup).Parameters['VariableGroupName'].Attributes.Mandatory | Should -Be $true
             }
         }
     }

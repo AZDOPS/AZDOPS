@@ -13,36 +13,17 @@ InModuleScope -ModuleName ADOPS {
                 Body = @{Dummy='value'} | ConvertTo-Json
             }
         }
-        Context 'Parameters' {
-            It 'Should have parameter method' {
-                (Get-Command InvokeADOPSRestMethod).Parameters.Keys | Should -Contain 'method'
-            }
-            It 'Should have parameter body' {
-                (Get-Command InvokeADOPSRestMethod).Parameters.Keys | Should -Contain 'body'
-            }
-            It 'Should have parameter uri' {
-                (Get-Command InvokeADOPSRestMethod).Parameters.Keys | Should -Contain 'uri'
-            }
-            It 'Should have parameter Organization' {
-                (Get-Command InvokeADOPSRestMethod).Parameters.Keys | Should -Contain 'Organization'
-            }
-            It 'Should have parameter ContentType' {
-                (Get-Command InvokeADOPSRestMethod).Parameters.Keys | Should -Contain 'ContentType'
-            }
-            It 'Should have parameter FullResponse' {
-                (Get-Command InvokeADOPSRestMethod).Parameters.Keys | Should -Contain 'FullResponse'
-            }
-
-            It 'Uri should be mandatory' {
-                (Get-Command InvokeADOPSRestMethod).Parameters['uri'].Attributes.Mandatory | Should -Be $true
-            }
-            It 'Uri should be of type URI' {
-                (Get-Command InvokeADOPSRestMethod).Parameters['uri'].ParameterType.Name | Should -Be 'URI'
-            }
-            It 'Method should be of type WebRequestMethod' {
-                (Get-Command InvokeADOPSRestMethod).Parameters['Method'].ParameterType.Name | Should -Be 'WebRequestMethod'
-            }
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Method'; Type = [Microsoft.PowerShell.Commands.WebRequestMethod] }
+            @{ Name = 'Body'; }
+            @{ Name = 'Uri'; Mandatory = $true; Type = [URI] }
+            @{ Name = 'Organization' }
+            @{ Name = 'ContentType' }
+            @{ Name = 'FullResponse'; Type = [switch] }
+        ) {
+            Get-Command -Name InvokeADOPSRestMethod | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
+
         Context 'Building webrequest call' {
             BeforeEach {
                 Mock -CommandName GetADOPSHeader -MockWith {

@@ -4,14 +4,11 @@ BeforeDiscovery {
 }
 
 Describe "Get-ADOPSNode" {
-    Context "Function tests" {
-        It "Function exists" {
-            { Get-Command -Name Get-ADOPSNode -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-
-        It 'Has parameter <_>' -TestCases 'Organization', 'PoolId' {
-            (Get-Command -Name Get-ADOPSNode).Parameters.Keys | Should -Contain $_
-        }
+    It 'Has parameter <_.Name>' -TestCases @(
+        @{ Name = 'PoolId'; }
+        @{ Name = 'Organization'; }
+    ) {
+        Get-Command -Name Get-ADOPSNode| Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context "Function returns repositories" {

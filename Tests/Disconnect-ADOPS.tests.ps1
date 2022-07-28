@@ -82,11 +82,10 @@ Describe 'Disconnect-ADOPS tests' {
     }
 
     Context 'Verifying parameters' {
-        It 'Should have the parameter Organization' {
-            (Get-Command Disconnect-ADOPS).Parameters.Keys | Should -Contain 'Organization'
-        }
-        It 'Organization should not be mandatory' {
-            (Get-Command Disconnect-ADOPS).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name Disconnect-ADOPS | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
     }
 }

@@ -4,31 +4,13 @@ BeforeDiscovery {
 }
 
 Describe 'Test-ADOPSYamlFile' {
-    Context 'Parameters' {
-        It 'Should have parameter Name' {
-            (Get-Command Test-ADOPSYamlFile).Parameters.Keys | Should -Contain 'Organization'
-        }
-
-        It 'Should have parameter Project' {
-            (Get-Command Test-ADOPSYamlFile).Parameters.Keys | Should -Contain 'Project'
-        }
-        It 'Project should be mandatory' {
-            (Get-Command Test-ADOPSYamlFile).Parameters['Project'].Attributes.Mandatory | Should -Be $true
-        }
-
-        It 'Should have parameter File' {
-            (Get-Command Test-ADOPSYamlFile).Parameters.Keys | Should -Contain 'File'
-        }
-        It 'File should be mandatory' {
-            (Get-Command Test-ADOPSYamlFile).Parameters['File'].Attributes.Mandatory | Should -Be $true
-        }
-
-        It 'Should have parameter PipelineId' {
-            (Get-Command Test-ADOPSYamlFile).Parameters.Keys | Should -Contain 'PipelineId'
-        }
-        It 'PipelineId should be mandatory' {
-            (Get-Command Test-ADOPSYamlFile).Parameters['PipelineId'].Attributes.Mandatory | Should -Be $true
-        }
+    It 'Has parameter <_.Name>' -TestCases @(
+        @{ Name = 'Project'; Mandatory = $true }
+        @{ Name = 'File'; Mandatory = $true }
+        @{ Name = 'PipelineId'; Mandatory = $true }
+        @{ Name = 'Organization'; }
+    ) {
+        Get-Command -Name Test-ADOPSYamlFile | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context 'Verifying invoke body' {

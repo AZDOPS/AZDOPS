@@ -4,14 +4,13 @@ BeforeDiscovery {
 }
 
 Describe "Get-ADOPSPool" {
-    Context "Function tests" {
-        It "Function exists" {
-            { Get-Command -Name Get-ADOPSPool -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-
-        It 'Has parameter <_>' -TestCases 'Organization', 'PoolId', 'PoolName', 'IncludeLegacy' {
-            (Get-Command -Name Get-ADOPSPool).Parameters.Keys | Should -Contain $_
-        }
+    It 'Has parameter <_.Name>' -TestCases @(
+        @{ Name = 'PoolId'; Mandatory = $true }
+        @{ Name = 'PoolName'; Mandatory = $true }
+        @{ Name = 'IncludeLegacy' }
+        @{ Name = 'Organization' }
+    ) {
+        Get-Command -Name Get-ADOPSPool | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context "Function returns agent pools" {
