@@ -4,17 +4,20 @@ BeforeDiscovery {
 }
 
 InModuleScope -ModuleName ADOPS {
-    Describe 'New-ADOPSProject tests' {
-        It 'Has parameter <_.Name>' -TestCases @(
-            @{ Name = 'Name'; Mandatory = $true }
-            @{ Name = 'Visibility'; Mandatory = $true }
-            @{ Name = 'SourceControlType'; }
-            @{ Name = 'ProcessTypeName'; }
-            @{ Name = 'Description'; }
-            @{ Name = 'Organization'; }
-        ) {
-            Get-Command -Name New-ADOPSProject | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Describe 'New-ADOPSProject' {
+        Context 'Parameter validation' {
+            It 'Has parameter <_.Name>' -TestCases @(
+                @{ Name = 'Name'; Mandatory = $true }
+                @{ Name = 'Visibility'; Mandatory = $true }
+                @{ Name = 'SourceControlType'; }
+                @{ Name = 'ProcessTypeName'; }
+                @{ Name = 'Description'; }
+                @{ Name = 'Organization'; }
+            ) {
+                Get-Command -Name New-ADOPSProject | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+            }
         }
+
         Context 'Creating project' {
             BeforeAll {
                 Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {

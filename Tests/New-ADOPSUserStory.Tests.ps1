@@ -4,16 +4,19 @@ BeforeDiscovery {
 }
 
 Describe 'New-ADOPSUserStory' {
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'Title'; Mandatory = $true }
-        @{ Name = 'ProjectName'; Mandatory = $true }
-        @{ Name = 'Description'; }
-        @{ Name = 'Tags'; }
-        @{ Name = 'Priority'; }
-        @{ Name = 'Organization'; }
-    ) {
-        Get-Command -Name New-ADOPSUserStory | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Title'; Mandatory = $true }
+            @{ Name = 'ProjectName'; Mandatory = $true }
+            @{ Name = 'Description'; }
+            @{ Name = 'Tags'; }
+            @{ Name = 'Priority'; }
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name New-ADOPSUserStory | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
     }
+
     Context 'Creating new user story' {
         BeforeAll {
             InModuleScope -ModuleName ADOPS {

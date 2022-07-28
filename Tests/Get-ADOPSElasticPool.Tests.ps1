@@ -4,11 +4,13 @@ BeforeDiscovery {
 }
 
 Describe "Get-ADOPSElasticPool" {
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'PoolId'; }
-        @{ Name = 'Organization'; }
-    ) {
-        Get-Command -Name Get-ADOPSElasticPool | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'PoolId'; }
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name Get-ADOPSElasticPool | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
     }
 
     Context "Function returns elastic pools" {

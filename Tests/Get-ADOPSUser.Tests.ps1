@@ -4,13 +4,14 @@ BeforeDiscovery {
 }
 
 Describe "Get-ADOPSUser" {
-
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'Name'; Mandatory = $true }
-        @{ Name = 'Descriptor'; Mandatory = $true }
-        @{ Name = 'Organization' }
-    ) {
-        Get-Command -Name Get-ADOPSUser | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Name'; Mandatory = $true }
+            @{ Name = 'Descriptor'; Mandatory = $true }
+            @{ Name = 'Organization' }
+        ) {
+            Get-Command -Name Get-ADOPSUser | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
     }
 
     Context "Function returns all users" {

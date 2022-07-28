@@ -4,7 +4,7 @@ BeforeDiscovery {
 }
 
 Describe 'Import-ADOPSRepository' {
-    Context 'Command structure' {
+    Context 'Parameter validation' {
         BeforeAll {
             $command  = Get-Command -Name Import-ADOPSRepository -Module ADOPS
         }

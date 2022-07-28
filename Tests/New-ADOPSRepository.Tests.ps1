@@ -4,12 +4,14 @@ BeforeDiscovery {
 }
 
 Describe 'New-ADOPSRepository' {
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'Name'; Mandatory = $true }
-        @{ Name = 'Project'; Mandatory = $true }
-        @{ Name = 'Organization'; }
-    ) {
-        Get-Command -Name New-ADOPSRepository | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Name'; Mandatory = $true }
+            @{ Name = 'Project'; Mandatory = $true }
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name New-ADOPSRepository | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
     }
 
     Context 'Running command' {

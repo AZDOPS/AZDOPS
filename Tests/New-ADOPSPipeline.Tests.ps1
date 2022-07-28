@@ -4,17 +4,20 @@ BeforeDiscovery {
 }
 
 InModuleScope -ModuleName ADOPS {
-    Describe 'New-ADOPSPipeline tests' {
-        It 'Has parameter <_.Name>' -TestCases @(
-            @{ Name = 'Name'; Mandatory = $true }
-            @{ Name = 'Project'; Mandatory = $true }
-            @{ Name = 'YamlPath'; Mandatory = $true }
-            @{ Name = 'Repository'; Mandatory = $true }
-            @{ Name = 'FolderPath'; }
-            @{ Name = 'Organization'; }
-        ) {
-            Get-Command -Name New-ADOPSPipeline | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Describe 'New-ADOPSPipeline' {
+        Context 'Parameter validation' {
+            It 'Has parameter <_.Name>' -TestCases @(
+                @{ Name = 'Name'; Mandatory = $true }
+                @{ Name = 'Project'; Mandatory = $true }
+                @{ Name = 'YamlPath'; Mandatory = $true }
+                @{ Name = 'Repository'; Mandatory = $true }
+                @{ Name = 'FolderPath'; }
+                @{ Name = 'Organization'; }
+            ) {
+                Get-Command -Name New-ADOPSPipeline | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+            }
         }
+
         Context 'Creating Pipeline' {
             BeforeAll {
 

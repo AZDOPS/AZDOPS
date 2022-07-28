@@ -29,15 +29,17 @@ Describe "New-ADOPSWiki" {
         Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
     }
 
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'WikiName'; Mandatory = $true }
-        @{ Name = 'WikiRepository'; Mandatory = $true }
-        @{ Name = 'Project'; Mandatory = $true }
-        @{ Name = 'WikiRepositoryPath'; }
-        @{ Name = 'GitBranch'; }
-        @{ Name = 'Organization'; }
-    ) {
-        Get-Command -Name New-ADOPSWiki | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'WikiName'; Mandatory = $true }
+            @{ Name = 'WikiRepository'; Mandatory = $true }
+            @{ Name = 'Project'; Mandatory = $true }
+            @{ Name = 'WikiRepositoryPath'; }
+            @{ Name = 'GitBranch'; }
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name New-ADOPSWiki | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
     }
 
     Context "Functionality" {

@@ -19,12 +19,14 @@ Describe 'Get-ADOPSWiki' {
         Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
     }
 
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'WikiId'; }
-        @{ Name = 'Project'; Mandatory = $true }
-        @{ Name = 'Organization' }
-    ) {
-        Get-Command -Name Get-ADOPSWiki | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'WikiId'; }
+            @{ Name = 'Project'; Mandatory = $true }
+            @{ Name = 'Organization' }
+        ) {
+            Get-Command -Name Get-ADOPSWiki | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
     }
 
     Context "Functionality" {

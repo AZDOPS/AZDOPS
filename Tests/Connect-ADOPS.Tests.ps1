@@ -10,13 +10,15 @@ BeforeAll {
 }
 
 Describe 'Connect-ADOPS' {
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'Username'; Mandatory = $true }
-        @{ Name = 'PersonalAccessToken'; Mandatory = $true }
-        @{ Name = 'Organization'; Mandatory = $true }
-        @{ Name = 'Default'; Type = [switch] }
-    ) {
-        Get-Command -Name Connect-ADOPS | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Username'; Mandatory = $true }
+            @{ Name = 'PersonalAccessToken'; Mandatory = $true }
+            @{ Name = 'Organization'; Mandatory = $true }
+            @{ Name = 'Default'; Type = [switch] }
+        ) {
+            Get-Command -Name Connect-ADOPS | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
     }
 
     Context 'Initial connection, No previous connection created' {

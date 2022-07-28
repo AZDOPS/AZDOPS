@@ -4,13 +4,16 @@ BeforeDiscovery {
 }
 
 Describe 'Get-ADOPSServiceConnection tests' {
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'Name'; }
-        @{ Name = 'Project'; Mandatory = $true }
-        @{ Name = 'Organization' }
-    ) {
-        Get-Command -Name Get-ADOPSServiceConnection | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Name'; }
+            @{ Name = 'Project'; Mandatory = $true }
+            @{ Name = 'Organization' }
+        ) {
+            Get-Command -Name Get-ADOPSServiceConnection | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
     }
+
     Context 'Command tests' {
         BeforeAll {
 

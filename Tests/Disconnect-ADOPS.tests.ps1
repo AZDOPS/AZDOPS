@@ -4,10 +4,12 @@ BeforeDiscovery {
 }
 
 Describe 'Disconnect-ADOPS' {
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'Organization'; }
-    ) {
-        Get-Command -Name Disconnect-ADOPS | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name Disconnect-ADOPS | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
     }
 
     InModuleScope -ModuleName 'ADOPS' {

@@ -4,13 +4,16 @@ BeforeDiscovery {
 }
 
 Describe 'Remove-ADOPSVariableGroup' {
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'VariableGroupName'; Mandatory = $true }
-        @{ Name = 'Project'; Mandatory = $true }
-        @{ Name = 'Organization'; }
-    ) {
-        Get-Command -Name Remove-ADOPSVariableGroup | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Context 'Parameter validation' { 0
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'VariableGroupName'; Mandatory = $true }
+            @{ Name = 'Project'; Mandatory = $true }
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name Remove-ADOPSVariableGroup | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
     }
+
     Context 'Removing variable group' {
         BeforeAll {
             Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {

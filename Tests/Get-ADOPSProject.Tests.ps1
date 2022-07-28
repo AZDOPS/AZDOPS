@@ -4,11 +4,13 @@ BeforeDiscovery {
 }
 
 Describe 'Get-ADOPSProject tests' {
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'Project' }
-        @{ Name = 'Organization' }
-    ) {
-        Get-Command -Name Get-ADOPSProject | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Project' }
+            @{ Name = 'Organization' }
+        ) {
+            Get-Command -Name Get-ADOPSProject | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
     }
 
     Context 'Get project' {

@@ -4,17 +4,19 @@ BeforeDiscovery {
 }
 
 Describe "New-ADOPSVariableGroup" {
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'VariableGroupName'; Mandatory = $true }
-        @{ Name = 'VariableName'; Mandatory = $true }
-        @{ Name = 'VariableValue'; Mandatory = $true }
-        @{ Name = 'Project'; Mandatory = $true }
-        @{ Name = 'VariableHashTable'; Mandatory = $true }
-        @{ Name = 'IsSecret'; Type = [switch] }
-        @{ Name = 'Description'; }
-        @{ Name = 'Organization'; }
-    ) {
-        Get-Command -Name New-ADOPSVariableGroup | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'VariableGroupName'; Mandatory = $true }
+            @{ Name = 'VariableName'; Mandatory = $true }
+            @{ Name = 'VariableValue'; Mandatory = $true }
+            @{ Name = 'Project'; Mandatory = $true }
+            @{ Name = 'VariableHashTable'; Mandatory = $true }
+            @{ Name = 'IsSecret'; Type = [switch] }
+            @{ Name = 'Description'; }
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name New-ADOPSVariableGroup | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
     }
 
     Context "Adding variable group" {

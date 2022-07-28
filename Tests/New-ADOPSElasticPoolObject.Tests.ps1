@@ -4,21 +4,23 @@ BeforeDiscovery {
 }
 
 Describe "New-ADOPSElasticPoolObject" {
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'ServiceEndpointId'; Mandatory = $true }
-        @{ Name = 'ServiceEndpointScope'; Mandatory = $true }
-        @{ Name = 'AzureId'; Mandatory = $true }
-        @{ Name = 'OsType'; }
-        @{ Name = 'MaxCapacity'; }
-        @{ Name = 'DesiredIdle'; }
-        @{ Name = 'RecycleAfterEachUse'; }
-        @{ Name = 'DesiredSize'; }
-        @{ Name = 'AgentInteractiveUI'; }
-        @{ Name = 'TimeToLiveMinues'; }
-        @{ Name = 'MaxSavedNodeCount'; }
-        @{ Name = 'OutputType'; }
-    ) {
-        Get-Command -Name New-ADOPSElasticPoolObject | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'ServiceEndpointId'; Mandatory = $true }
+            @{ Name = 'ServiceEndpointScope'; Mandatory = $true }
+            @{ Name = 'AzureId'; Mandatory = $true }
+            @{ Name = 'OsType'; }
+            @{ Name = 'MaxCapacity'; }
+            @{ Name = 'DesiredIdle'; }
+            @{ Name = 'RecycleAfterEachUse'; }
+            @{ Name = 'DesiredSize'; }
+            @{ Name = 'AgentInteractiveUI'; }
+            @{ Name = 'TimeToLiveMinues'; }
+            @{ Name = 'MaxSavedNodeCount'; }
+            @{ Name = 'OutputType'; }
+        ) {
+            Get-Command -Name New-ADOPSElasticPoolObject | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
     }
 
     Context "Function returns created elastic pool" {

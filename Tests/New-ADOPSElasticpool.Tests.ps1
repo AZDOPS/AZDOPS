@@ -4,15 +4,17 @@ BeforeDiscovery {
 }
 
 Describe "New-ADOPSElasticpool" {
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'PoolName'; Mandatory = $true }
-        @{ Name = 'ElasticPoolObject'; Mandatory = $true }
-        @{ Name = 'ProjectId' }
-        @{ Name = 'Organization' }
-        @{ Name = 'AuthorizeAllPipelines' }
-        @{ Name = 'AutoProvisionProjectPools' }
-    ) {
-        Get-Command -Name New-ADOPSElasticPool | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'PoolName'; Mandatory = $true }
+            @{ Name = 'ElasticPoolObject'; Mandatory = $true }
+            @{ Name = 'ProjectId' }
+            @{ Name = 'Organization' }
+            @{ Name = 'AuthorizeAllPipelines' }
+            @{ Name = 'AutoProvisionProjectPools' }
+        ) {
+            Get-Command -Name New-ADOPSElasticPool | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
     }
 
     Context "Function returns created elastic pool" {

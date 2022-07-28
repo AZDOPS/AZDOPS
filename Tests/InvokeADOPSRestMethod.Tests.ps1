@@ -13,15 +13,17 @@ InModuleScope -ModuleName ADOPS {
                 Body = @{Dummy='value'} | ConvertTo-Json
             }
         }
-        It 'Has parameter <_.Name>' -TestCases @(
-            @{ Name = 'Method'; Type = [Microsoft.PowerShell.Commands.WebRequestMethod] }
-            @{ Name = 'Body'; }
-            @{ Name = 'Uri'; Mandatory = $true; Type = [URI] }
-            @{ Name = 'Organization' }
-            @{ Name = 'ContentType' }
-            @{ Name = 'FullResponse'; Type = [switch] }
-        ) {
-            Get-Command -Name InvokeADOPSRestMethod | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Context 'Parameter validation' {
+            It 'Has parameter <_.Name>' -TestCases @(
+                @{ Name = 'Method'; Type = [Microsoft.PowerShell.Commands.WebRequestMethod] }
+                @{ Name = 'Body'; }
+                @{ Name = 'Uri'; Mandatory = $true; Type = [URI] }
+                @{ Name = 'Organization' }
+                @{ Name = 'ContentType' }
+                @{ Name = 'FullResponse'; Type = [switch] }
+            ) {
+                Get-Command -Name InvokeADOPSRestMethod | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+            }
         }
 
         Context 'Building webrequest call' {

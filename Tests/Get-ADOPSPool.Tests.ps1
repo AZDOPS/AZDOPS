@@ -4,15 +4,16 @@ BeforeDiscovery {
 }
 
 Describe "Get-ADOPSPool" {
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'PoolId'; Mandatory = $true }
-        @{ Name = 'PoolName'; Mandatory = $true }
-        @{ Name = 'IncludeLegacy' }
-        @{ Name = 'Organization' }
-    ) {
-        Get-Command -Name Get-ADOPSPool | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'PoolId'; Mandatory = $true }
+            @{ Name = 'PoolName'; Mandatory = $true }
+            @{ Name = 'IncludeLegacy' }
+            @{ Name = 'Organization' }
+        ) {
+            Get-Command -Name Get-ADOPSPool | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
     }
-
     Context "Function returns agent pools" {
         BeforeAll {
             Mock InvokeADOPSRestMethod -ModuleName ADOPS {

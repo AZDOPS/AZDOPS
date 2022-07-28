@@ -21,12 +21,14 @@ Describe 'Remove-ADOPSRepository' {
         Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
     }
 
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'Project'; Mandatory = $true }
-        @{ Name = 'RepositoryID'; Mandatory = $true }
-        @{ Name = 'Organization'; }
-    ) {
-        Get-Command -Name Remove-ADOPSRepository | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Project'; Mandatory = $true }
+            @{ Name = 'RepositoryID'; Mandatory = $true }
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name Remove-ADOPSRepository | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
     }
 
     Context "Functionality" {
