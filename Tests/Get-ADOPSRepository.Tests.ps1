@@ -6,7 +6,7 @@ BeforeDiscovery {
 Describe "Get-ADOPSRepository" {
     It 'Has parameter <_.Name>' -TestCases @(
         @{ Name = 'Repository' }
-        @{ Name = 'Project' }
+        @{ Name = 'Project'; Mandatory = $true }
         @{ Name = 'Organization' }
     ) {
         Get-Command -Name Get-ADOPSRepository | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type

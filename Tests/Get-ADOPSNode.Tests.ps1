@@ -5,7 +5,7 @@ BeforeDiscovery {
 
 Describe "Get-ADOPSNode" {
     It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'PoolId'; }
+        @{ Name = 'PoolId'; Mandatory = $true }
         @{ Name = 'Organization'; }
     ) {
         Get-Command -Name Get-ADOPSNode| Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type

@@ -6,7 +6,7 @@ BeforeDiscovery {
 Describe 'Remove-ADOPSVariableGroup' {
     It 'Has parameter <_.Name>' -TestCases @(
         @{ Name = 'VariableGroupName'; Mandatory = $true }
-        @{ Name = 'Project'; }
+        @{ Name = 'Project'; Mandatory = $true }
         @{ Name = 'Organization'; }
     ) {
         Get-Command -Name Remove-ADOPSVariableGroup | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
