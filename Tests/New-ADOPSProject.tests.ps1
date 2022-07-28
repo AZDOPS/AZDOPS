@@ -1,8 +1,23 @@
-Remove-Module ADOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 InModuleScope -ModuleName ADOPS {
-    Describe 'New-ADOPSProject tests' {
+    Describe 'New-ADOPSProject' {
+        Context 'Parameter validation' {
+            It 'Has parameter <_.Name>' -TestCases @(
+                @{ Name = 'Name'; Mandatory = $true }
+                @{ Name = 'Visibility'; Mandatory = $true }
+                @{ Name = 'SourceControlType'; }
+                @{ Name = 'ProcessTypeName'; }
+                @{ Name = 'Description'; }
+                @{ Name = 'Organization'; }
+            ) {
+                Get-Command -Name New-ADOPSProject | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+            }
+        }
+
         Context 'Creating project' {
             BeforeAll {
                 Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
@@ -98,45 +113,6 @@ InModuleScope -ModuleName ADOPS {
                 (New-ADOPSProject -Organization $OrganizationName -Name $Project -Visibility 'Public' -Description 'DummyDescription').Body | ConvertFrom-Json | Select-Object -ExpandProperty Description | Should -Be 'DummyDescription'
             }
 
-        }
-
-        Context 'Parameters' {
-            It 'Should have parameter Organization' {
-                (Get-Command New-ADOPSProject).Parameters.Keys | Should -Contain 'Organization'
-            }
-            It 'Organization should not be required' {
-                (Get-Command New-ADOPSProject).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
-            }
-            It 'Should have parameter Name' {
-                (Get-Command New-ADOPSProject).Parameters.Keys | Should -Contain 'Name'
-            }
-            It 'Name should be required' {
-                (Get-Command New-ADOPSProject).Parameters['Name'].Attributes.Mandatory | Should -Be $true
-            }
-            It 'Should have parameter Description' {
-                (Get-Command New-ADOPSProject).Parameters.Keys | Should -Contain 'Description'
-            }
-            It 'Description should not be required' {
-                (Get-Command New-ADOPSProject).Parameters['Description'].Attributes.Mandatory | Should -Be $false
-            }
-            It 'Should have parameter Visibility' {
-                (Get-Command New-ADOPSProject).Parameters.Keys | Should -Contain 'Visibility'
-            }
-            It 'Visibility should be required' {
-                (Get-Command New-ADOPSProject).Parameters['Visibility'].Attributes.Mandatory | Should -Be $true
-            }
-            It 'Should have parameter SourceControlType' {
-                (Get-Command New-ADOPSProject).Parameters.Keys | Should -Contain 'SourceControlType'
-            }
-            It 'SourceControlType should be required' {
-                (Get-Command New-ADOPSProject).Parameters['SourceControlType'].Attributes.Mandatory | Should -Be $false
-            }
-            It 'Should have parameter ProcessTypeName' {
-                (Get-Command New-ADOPSProject).Parameters.Keys | Should -Contain 'ProcessTypeName'
-            }
-            It 'ProcessTypeName should be required' {
-                (Get-Command New-ADOPSProject).Parameters['ProcessTypeName'].Attributes.Mandatory | Should -Be $false
-            }
         }
     }
 }

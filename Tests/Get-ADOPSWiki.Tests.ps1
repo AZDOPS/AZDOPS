@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe 'Get-ADOPSWiki' {
     BeforeAll {
@@ -13,28 +15,24 @@ Describe 'Get-ADOPSWiki' {
                 Organization = "anotherOrg"
             }
         }
-        
+
         Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
     }
 
-    Context "General function tests" {
-        It "Function exist" {
-            { Get-Command -Name Get-ADOPSWiki -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-
-        It "Contains non mandatory parameter: <_>" -TestCases 'Organization', 'WikiId' {
-            Get-Command -Name Get-ADOPSWiki | Should -HaveParameter $_
-        }
-
-        It "Contains mandatory parameter: <_>" -TestCases 'Project' {
-            Get-Command -Name Get-ADOPSWiki | Should -HaveParameter $_ -Mandatory
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'WikiId'; }
+            @{ Name = 'Project'; Mandatory = $true }
+            @{ Name = 'Organization' }
+        ) {
+            Get-Command -Name Get-ADOPSWiki | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
     }
 
     Context "Functionality" {
 
         It 'Should get organization from GetADOPSHeader when organization parameter is used' {
-            Get-ADOPSWiki -Organization 'anotherorg' -Project 'myproj' 
+            Get-ADOPSWiki -Organization 'anotherorg' -Project 'myproj'
             Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 1 -Exactly
         }
 
@@ -69,7 +67,7 @@ Describe 'Get-ADOPSWiki' {
             $r = Get-ADOPSWiki -Project 'myproj'
             $r.name | Should -Be 'HasNoValue'
         }
-        
+
         It 'Verifying URI, no WikiID given' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $URI

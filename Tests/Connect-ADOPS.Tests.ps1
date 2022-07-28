@@ -1,7 +1,7 @@
-#Requires -Module @{ ModuleName = 'Pester'; ModuleVersion = '5.3.1' }
-
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 BeforeAll {
     InModuleScope -ModuleName 'ADOPS' {
@@ -9,7 +9,18 @@ BeforeAll {
     }
 }
 
-Describe 'Creating connection variable' {
+Describe 'Connect-ADOPS' {
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Username'; Mandatory = $true }
+            @{ Name = 'PersonalAccessToken'; Mandatory = $true }
+            @{ Name = 'Organization'; Mandatory = $true }
+            @{ Name = 'Default'; Type = [switch] }
+        ) {
+            Get-Command -Name Connect-ADOPS | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
+    }
+
     Context 'Initial connection, No previous connection created' {
         BeforeAll {
             $DummyUser = 'DummyUserName'
@@ -120,7 +131,7 @@ Describe 'Creating connection variable' {
         It 'Should add this connection to connection list' {
             InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyOrg' = $DummyOrg} {
                 $script:ADOPSCredentials.Keys | Should -Contain $DummyOrg
-            
+
             }
         }
         It 'Should have only have one default conenction' {
@@ -137,40 +148,11 @@ Describe 'Creating connection variable' {
             }
         }
     }
-}
 
+    It 'Should throw if InvokeADOPSRestMethod returns error' {
+        Mock -CommandName InvokeADOPSRestMethod -MockWith {return throw} -ModuleName ADOPS
 
-Describe 'Verifying parameters' {
-    BeforeAll {
-        Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-        Import-Module $PSScriptRoot\..\Source\ADOPS -Force
-    }
-    It 'Should have parameter Username' {
-        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'Username'
-    }
-    It 'Username should be required' {
-        (Get-Command Connect-ADOPS).Parameters['Username'].Attributes.Mandatory | Should -Be $true
-    }
-    
-    It 'Should have parameter PersonalAccessToken' {
-        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'PersonalAccessToken'
-    }
-    It 'PersonalAccessToken should be required' {
-        (Get-Command Connect-ADOPS).Parameters['PersonalAccessToken'].Attributes.Mandatory | Should -Be $true
-    }
-    
-    It 'Should have parameter Organization' {
-        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'Organization'
-    }
-    It 'Organization should be required' {
-        (Get-Command Connect-ADOPS).Parameters['Organization'].Attributes.Mandatory | Should -Be $true
-    }
-    
-    It 'Should have parameter Default' {
-        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'Default'
-    }
-    It 'Default should be switch' {
-        (Get-Command Connect-ADOPS).Parameters['Default'].SwitchParameter | Should -Be $true
+        {Connect-ADOPS -Username 'DummyUser1' -PersonalAccessToken 'MyPatGoesHere' -Organization 'MyOrg'} | Should -Throw
     }
 }
 
@@ -180,22 +162,12 @@ Describe 'Bugfixes' {
             # One of the variable checks lacked the script: prefix
             # If you had the same variable name set in console it errored out with "Cannot index into a null array."
             Mock -CommandName InvokeADOPSRestMethod -MockWith {} -ModuleName ADOPS
-            $global:ADOPSCredentials = @{ MyOrg = 'Variable' }  
-            
+            $global:ADOPSCredentials = @{ MyOrg = 'Variable' }
+
             {Connect-ADOPS -Username 'DummyUser1' -PersonalAccessToken 'MyPatGoesHere' -Organization 'MyOrg'} | Should -Not -Throw
         }
-        AfterAll {  
+        AfterAll {
             Remove-Variable -Name ADOPSCredentials -Scope Global
-        }
-    }
-}
-
-Describe 'Validating try catch.' {
-    Context 'Connect-ADOPS' {
-        it 'Should trow if InvokeADOPSRestMethod returns error.' {
-            Mock -CommandName InvokeADOPSRestMethod -MockWith {return throw} -ModuleName ADOPS
-            
-            {Connect-ADOPS -Username 'DummyUser1' -PersonalAccessToken 'MyPatGoesHere' -Organization 'MyOrg'} | Should -Throw
         }
     }
 }

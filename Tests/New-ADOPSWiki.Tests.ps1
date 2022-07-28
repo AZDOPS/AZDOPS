@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe "New-ADOPSWiki" {
     BeforeAll {
@@ -27,17 +29,16 @@ Describe "New-ADOPSWiki" {
         Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
     }
 
-    Context "General function tests" {
-        It "Function exist" {
-            { Get-Command -Name New-ADOPSWiki -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-
-        It "Contains mandatory parameter: <_>" -TestCases 'Project', 'WikiName', 'WikiRepository' {
-            Get-Command -Name New-ADOPSWiki | Should -HaveParameter $_ -Mandatory
-        }
-
-        It "Contains non mandatory parameter: <_>" -TestCases 'Organization', 'WikiRepositoryPath', 'GitBranch' {
-            Get-Command -Name New-ADOPSWiki | Should -HaveParameter $_
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'WikiName'; Mandatory = $true }
+            @{ Name = 'WikiRepository'; Mandatory = $true }
+            @{ Name = 'Project'; Mandatory = $true }
+            @{ Name = 'WikiRepositoryPath'; }
+            @{ Name = 'GitBranch'; }
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name New-ADOPSWiki | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
     }
 
@@ -57,7 +58,7 @@ Describe "New-ADOPSWiki" {
             New-ADOPSWiki -Project 'myproject' -WikiName 'MyWikiName' -WikiRepository 'MyWikiRepo'
             Should -Invoke Get-ADOPSProject -ModuleName ADOPS -Times 1 -Exactly
         }
-        
+
         It 'Should call Get-ADOPSRepository once to get Repository id' {
             New-ADOPSWiki -Project 'myproject' -WikiName 'MyWikiName' -WikiRepository 'MyWikiRepo'
             Should -Invoke Get-ADOPSRepository -ModuleName ADOPS -Times 1 -Exactly

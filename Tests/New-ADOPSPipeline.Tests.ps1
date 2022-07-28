@@ -1,8 +1,23 @@
-Remove-Module ADOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 InModuleScope -ModuleName ADOPS {
-    Describe 'New-ADOPSPipeline tests' {
+    Describe 'New-ADOPSPipeline' {
+        Context 'Parameter validation' {
+            It 'Has parameter <_.Name>' -TestCases @(
+                @{ Name = 'Name'; Mandatory = $true }
+                @{ Name = 'Project'; Mandatory = $true }
+                @{ Name = 'YamlPath'; Mandatory = $true }
+                @{ Name = 'Repository'; Mandatory = $true }
+                @{ Name = 'FolderPath'; }
+                @{ Name = 'Organization'; }
+            ) {
+                Get-Command -Name New-ADOPSPipeline | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+            }
+        }
+
         Context 'Creating Pipeline' {
             BeforeAll {
 
@@ -28,7 +43,7 @@ InModuleScope -ModuleName ADOPS {
                         Organization = $OrganizationName
                     }
                 }
-                
+
                 Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                     return $InvokeSplat
                 } -ParameterFilter { $method -eq 'Post' }
@@ -86,44 +101,5 @@ InModuleScope -ModuleName ADOPS {
                 { New-ADOPSPipeline -Project $Project -Name $PipeName -YamlPath $YamlPath -Repository $Repository} | Should -Not -Throw
             }
         }
-
-        Context 'Parameters' {
-            It 'Should have parameter Organization' {
-                (Get-Command New-ADOPSPipeline).Parameters.Keys | Should -Contain 'Organization'
-            }
-            It 'Organization should not be required' {
-                (Get-Command New-ADOPSPipeline).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
-            }
-            It 'Should have parameter Project' {
-                (Get-Command New-ADOPSPipeline).Parameters.Keys | Should -Contain 'Project'
-            }
-            It 'Project should be required' {
-                (Get-Command New-ADOPSPipeline).Parameters['Project'].Attributes.Mandatory | Should -Be $true
-            }
-            It 'Should have parameter Name' {
-                (Get-Command New-ADOPSPipeline).Parameters.Keys | Should -Contain 'Name'
-            }
-            It 'Name should be required' {
-                (Get-Command New-ADOPSPipeline).Parameters['Name'].Attributes.Mandatory | Should -Be $true
-            }
-            It 'Should have parameter YamlPath' {
-                (Get-Command New-ADOPSPipeline).Parameters.Keys | Should -Contain 'YamlPath'
-            }
-            It 'YamlPath should be required' {
-                (Get-Command New-ADOPSPipeline).Parameters['YamlPath'].Attributes.Mandatory | Should -Be $true
-            }
-            It 'Should have parameter Repository' {
-                (Get-Command New-ADOPSPipeline).Parameters.Keys | Should -Contain 'Repository'
-            }
-            It 'Repository should be required' {
-                (Get-Command New-ADOPSPipeline).Parameters['Repository'].Attributes.Mandatory | Should -Be $true
-            }
-            It 'Should have parameter FolderPath' {
-                (Get-Command New-ADOPSPipeline).Parameters.Keys | Should -Contain 'FolderPath'
-            }
-            It 'FolderPath should not be required' {
-                (Get-Command New-ADOPSPipeline).Parameters['FolderPath'].Attributes.Mandatory | Should -Be $false
-            }
-        }
     }
-} 
+}

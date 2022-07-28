@@ -1,34 +1,39 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe 'Import-ADOPSRepository' {
-    Context 'Command structure' {
+    Context 'Parameter validation' {
         BeforeAll {
-            $r  = Get-Command -Name Import-ADOPSRepository -Module ADOPS
+            $command  = Get-Command -Name Import-ADOPSRepository -Module ADOPS
         }
-        It 'Command should exist' {
-            $r | Should -Not -BeNullOrEmpty
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'GitSource'; Mandatory = $true }
+            @{ Name = 'RepositoryId'; Mandatory = $true }
+            @{ Name = 'RepositoryName'; Mandatory = $true }
+            @{ Name = 'Project'; Mandatory = $true }
+            @{ Name = 'Organization'; }
+        ) {
+            $command | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
-        It 'Has parameter <_>' -TestCases 'GitSource', 'RepositoryId', 'RepositoryName', 'Organization', 'Project' {
-            $r.Parameters.Keys | Should -Contain $_
+        It 'GitSource parameter should be in all parametersets: <_>' -TestCases $command.ParameterSets.Name {
+            $command.Parameters['GitSource'].ParameterSets.Keys | Should -Contain $_
         }
-        It 'GitSource parameter should be in all parametersets: <_>' -TestCases $r.ParameterSets.Name {
-            $r.Parameters['GitSource'].ParameterSets.Keys | Should -Contain $_
+        It 'Organization parameter should be in all parametersets: <_>' -TestCases $command.ParameterSets.Name {
+            $command.Parameters['Organization'].ParameterSets.Keys | Should -Contain $_
         }
-        It 'Organization parameter should be in all parametersets: <_>' -TestCases $r.ParameterSets.Name {
-            $r.Parameters['Organization'].ParameterSets.Keys | Should -Contain $_
-        }
-        It 'Project parameter should be in all parametersets: <_>' -TestCases $r.ParameterSets.Name {
-            $r.Parameters['Project'].ParameterSets.Keys | Should -Contain $_
+        It 'Project parameter should be in all parametersets: <_>' -TestCases $command.ParameterSets.Name {
+            $command.Parameters['Project'].ParameterSets.Keys | Should -Contain $_
         }
         It 'RepositoryId parameter should only be in RepositoryId ParameterSet' {
-            $r.Parameters['RepositoryID'].ParameterSets.Keys | Should -Be 'RepositoryId'
+            $command.Parameters['RepositoryID'].ParameterSets.Keys | Should -Be 'RepositoryId'
         }
         It 'RepositoryName parameter should only be in RepositoryName ParameterSet' {
-            $r.Parameters['RepositoryName'].ParameterSets.Keys | Should -Be 'RepositoryName'
+            $command.Parameters['RepositoryName'].ParameterSets.Keys | Should -Be 'RepositoryName'
         }
         It 'Default ParameterSet should be "RepositoryName"' {
-            $r.DefaultParameterSet | Should -Be 'RepositoryName'
+            $command.DefaultParameterSet | Should -Be 'RepositoryName'
         }
     }
 
@@ -51,7 +56,7 @@ Describe 'Import-ADOPSRepository' {
                         Organization = 'DummyOrg'
                     }
                 }
-                
+
                 Mock -CommandName InvokeADOPSRestMethod  -ModuleName ADOPS -MockWith {
                     return $InvokeSplat
                 }
@@ -66,7 +71,7 @@ Describe 'Import-ADOPSRepository' {
             $r = Import-ADOPSRepository -GitSource 'GitSource' -RepositoryName 'RepoName' -Project 'DummyProj'
             Should -Invoke -CommandName GetADOPSHeader -ModuleName ADOPS
         }
-        
+
         It 'Invoke should be correct, Verifying method "Post"' {
             $r = Import-ADOPSRepository -GitSource 'GitSource' -RepositoryName 'RepoName' -Project 'DummyProj'
             $r.Method | Should -Be 'Post'

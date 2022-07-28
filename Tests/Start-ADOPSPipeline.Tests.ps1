@@ -1,28 +1,17 @@
-Remove-Module ADOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe 'Start-ADOPSPipeline' {
-    Context 'Parameters' {
-        It 'Should have parameter Name' {
-            (Get-Command Start-ADOPSPipeline).Parameters.Keys | Should -Contain 'Name'
-        }
-        It 'Name should be mandatory' {
-            (Get-Command Start-ADOPSPipeline).Parameters['Name'].Attributes.Mandatory | Should -Be $true
-        }
-
-        It 'Should have parameter Project' {
-            (Get-Command Start-ADOPSPipeline).Parameters.Keys | Should -Contain 'Project'
-        }
-        It 'Project should be mandatory' {
-            (Get-Command Start-ADOPSPipeline).Parameters['Project'].Attributes.Mandatory | Should -Be $true
-        }
-
-        It 'Should have parameter Organization' {
-            (Get-Command Start-ADOPSPipeline).Parameters.Keys | Should -Contain 'Organization'
-        }
-
-        It 'Should have parameter Branch' {
-            (Get-Command Start-ADOPSPipeline).Parameters.Keys | Should -Contain 'Branch'
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Name'; Mandatory = $true }
+            @{ Name = 'Project'; Mandatory = $true }
+            @{ Name = 'Branch'; }
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name Start-ADOPSPipeline | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
     }
 
@@ -47,7 +36,7 @@ Describe 'Start-ADOPSPipeline' {
                 }
 
                 Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
-                    '{"count":2,"value":[{"_links":{"self":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/1?revision=1"},"web":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_build/definition?definitionId=1"}},"url":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/1?revision=1","id":1,"revision":1,"name":"dummypipeline1","folder":"\\"},{"_links":{"self":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/3?revision=1"},"web":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_build/definition?definitionId=3"}},"url":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/3?revision=1","id":3,"revision":1,"name":"ummypipeline2","folder":"\\"}]}' | ConvertFrom-Json     
+                    '{"count":2,"value":[{"_links":{"self":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/1?revision=1"},"web":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_build/definition?definitionId=1"}},"url":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/1?revision=1","id":1,"revision":1,"name":"dummypipeline1","folder":"\\"},{"_links":{"self":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/3?revision=1"},"web":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_build/definition?definitionId=3"}},"url":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/3?revision=1","id":3,"revision":1,"name":"ummypipeline2","folder":"\\"}]}' | ConvertFrom-Json
                 } -ParameterFilter { $method -eq 'Get' }
 
                 Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {

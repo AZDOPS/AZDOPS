@@ -1,11 +1,14 @@
-Remove-Module ADOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS
-
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe 'Get-ADOPSConnection' {
-    Context 'Function tests' {
-        It 'We have a function' {
-            Get-Command Get-ADOPSConnection -Module ADOPS | Should -Not -BeNullOrEmpty
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name Get-ADOPSConnection | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
     }
 
@@ -24,7 +27,7 @@ Describe 'Get-ADOPSConnection' {
                 }
             }
         }
-        
+
         It 'Given we have two connections, both connections should be returned' {
             (Get-ADOPSConnection).Count | Should -Be 2
         }

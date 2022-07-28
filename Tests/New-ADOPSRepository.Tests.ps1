@@ -1,22 +1,16 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe 'New-ADOPSRepository' {
-    Context 'Command structure' {
-        BeforeAll {
-            $r  = Get-Command -Name New-ADOPSRepository -Module ADOPS
-        }
-        It 'Command should exist' {
-            $r | Should -Not -BeNullOrEmpty
-        }
-        It 'Has parameter <_>' -TestCases 'Organization', 'Project', 'Name' {
-            $r.Parameters.Keys | Should -Contain $_
-        }
-        It 'Name should be mandatory' {
-            (Get-Command New-ADOPSRepository).Parameters['Name'].Attributes.Mandatory | Should -Be $true
-        }
-        It 'Project should be mandatory' {
-            (Get-Command New-ADOPSRepository).Parameters['Project'].Attributes.Mandatory | Should -Be $true
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Name'; Mandatory = $true }
+            @{ Name = 'Project'; Mandatory = $true }
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name New-ADOPSRepository | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
     }
 
@@ -39,7 +33,7 @@ Describe 'New-ADOPSRepository' {
                         Organization = 'DummyOrg'
                     }
                 }
-                
+
                 Mock -CommandName InvokeADOPSRestMethod  -ModuleName ADOPS -MockWith {
                     return $InvokeSplat
                 }
@@ -68,7 +62,7 @@ Describe 'New-ADOPSRepository' {
             $r = New-ADOPSRepository -Project 'DummyProj' -Name 'RepoName'
             Should -Invoke -CommandName GetADOPSHeader -ModuleName ADOPS
         }
-        
+
         It 'Invoke should be correct, Verifying method "Post"' {
             $r = New-ADOPSRepository -Organization 'DummyOrg' -Project 'DummyProj' -Name 'RepoName'
             $r.Method | Should -Be 'Post'

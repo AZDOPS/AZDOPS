@@ -1,14 +1,15 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe "Get-ADOPSNode" {
-    Context "Function tests" {
-        It "Function exists" {
-            { Get-Command -Name Get-ADOPSNode -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-
-        It 'Has parameter <_>' -TestCases 'Organization', 'PoolId' {
-            (Get-Command -Name Get-ADOPSNode).Parameters.Keys | Should -Contain $_
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'PoolId'; Mandatory = $true }
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name Get-ADOPSNode | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
     }
 
@@ -28,7 +29,7 @@ Describe "Get-ADOPSNode" {
                             agentState     = @('enabled', 'online')
                             computeId      = 0
                             computeState   = 'healthy'
-                            requestId      = ''                    
+                            requestId      = ''
                         },
                         @{
                             poolId         = 10
@@ -41,7 +42,7 @@ Describe "Get-ADOPSNode" {
                             agentState     = @('enabled', 'online')
                             computeId      = 1
                             computeState   = 'healthy'
-                            requestId      = ''                    
+                            requestId      = ''
                         }
                     )
                 }
@@ -99,10 +100,10 @@ Describe "Get-ADOPSNode" {
                     agentState     = @('enabled', 'online')
                     computeId      = 0
                     computeState   = 'healthy'
-                    requestId      = ''                    
+                    requestId      = ''
                 }
             }
-            
+
             (Get-ADOPSNode -Organization 'DummyOrg' -PoolId 10).name | Should -Be 'vmss-test000000'
         }
     }

@@ -1,16 +1,21 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe "New-ADOPSVariableGroup" {
-    Context "General function tests" {
-        It "Function exist" {
-            { Get-Command -Name New-ADOPSVariableGroup -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-    }
-
-    Context "Check that we have all the parameters we need" {
-        It "Contains parameter: <_>" -TestCases 'Organization', 'Project', 'VariableGroupName', 'VariableName', 'VariableValue', 'IsSecret', 'Description', 'VariableHashtable' {
-            (Get-Command -Name New-ADOPSVariableGroup).Parameters.Keys | Should -Contain $_
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'VariableGroupName'; Mandatory = $true }
+            @{ Name = 'VariableName'; Mandatory = $true }
+            @{ Name = 'VariableValue'; Mandatory = $true }
+            @{ Name = 'Project'; Mandatory = $true }
+            @{ Name = 'VariableHashTable'; Mandatory = $true }
+            @{ Name = 'IsSecret'; Type = [switch] }
+            @{ Name = 'Description'; }
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name New-ADOPSVariableGroup | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
     }
 
@@ -63,6 +68,6 @@ Describe "New-ADOPSVariableGroup" {
 
         It "Should invoke corret Uri when organization is used" {
             (New-ADOPSVariableGroup -Organization "someorg" -Project "myproject" -VariableGroupName "mygroup" -VariableName "myvar" -VariableValue "myvalue").Uri | Should -Be "https://dev.azure.com/someorg/_apis/distributedtask/variablegroups?api-version=7.1-preview.2"
-        }        
+        }
     }
 }

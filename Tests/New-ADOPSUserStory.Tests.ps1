@@ -1,50 +1,22 @@
-#Requires -Module @{ ModuleName = 'Pester'; ModuleVersion = '5.3.1' }
-
-Remove-Module ADOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS
-
-InModuleScope -ModuleName ADOPS {
-    Describe 'New-ADOPSUserStory tests' {
-
-        Context 'Parameters' {
-            It 'Should have parameter Organization' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Organization'
-            }
-            It 'Should have parameter ProjectName' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'ProjectName'
-            }
-            It 'ProjectName should be required' {
-                (Get-Command New-ADOPSUserStory).Parameters['ProjectName'].Attributes.Mandatory | Should -Be $true
-            }
-            It 'Should have parameter Title' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Title'
-            }
-            It 'Title should be required' {
-                (Get-Command New-ADOPSUserStory).Parameters['Title'].Attributes.Mandatory | Should -Be $true
-            }
-            It 'Should have parameter Description' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Description'
-            }
-            It 'Description should not be required' {
-                (Get-Command New-ADOPSUserStory).Parameters['Description'].Attributes.Mandatory | Should -Be $false
-            }
-            It 'Should have parameter Tags' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Tags'
-            }
-            It 'Tags should not be required' {
-                (Get-Command New-ADOPSUserStory).Parameters['Tags'].Attributes.Mandatory | Should -Be $false
-            }
-            It 'Should have parameter Priority' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Priority'
-            }
-            It 'Priority should not be required' {
-                (Get-Command New-ADOPSUserStory).Parameters['Priority'].Attributes.Mandatory | Should -Be $false
-            }
-        }
-    }
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
 }
 
 Describe 'New-ADOPSUserStory' {
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Title'; Mandatory = $true }
+            @{ Name = 'ProjectName'; Mandatory = $true }
+            @{ Name = 'Description'; }
+            @{ Name = 'Tags'; }
+            @{ Name = 'Priority'; }
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name New-ADOPSUserStory | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
+    }
+
     Context 'Creating new user story' {
         BeforeAll {
             InModuleScope -ModuleName ADOPS {
@@ -71,7 +43,7 @@ Describe 'New-ADOPSUserStory' {
             }
 
             $TestRunSplat = @{
-                Organization = 'DummyOrg' 
+                Organization = 'DummyOrg'
                 ProjectName = 'DummyProj'
                 Title = 'USTitle'
                 Description = 'USDescription'
@@ -79,7 +51,7 @@ Describe 'New-ADOPSUserStory' {
                 Priority = 'USPrio'
             }
         }
-        
+
         It 'Should have called mock InvokeADOPSRestMethod' {
             $TesRes = New-ADOPSUserStory @TestRunSplat
             Should -Invoke -CommandName 'InvokeADOPSRestMethod' -Exactly 1 -ModuleName ADOPS
@@ -88,7 +60,7 @@ Describe 'New-ADOPSUserStory' {
             $TesRes = New-ADOPSUserStory @TestRunSplat
             Should -Invoke -CommandName 'GetADOPSHeader' -Exactly 1 -ModuleName ADOPS
         }
-        
+
         It 'Verifying post object, ContentType' {
             $TesRes = New-ADOPSUserStory @TestRunSplat
             $TesRes.ContentType | Should -Be "application/json-patch+json"

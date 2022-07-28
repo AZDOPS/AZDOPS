@@ -1,9 +1,17 @@
-#Requires -Module @{ ModuleName = 'Pester'; ModuleVersion = '5.3.1' }
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+Describe 'Disconnect-ADOPS' {
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name Disconnect-ADOPS | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
+    }
 
-Describe 'Disconnect-ADOPS tests' {
     InModuleScope -ModuleName 'ADOPS' {
         Context 'Command tests' {
             BeforeAll {
@@ -78,20 +86,6 @@ Describe 'Disconnect-ADOPS tests' {
                 { Disconnect-ADOPS } | Should -Throw
                 $Script:ADOPSCredentials.Count | Should -BeExactly 0
             }
-        }
-    }
-
-    Context 'Verifying parameters' {
-        BeforeAll {
-            Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-            Import-Module $PSScriptRoot\..\Source\ADOPS -Force
-        }
-        
-        It 'Should have the parameter Organization' {
-            (Get-Command Disconnect-ADOPS).Parameters.Keys | Should -Contain 'Organization'
-        }
-        It 'Organization should not be mandatory' {
-            (Get-Command Disconnect-ADOPS).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
         }
     }
 }

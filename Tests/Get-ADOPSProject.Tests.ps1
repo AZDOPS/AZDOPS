@@ -1,29 +1,39 @@
-Remove-Module ADOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
-InModuleScope -ModuleName ADOPS {
-    Describe 'Get-ADOPSProject tests' {
-        Context 'Get project' {
-            BeforeAll {
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = $OrganizationName
+Describe 'Get-ADOPSProject tests' {
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Project' }
+            @{ Name = 'Organization' }
+        ) {
+            Get-Command -Name Get-ADOPSProject | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        }
+    }
+
+    Context 'Get project' {
+        BeforeAll {
+            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
+                @{
+                    Header       = @{
+                        'Authorization' = 'Basic Base64=='
                     }
-                } -ParameterFilter { $OrganizationName -eq 'Organization' }
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = $OrganizationName
-                    }
+                    Organization = $OrganizationName
                 }
+            } -ParameterFilter { $OrganizationName -eq 'Organization' }
+            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
+                @{
+                    Header       = @{
+                        'Authorization' = 'Basic Base64=='
+                    }
+                    Organization = $OrganizationName
+                }
+            }
 
-                Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
-                    return @'
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                return @'
                     {
                         "value": [
                             {
@@ -38,37 +48,21 @@ InModuleScope -ModuleName ADOPS {
                         ]
                     }
 '@ | ConvertFrom-Json
-                } -ParameterFilter { $method -eq 'GET' }
+            } -ParameterFilter { $method -eq 'GET' }
 
-                $OrganizationName = 'DummyOrg'
-                $Project = 'DummyProject'
-            }
-
-            It 'uses InvokeADOPSRestMethod one time.' {
-                Get-ADOPSProject -Organization $OrganizationName -Project $Project 
-                Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
-            }
-            It 'returns output after getting project' {
-                Get-ADOPSProject -Organization $OrganizationName -Project $Project | Should -BeOfType [pscustomobject] -Because 'InvokeADOPSRestMethod should convert the json to pscustomobject'
-            }
-            It 'should not throw with no parameters' {
-                { Get-ADOPSProject } | Should -Not -Throw
-            }
+            $OrganizationName = 'DummyOrg'
+            $Project = 'DummyProject'
         }
 
-        Context 'Parameters' {
-            It 'Should have parameter Organization' {
-                (Get-Command Get-ADOPSProject).Parameters.Keys | Should -Contain 'Organization'
-            }
-            It 'Organization should not be required' {
-                (Get-Command Get-ADOPSProject).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
-            }
-            It 'Should have parameter Project' {
-                (Get-Command Get-ADOPSProject).Parameters.Keys | Should -Contain 'Project'
-            }
-            It 'Project not should be required' {
-                (Get-Command Get-ADOPSProject).Parameters['Project'].Attributes.Mandatory | Should -Be $false
-            }
+        It 'uses InvokeADOPSRestMethod one time.' {
+            Get-ADOPSProject -Organization $OrganizationName -Project $Project
+            Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
+        }
+        It 'returns output after getting project' {
+            Get-ADOPSProject -Organization $OrganizationName -Project $Project | Should -BeOfType [pscustomobject] -Because 'InvokeADOPSRestMethod should convert the json to pscustomobject'
+        }
+        It 'should not throw with no parameters' {
+            { Get-ADOPSProject } | Should -Not -Throw
         }
     }
 }

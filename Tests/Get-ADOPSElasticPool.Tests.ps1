@@ -1,14 +1,15 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe "Get-ADOPSElasticPool" {
-    Context "Function tests" {
-        It "Function exists" {
-            { Get-Command -Name Get-ADOPSElasticPool -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-
-        It 'Has parameter <_>' -TestCases 'Organization', 'PoolId' {
-            (Get-Command -Name Get-ADOPSElasticPool).Parameters.Keys | Should -Contain $_
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'PoolId'; }
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name Get-ADOPSElasticPool | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
     }
 
@@ -118,7 +119,7 @@ Describe "Get-ADOPSElasticPool" {
                     timeToLiveMinutes    = 15
                 }
             }
-            
+
             (Get-ADOPSElasticPool -Organization 'DummyOrg' -PoolId 10).poolId | Should -Be 10
         }
     }

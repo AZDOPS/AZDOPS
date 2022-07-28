@@ -1,17 +1,19 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe "Get-ADOPSPool" {
-    Context "Function tests" {
-        It "Function exists" {
-            { Get-Command -Name Get-ADOPSPool -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-
-        It 'Has parameter <_>' -TestCases 'Organization', 'PoolId', 'PoolName', 'IncludeLegacy' {
-            (Get-Command -Name Get-ADOPSPool).Parameters.Keys | Should -Contain $_
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'PoolId'; Mandatory = $true }
+            @{ Name = 'PoolName'; Mandatory = $true }
+            @{ Name = 'IncludeLegacy' }
+            @{ Name = 'Organization' }
+        ) {
+            Get-Command -Name Get-ADOPSPool | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
     }
-
     Context "Function returns agent pools" {
         BeforeAll {
             Mock InvokeADOPSRestMethod -ModuleName ADOPS {
@@ -132,7 +134,7 @@ Describe "Get-ADOPSPool" {
                     options       = 'none'
                 }
             }
-            
+
             (Get-ADOPSPool -Organization 'DummyOrg' -PoolId 8).name | Should -Be 'Hosted Ubuntu 1604'
         }
     }

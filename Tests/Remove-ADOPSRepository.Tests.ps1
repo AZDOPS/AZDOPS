@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe 'Remove-ADOPSRepository' {
     BeforeAll {
@@ -15,21 +17,17 @@ Describe 'Remove-ADOPSRepository' {
                 Organization = "anotherOrg"
             }
         }
-        
+
         Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
     }
 
-    Context "General function tests" {
-        It "Function exist" {
-            { Get-Command -Name Remove-ADOPSRepository -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-
-        It "Contains non mandatory parameter: <_>" -TestCases 'Organization' {
-            Get-Command -Name Remove-ADOPSRepository | Should -HaveParameter $_
-        }
-
-        It "Contains mandatory parameter: <_>" -TestCases 'Project', 'RepositoryID' {
-            Get-Command -Name Remove-ADOPSRepository | Should -HaveParameter $_ -Mandatory
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'Project'; Mandatory = $true }
+            @{ Name = 'RepositoryID'; Mandatory = $true }
+            @{ Name = 'Organization'; }
+        ) {
+            Get-Command -Name Remove-ADOPSRepository | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
     }
 
@@ -71,7 +69,7 @@ Describe 'Remove-ADOPSRepository' {
             $r = Remove-ADOPSRepository -Project 'myproj' -RepositoryID $RepositoryID
             $r.name | Should -Be 'HasNoValue'
         }
-        
+
         It 'Verifying URI' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $URI

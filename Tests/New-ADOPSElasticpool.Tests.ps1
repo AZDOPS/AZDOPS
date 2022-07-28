@@ -1,14 +1,19 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    . $PSScriptRoot\TestHelpers.ps1
+    Initialize-TestSetup
+}
 
 Describe "New-ADOPSElasticpool" {
-    Context "Function tests" {
-        It "Function exists" {
-            { Get-Command -Name New-ADOPSElasticpool -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-
-        It 'Has parameter <_>' -TestCases 'Organization', 'ElasticPoolObject', 'ProjectId', 'PoolName', 'AuthorizeAllPipelines', 'AutoProvisionProjectPools' {
-            (Get-Command -Name New-ADOPSElasticpool).Parameters.Keys | Should -Contain $_
+    Context 'Parameter validation' {
+        It 'Has parameter <_.Name>' -TestCases @(
+            @{ Name = 'PoolName'; Mandatory = $true }
+            @{ Name = 'ElasticPoolObject'; Mandatory = $true }
+            @{ Name = 'ProjectId' }
+            @{ Name = 'Organization' }
+            @{ Name = 'AuthorizeAllPipelines' }
+            @{ Name = 'AutoProvisionProjectPools' }
+        ) {
+            Get-Command -Name New-ADOPSElasticPool | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
     }
 
@@ -16,7 +21,7 @@ Describe "New-ADOPSElasticpool" {
         BeforeAll {
             Mock InvokeADOPSRestMethod -ModuleName ADOPS {
                 [PSCustomObject]@{
-                    elasticPool =                                                                                                             
+                    elasticPool =
                     @{
                         poolId               = 59
                         serviceEndpointId    = '44868479-e856-42bf-9a2b-74bb500d8e36'
