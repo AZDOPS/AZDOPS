@@ -9,7 +9,16 @@ BeforeAll {
     }
 }
 
-Describe 'Creating connection variable' {
+Describe 'Connect-ADOPS' {
+    It 'Has parameter <_.Name>' -TestCases @(
+        @{ Name = 'Username'; Mandatory = $true }
+        @{ Name = 'PersonalAccessToken'; Mandatory = $true }
+        @{ Name = 'Organization'; Mandatory = $true }
+        @{ Name = 'Default'; Type = [switch] }
+    ) {
+        Get-Command -Name Connect-ADOPS | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    }
+
     Context 'Initial connection, No previous connection created' {
         BeforeAll {
             $DummyUser = 'DummyUserName'
@@ -137,17 +146,11 @@ Describe 'Creating connection variable' {
             }
         }
     }
-}
 
+    It 'Should throw if InvokeADOPSRestMethod returns error' {
+        Mock -CommandName InvokeADOPSRestMethod -MockWith {return throw} -ModuleName ADOPS
 
-Describe 'Verifying parameters' {
-    It 'Has parameter <_.Name>' -TestCases @(
-        @{ Name = 'Username'; Mandatory = $true }
-        @{ Name = 'PersonalAccessToken'; Mandatory = $true }
-        @{ Name = 'Organization'; Mandatory = $true }
-        @{ Name = 'Default'; Type = [switch] }
-    ) {
-        Get-Command -Name Connect-ADOPS | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        {Connect-ADOPS -Username 'DummyUser1' -PersonalAccessToken 'MyPatGoesHere' -Organization 'MyOrg'} | Should -Throw
     }
 }
 
@@ -163,16 +166,6 @@ Describe 'Bugfixes' {
         }
         AfterAll {
             Remove-Variable -Name ADOPSCredentials -Scope Global
-        }
-    }
-}
-
-Describe 'Validating try catch.' {
-    Context 'Connect-ADOPS' {
-        it 'Should trow if InvokeADOPSRestMethod returns error.' {
-            Mock -CommandName InvokeADOPSRestMethod -MockWith {return throw} -ModuleName ADOPS
-
-            {Connect-ADOPS -Username 'DummyUser1' -PersonalAccessToken 'MyPatGoesHere' -Organization 'MyOrg'} | Should -Throw
         }
     }
 }

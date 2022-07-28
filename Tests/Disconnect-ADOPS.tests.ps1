@@ -3,7 +3,13 @@ BeforeDiscovery {
     Initialize-TestSetup
 }
 
-Describe 'Disconnect-ADOPS tests' {
+Describe 'Disconnect-ADOPS' {
+    It 'Has parameter <_.Name>' -TestCases @(
+        @{ Name = 'Organization'; }
+    ) {
+        Get-Command -Name Disconnect-ADOPS | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+    }
+
     InModuleScope -ModuleName 'ADOPS' {
         Context 'Command tests' {
             BeforeAll {
@@ -78,14 +84,6 @@ Describe 'Disconnect-ADOPS tests' {
                 { Disconnect-ADOPS } | Should -Throw
                 $Script:ADOPSCredentials.Count | Should -BeExactly 0
             }
-        }
-    }
-
-    Context 'Verifying parameters' {
-        It 'Has parameter <_.Name>' -TestCases @(
-            @{ Name = 'Organization'; }
-        ) {
-            Get-Command -Name Disconnect-ADOPS | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
     }
 }
