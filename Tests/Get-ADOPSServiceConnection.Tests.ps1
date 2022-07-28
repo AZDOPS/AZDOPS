@@ -9,7 +9,7 @@ Describe 'Get-ADOPSServiceConnection tests' {
         @{ Name = 'Project'; Mandatory = $true }
         @{ Name = 'Organization' }
     ) {
-        Get-Command -Name Get-ADOPSServiceConnection | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name Get-ADOPSServiceConnection | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
     Context 'Command tests' {
         BeforeAll {

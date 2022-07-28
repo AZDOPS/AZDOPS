@@ -16,7 +16,7 @@ Describe 'Connect-ADOPS' {
         @{ Name = 'Organization'; Mandatory = $true }
         @{ Name = 'Default'; Type = [switch] }
     ) {
-        Get-Command -Name Connect-ADOPS | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name Connect-ADOPS | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context 'Initial connection, No previous connection created' {

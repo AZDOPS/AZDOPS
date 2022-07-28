@@ -7,7 +7,7 @@ Describe 'Get-ADOPSConnection' {
     It 'Has parameter <_.Name>' -TestCases @(
         @{ Name = 'Organization'; }
     ) {
-        Get-Command -Name Get-ADOPSConnection | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name Get-ADOPSConnection | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context 'Verifying returned values' {

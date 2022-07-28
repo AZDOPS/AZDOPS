@@ -8,7 +8,7 @@ Describe "Get-ADOPSNode" {
         @{ Name = 'PoolId'; }
         @{ Name = 'Organization'; }
     ) {
-        Get-Command -Name Get-ADOPSNode| Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name Get-ADOPSNode| Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context "Function returns repositories" {

@@ -21,7 +21,7 @@ InModuleScope -ModuleName ADOPS {
             @{ Name = 'ContentType' }
             @{ Name = 'FullResponse'; Type = [switch] }
         ) {
-            Get-Command -Name InvokeADOPSRestMethod | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+            Get-Command -Name InvokeADOPSRestMethod | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
 
         Context 'Building webrequest call' {

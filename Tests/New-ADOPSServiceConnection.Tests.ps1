@@ -13,6 +13,6 @@ Describe 'ADOPSServiceConnection' {
         @{ Name = 'ConnectionName'; }
         @{ Name = 'Organization'; }
     ) {
-        Get-Command -Name New-ADOPSServiceConnection | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name New-ADOPSServiceConnection | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 }

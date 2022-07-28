@@ -24,7 +24,7 @@ Describe 'Get-ADOPSWiki' {
         @{ Name = 'Project'; Mandatory = $true }
         @{ Name = 'Organization' }
     ) {
-        Get-Command -Name Get-ADOPSWiki | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name Get-ADOPSWiki | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context "Functionality" {

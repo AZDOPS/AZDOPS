@@ -9,7 +9,7 @@ Describe "Get-ADOPSRepository" {
         @{ Name = 'Project' }
         @{ Name = 'Organization' }
     ) {
-        Get-Command -Name Get-ADOPSRepository | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name Get-ADOPSRepository | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context "Function returns repositories" {

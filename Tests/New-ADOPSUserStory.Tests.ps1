@@ -12,7 +12,7 @@ Describe 'New-ADOPSUserStory' {
         @{ Name = 'Priority'; }
         @{ Name = 'Organization'; }
     ) {
-        Get-Command -Name New-ADOPSUserStory | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name New-ADOPSUserStory | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
     Context 'Creating new user story' {
         BeforeAll {

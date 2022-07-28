@@ -13,7 +13,7 @@ InModuleScope -ModuleName ADOPS {
             @{ Name = 'Description'; }
             @{ Name = 'Organization'; }
         ) {
-            Get-Command -Name New-ADOPSProject | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+            Get-Command -Name New-ADOPSProject | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
         Context 'Creating project' {
             BeforeAll {

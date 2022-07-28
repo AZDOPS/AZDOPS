@@ -9,7 +9,7 @@ Describe 'Remove-ADOPSVariableGroup' {
         @{ Name = 'Project'; }
         @{ Name = 'Organization'; }
     ) {
-        Get-Command -Name Remove-ADOPSVariableGroup | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name Remove-ADOPSVariableGroup | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
     Context 'Removing variable group' {
         BeforeAll {

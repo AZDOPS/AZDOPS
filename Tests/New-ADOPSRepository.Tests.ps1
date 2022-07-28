@@ -9,7 +9,7 @@ Describe 'New-ADOPSRepository' {
         @{ Name = 'Project'; Mandatory = $true }
         @{ Name = 'Organization'; }
     ) {
-        Get-Command -Name New-ADOPSRepository | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name New-ADOPSRepository | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context 'Running command' {

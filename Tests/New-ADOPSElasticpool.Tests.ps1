@@ -12,7 +12,7 @@ Describe "New-ADOPSElasticpool" {
         @{ Name = 'AuthorizeAllPipelines' }
         @{ Name = 'AutoProvisionProjectPools' }
     ) {
-        Get-Command -Name New-ADOPSElasticPool | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name New-ADOPSElasticPool | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context "Function returns created elastic pool" {

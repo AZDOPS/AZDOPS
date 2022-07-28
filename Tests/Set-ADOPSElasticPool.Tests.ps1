@@ -9,7 +9,7 @@ Describe "Set-ADOPSElasticPool" {
         @{ Name = 'ElasticPoolObject'; Mandatory = $true }
         @{ Name = 'Organization'; }
     ) {
-        Get-Command -Name Set-ADOPSElasticPool | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name Set-ADOPSElasticPool | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context "Function returns created elastic pool" {

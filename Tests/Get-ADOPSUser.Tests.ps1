@@ -10,7 +10,7 @@ Describe "Get-ADOPSUser" {
         @{ Name = 'Descriptor'; Mandatory = $true }
         @{ Name = 'Organization' }
     ) {
-        Get-Command -Name Get-ADOPSUser | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name Get-ADOPSUser | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context "Function returns all users" {

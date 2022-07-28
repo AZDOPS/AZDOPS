@@ -15,7 +15,7 @@ Describe 'Import-ADOPSRepository' {
             @{ Name = 'Project'; Mandatory = $true }
             @{ Name = 'Organization'; }
         ) {
-            $command | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+            $command | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
         }
         It 'GitSource parameter should be in all parametersets: <_>' -TestCases $command.ParameterSets.Name {
             $command.Parameters['GitSource'].ParameterSets.Keys | Should -Contain $_

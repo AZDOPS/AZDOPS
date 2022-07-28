@@ -10,7 +10,7 @@ Describe 'Test-ADOPSYamlFile' {
         @{ Name = 'PipelineId'; Mandatory = $true }
         @{ Name = 'Organization'; }
     ) {
-        Get-Command -Name Test-ADOPSYamlFile | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name Test-ADOPSYamlFile | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context 'Verifying invoke body' {

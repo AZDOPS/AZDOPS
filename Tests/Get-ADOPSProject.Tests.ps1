@@ -8,7 +8,7 @@ Describe 'Get-ADOPSProject tests' {
         @{ Name = 'Project' }
         @{ Name = 'Organization' }
     ) {
-        Get-Command -Name Get-ADOPSProject | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name Get-ADOPSProject | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context 'Get project' {

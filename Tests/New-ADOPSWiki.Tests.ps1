@@ -37,7 +37,7 @@ Describe "New-ADOPSWiki" {
         @{ Name = 'GitBranch'; }
         @{ Name = 'Organization'; }
     ) {
-        Get-Command -Name New-ADOPSWiki | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name New-ADOPSWiki | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context "Functionality" {

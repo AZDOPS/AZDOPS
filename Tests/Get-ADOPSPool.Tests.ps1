@@ -10,7 +10,7 @@ Describe "Get-ADOPSPool" {
         @{ Name = 'IncludeLegacy' }
         @{ Name = 'Organization' }
     ) {
-        Get-Command -Name Get-ADOPSPool | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name Get-ADOPSPool | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context "Function returns agent pools" {

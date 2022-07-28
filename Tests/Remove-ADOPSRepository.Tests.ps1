@@ -26,7 +26,7 @@ Describe 'Remove-ADOPSRepository' {
         @{ Name = 'RepositoryID'; Mandatory = $true }
         @{ Name = 'Organization'; }
     ) {
-        Get-Command -Name Remove-ADOPSRepository | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name Remove-ADOPSRepository | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context "Functionality" {

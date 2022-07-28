@@ -10,7 +10,7 @@ Describe 'Start-ADOPSPipeline' {
         @{ Name = 'Branch'; }
         @{ Name = 'Organization'; }
     ) {
-        Get-Command -Name Start-ADOPSPipeline | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name Start-ADOPSPipeline | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context 'Starting pipeline' {

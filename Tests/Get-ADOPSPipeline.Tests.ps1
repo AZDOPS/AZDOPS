@@ -9,7 +9,7 @@ Describe 'Get-ADOPSPipeline tests' {
         @{ Name = 'Project'; Mandatory = $true }
         @{ Name = 'Organization'; }
     ) {
-        Get-Command -Name Get-ADOPSPipeline | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name Get-ADOPSPipeline | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
     Context 'Getting Pipeline' {
         BeforeAll {

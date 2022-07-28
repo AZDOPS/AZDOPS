@@ -14,7 +14,7 @@ Describe "New-ADOPSVariableGroup" {
         @{ Name = 'Description'; }
         @{ Name = 'Organization'; }
     ) {
-        Get-Command -Name New-ADOPSVariableGroup | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name New-ADOPSVariableGroup | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context "Adding variable group" {

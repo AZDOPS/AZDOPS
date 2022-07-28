@@ -18,7 +18,7 @@ Describe "New-ADOPSElasticPoolObject" {
         @{ Name = 'MaxSavedNodeCount'; }
         @{ Name = 'OutputType'; }
     ) {
-        Get-Command -Name New-ADOPSElasticPoolObject | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name New-ADOPSElasticPoolObject | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context "Function returns created elastic pool" {

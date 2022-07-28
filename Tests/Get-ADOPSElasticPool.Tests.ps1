@@ -8,7 +8,7 @@ Describe "Get-ADOPSElasticPool" {
         @{ Name = 'PoolId'; }
         @{ Name = 'Organization'; }
     ) {
-        Get-Command -Name Get-ADOPSElasticPool | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name Get-ADOPSElasticPool | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
 
     Context "Function returns elastic pools" {

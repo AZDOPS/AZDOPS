@@ -21,7 +21,7 @@ Describe 'GetADOPSHeader' {
     It 'Has parameter <_.Name>' -TestCases @(
         @{ Name = 'Organization' }
     ) {
-        Get-Command -Name GetADOPSHeader | Should -HaveParameter $Name -Mandatory:([bool]$Mandatory) -Type $Type
+        Get-Command -Name GetADOPSHeader | Should -HaveParameterStrict $Name -Mandatory:([bool]$Mandatory) -Type $Type
     }
     Context 'Given no input, should return the default connection' {
         It 'Should return credential value of default organization, org2' {
