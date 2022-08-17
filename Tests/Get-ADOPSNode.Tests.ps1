@@ -21,7 +21,7 @@ Describe "Get-ADOPSNode" {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Get-ADOPSElasticPool | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSNode | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
