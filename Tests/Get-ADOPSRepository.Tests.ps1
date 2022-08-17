@@ -7,8 +7,26 @@ Describe "Get-ADOPSRepository" {
             { Get-Command -Name Get-ADOPSRepository -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
         }
 
-        It 'Has parameter <_>' -TestCases 'Organization', 'Project', 'Repository' {
-            (Get-Command -Name Get-ADOPSRepository).Parameters.Keys | Should -Contain $_
+        $TestCases = @(
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'Project'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'Repository'
+                Mandatory = $false
+                Type = 'string'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command Get-ADOPSRepository | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 

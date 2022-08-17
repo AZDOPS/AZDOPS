@@ -3,6 +3,30 @@ Import-Module $PSScriptRoot\..\Source\ADOPS
 
 InModuleScope -ModuleName ADOPS {
     Describe 'Get-ADOPSServiceConnection tests' {
+        Context 'Parameters' {
+            $TestCases = @(
+                @{
+                    Name = 'Organization'
+                    Mandatory = $false
+                    Type = 'string'
+                },
+                @{
+                    Name = 'Project'
+                    Mandatory = $true
+                    Type = 'string'
+                },
+                @{
+                    Name = 'Name'
+                    Mandatory = $false
+                    Type = 'string'
+                }
+            )
+        
+            It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+                Get-Command Get-ADOPSServiceConnection | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            }
+        }
+
         Context 'Command tests' {
             BeforeAll {
 
@@ -86,22 +110,6 @@ InModuleScope -ModuleName ADOPS {
             It 'returns multiple outputs after getting pipelines' {
                 (Get-ADOPSServiceConnection -Organization $OrganizationName -Project $Project).count | Should -Be 2
             }
-        }
-
-        Context 'Parameters' {
-            It 'Should have parameter Organization' {
-                (Get-Command Get-ADOPSServiceConnection).Parameters.Keys | Should -Contain 'Organization'
-            }
-            It 'Organization should not be required' {
-                (Get-Command Get-ADOPSServiceConnection).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
-            }
-            It 'Should have parameter Project' {
-                (Get-Command Get-ADOPSServiceConnection).Parameters.Keys | Should -Contain 'Project'
-            }
-            It 'Should have parameter Name' {
-                (Get-Command Get-ADOPSServiceConnection).Parameters.Keys | Should -Contain 'Name'
-            }
-
         }
     }
 }
