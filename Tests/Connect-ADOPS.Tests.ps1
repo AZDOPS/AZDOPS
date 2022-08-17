@@ -9,6 +9,22 @@ BeforeAll {
     }
 }
 
+
+
+Describe 'Verifying parameters' {
+    BeforeAll {
+        Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
+        Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+    }
+    It 'Should have mandatory parameter <_>' -TestCases 'Username', 'PersonalAccessToken', 'Organization' {
+        Get-Command Connect-ADOPS | Should -HaveParameter $_ -Mandatory
+    }
+    
+    It 'Should have non mandatory parameter <_>' -TestCases 'Default' {
+        Get-Command Connect-ADOPS | Should -HaveParameter $_ -Type 'switch'
+    }
+}
+
 Describe 'Creating connection variable' {
     Context 'Initial connection, No previous connection created' {
         BeforeAll {
@@ -136,41 +152,6 @@ Describe 'Creating connection variable' {
                 $res.Credential.UserName | Should -Be $DummyUser
             }
         }
-    }
-}
-
-
-Describe 'Verifying parameters' {
-    BeforeAll {
-        Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-        Import-Module $PSScriptRoot\..\Source\ADOPS -Force
-    }
-    It 'Should have parameter Username' {
-        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'Username'
-    }
-    It 'Username should be required' {
-        (Get-Command Connect-ADOPS).Parameters['Username'].Attributes.Mandatory | Should -Be $true
-    }
-    
-    It 'Should have parameter PersonalAccessToken' {
-        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'PersonalAccessToken'
-    }
-    It 'PersonalAccessToken should be required' {
-        (Get-Command Connect-ADOPS).Parameters['PersonalAccessToken'].Attributes.Mandatory | Should -Be $true
-    }
-    
-    It 'Should have parameter Organization' {
-        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'Organization'
-    }
-    It 'Organization should be required' {
-        (Get-Command Connect-ADOPS).Parameters['Organization'].Attributes.Mandatory | Should -Be $true
-    }
-    
-    It 'Should have parameter Default' {
-        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'Default'
-    }
-    It 'Default should be switch' {
-        (Get-Command Connect-ADOPS).Parameters['Default'].SwitchParameter | Should -Be $true
     }
 }
 
