@@ -7,8 +7,31 @@ Describe "Get-ADOPSUser" {
             { Get-Command -Name Get-ADOPSUser -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
         }
 
-        It 'Has parameter <_>' -TestCases 'Organization', 'Name', 'Descriptor' {
-            (Get-Command -Name Get-ADOPSUser).Parameters.Keys | Should -Contain $_
+        $TestCases = @(
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'Name'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'Descriptor'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'ContinuationToken'
+                Mandatory = $false
+                Type = 'string'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command Get-ADOPSUser | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
