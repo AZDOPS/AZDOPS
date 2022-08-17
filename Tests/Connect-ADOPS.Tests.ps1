@@ -16,12 +16,31 @@ Describe 'Verifying parameters' {
         Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
         Import-Module $PSScriptRoot\..\Source\ADOPS -Force
     }
-    It 'Should have mandatory parameter <_>' -TestCases 'Username', 'PersonalAccessToken', 'Organization' {
-        Get-Command Connect-ADOPS | Should -HaveParameter $_ -Mandatory
-    }
-    
-    It 'Should have non mandatory parameter <_>' -TestCases 'Default' {
-        Get-Command Connect-ADOPS | Should -HaveParameter $_ -Type 'switch'
+
+    $TestCases = @(
+        @{
+            Name = 'Username'
+            Mandatory = $true
+            Type = 'string'
+        },
+        @{
+            Name = 'PersonalAccessToken'
+            Mandatory = $true
+            Type = 'string'
+        },
+        @{
+            Name = 'Organization'
+            Mandatory = $true
+            Type = 'string'
+        },
+        @{
+            Name = 'Default'
+            Mandatory = $false
+            Type = 'switch'
+        }
+    )
+    It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+        Get-Command Connect-ADOPS | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
     }
 }
 
