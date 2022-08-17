@@ -19,10 +19,10 @@ Describe 'Disconnect-ADOPS tests' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Connect-ADOPS | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Disconnect-ADOPS | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
-    
+
     InModuleScope -ModuleName 'ADOPS' {
         Context 'Command tests' {
             BeforeAll {
