@@ -4,6 +4,25 @@ Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
 Describe 'Disconnect-ADOPS tests' {
+    Context 'Verifying parameters' {
+        BeforeAll {
+            Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
+            Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+        }
+        
+        $TestCases = @(
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command Connect-ADOPS | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+        }
+    }
+    
     InModuleScope -ModuleName 'ADOPS' {
         Context 'Command tests' {
             BeforeAll {
@@ -78,20 +97,6 @@ Describe 'Disconnect-ADOPS tests' {
                 { Disconnect-ADOPS } | Should -Throw
                 $Script:ADOPSCredentials.Count | Should -BeExactly 0
             }
-        }
-    }
-
-    Context 'Verifying parameters' {
-        BeforeAll {
-            Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-            Import-Module $PSScriptRoot\..\Source\ADOPS -Force
-        }
-        
-        It 'Should have the parameter Organization' {
-            (Get-Command Disconnect-ADOPS).Parameters.Keys | Should -Contain 'Organization'
-        }
-        It 'Organization should not be mandatory' {
-            (Get-Command Disconnect-ADOPS).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
         }
     }
 }
