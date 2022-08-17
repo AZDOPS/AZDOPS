@@ -7,8 +7,21 @@ Describe "Get-ADOPSNode" {
             { Get-Command -Name Get-ADOPSNode -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
         }
 
-        It 'Has parameter <_>' -TestCases 'Organization', 'PoolId' {
-            (Get-Command -Name Get-ADOPSNode).Parameters.Keys | Should -Contain $_
+        $TestCases = @(
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'PoolId'
+                Mandatory = $false
+                Type = 'int32'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command Get-ADOPSElasticPool | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
