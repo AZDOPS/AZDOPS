@@ -22,12 +22,26 @@ Describe 'Get-ADOPSWiki' {
             { Get-Command -Name Get-ADOPSWiki -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
         }
 
-        It "Contains non mandatory parameter: <_>" -TestCases 'Organization', 'WikiId' {
-            Get-Command -Name Get-ADOPSWiki | Should -HaveParameter $_
-        }
-
-        It "Contains mandatory parameter: <_>" -TestCases 'Project' {
-            Get-Command -Name Get-ADOPSWiki | Should -HaveParameter $_ -Mandatory
+        $TestCases = @(
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'WikiId'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'Project'
+                Mandatory = $true
+                Type = 'string'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command Get-ADOPSWiki | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 

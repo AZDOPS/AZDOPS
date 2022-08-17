@@ -15,6 +15,19 @@ InModuleScope -ModuleName ADOPS {
         }
     }
 
+    Context 'Verifying parameters' {
+        $TestCases = @(
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command GetADOPSHeader | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+        }
+    }
     
     Describe 'GetADOPSHeader' {
         Context 'Given no input, should return the default connection' {
@@ -36,14 +49,3 @@ InModuleScope -ModuleName ADOPS {
     }
 }
 
-Describe 'Verifying parameters' {
-    BeforeAll {
-        Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-        Import-Module $PSScriptRoot\..\Source\ADOPS -Force
-    }
-    It 'Should have parameter Organization' {
-        InModuleScope -ModuleName 'ADOPS' {
-            (Get-Command GetADOPSHeader).Parameters.Keys | Should -Contain 'Organization'
-        }
-    }
-}
