@@ -3,12 +3,19 @@ Import-Module $PSScriptRoot\..\Source\ADOPS
 
 
 Describe 'Get-ADOPSConnection' {
-    Context 'Function tests' {
-        It 'We have a function' {
-            Get-Command Get-ADOPSConnection -Module ADOPS | Should -Not -BeNullOrEmpty
+    Context 'Parameters' {
+        $TestCases = @(
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command Get-ADOPSConnection | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
-
     Context 'Verifying returned values' {
         BeforeAll {
             InModuleScope -ModuleName ADOPS -ScriptBlock {

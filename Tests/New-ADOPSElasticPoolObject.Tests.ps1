@@ -2,7 +2,7 @@ Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
 Describe "New-ADOPSElasticPoolObject" {
-    Context "Function tests" {
+    Context "Parameters" {
         $TestCases = @(
             @{
                 Name = 'ServiceEndpointId'

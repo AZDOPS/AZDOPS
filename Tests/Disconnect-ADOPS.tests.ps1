@@ -1,15 +1,8 @@
-#Requires -Module @{ ModuleName = 'Pester'; ModuleVersion = '5.3.1' }
-
 Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
-Describe 'Disconnect-ADOPS tests' {
-    Context 'Verifying parameters' {
-        BeforeAll {
-            Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-            Import-Module $PSScriptRoot\..\Source\ADOPS -Force
-        }
-        
+Describe 'Disconnect-ADOPS' {
+    Context 'Parameters' {
         $TestCases = @(
             @{
                 Name = 'Organization'

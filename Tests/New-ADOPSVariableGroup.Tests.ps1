@@ -2,7 +2,7 @@ Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
 Describe "New-ADOPSVariableGroup" {
-    Context "Check that we have all the parameters we need" {
+    Context "Parameters" {
         $TestCases = @(
             @{
                 Name = 'Organization'

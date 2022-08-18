@@ -27,7 +27,7 @@ Describe "New-ADOPSWiki" {
         Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
     }
 
-    Context "General function tests" {
+    Context "Parameters" {
         $TestCases = @(
             @{
                 Name = 'Project'

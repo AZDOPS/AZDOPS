@@ -15,21 +15,21 @@ InModuleScope -ModuleName ADOPS {
         }
     }
 
-    Context 'Verifying parameters' {
-        $TestCases = @(
-            @{
-                Name = 'Organization'
-                Mandatory = $false
-                Type = 'string'
-            }
-        )
-    
-        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command GetADOPSHeader | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
-        }
-    }
-    
     Describe 'GetADOPSHeader' {
+        Context 'Parameters' {
+            $TestCases = @(
+                @{
+                    Name = 'Organization'
+                    Mandatory = $false
+                    Type = 'string'
+                }
+            )
+        
+            It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+                Get-Command GetADOPSHeader | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            }
+        }
+        
         Context 'Given no input, should return the default connection' {
             It 'Should return credential value of default organization, org2' {
                 (GetADOPSHeader).Header.Authorization | Should -BeLike "basic*"

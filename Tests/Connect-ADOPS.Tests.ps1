@@ -1,5 +1,3 @@
-#Requires -Module @{ ModuleName = 'Pester'; ModuleVersion = '5.3.1' }
-
 Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
@@ -11,41 +9,36 @@ BeforeAll {
 
 
 
-Describe 'Verifying parameters' {
-    BeforeAll {
-        Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-        Import-Module $PSScriptRoot\..\Source\ADOPS -Force
-    }
-
-    $TestCases = @(
-        @{
-            Name = 'Username'
-            Mandatory = $true
-            Type = 'string'
-        },
-        @{
-            Name = 'PersonalAccessToken'
-            Mandatory = $true
-            Type = 'string'
-        },
-        @{
-            Name = 'Organization'
-            Mandatory = $true
-            Type = 'string'
-        },
-        @{
-            Name = 'Default'
-            Mandatory = $false
-            Type = 'switch'
+Describe 'Connect-ADOPS' {
+    Context 'Parameters' {
+        $TestCases = @(
+            @{
+                Name = 'Username'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'PersonalAccessToken'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'Organization'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'Default'
+                Mandatory = $false
+                Type = 'switch'
+            }
+        )
+        
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command Connect-ADOPS | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
-    )
-    
-    It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-        Get-Command Connect-ADOPS | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
     }
-}
-
-Describe 'Creating connection variable' {
+    
     Context 'Initial connection, No previous connection created' {
         BeforeAll {
             $DummyUser = 'DummyUserName'

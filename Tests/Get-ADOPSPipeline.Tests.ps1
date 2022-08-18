@@ -2,7 +2,7 @@ Remove-Module ADOPS -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS
 
 InModuleScope -ModuleName ADOPS {
-    Describe 'Get-ADOPSPipeline tests' {
+    Describe 'Get-ADOPSPipeline' {
         Context 'Parameters' {
             $TestCases = @(
                 @{

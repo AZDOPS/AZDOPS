@@ -2,7 +2,7 @@ Remove-Module ADOPS -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS
 
 Describe 'New-ADOPSServiceConnection' {
-    Context 'Command structure' {
+    Context 'Parameters' {
         $TestCases = @(
             @{
                 Name = 'Organization'

@@ -17,11 +17,7 @@ Describe 'Get-ADOPSWiki' {
         Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
     }
 
-    Context "General function tests" {
-        It "Function exist" {
-            { Get-Command -Name Get-ADOPSWiki -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-
+    Context "Parameters" {
         $TestCases = @(
             @{
                 Name = 'Organization'

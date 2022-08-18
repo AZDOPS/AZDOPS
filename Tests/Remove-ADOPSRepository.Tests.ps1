@@ -19,7 +19,7 @@ Describe 'Remove-ADOPSRepository' {
         Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
     }
 
-    Context "General function tests" {
+    Context "Parameters" {
         $TestCases = @(
             @{
                 Name = 'Organization'

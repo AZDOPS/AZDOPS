@@ -2,11 +2,7 @@ Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
 Describe "Get-ADOPSRepository" {
-    Context "Function tests" {
-        It "Function exists" {
-            { Get-Command -Name Get-ADOPSRepository -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-
+    Context "Parameters" {
         $TestCases = @(
             @{
                 Name = 'Organization'

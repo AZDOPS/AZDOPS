@@ -1,10 +1,8 @@
-#Requires -Module @{ ModuleName = 'Pester'; ModuleVersion = '5.3.1' }
-
 Remove-Module ADOPS -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS
 
 InModuleScope -ModuleName ADOPS {
-    Describe 'New-ADOPSUserStory tests' {
+    Describe 'New-ADOPSUserStory' {
         Context 'Parameters' {
             $TestCases = @(
                 @{

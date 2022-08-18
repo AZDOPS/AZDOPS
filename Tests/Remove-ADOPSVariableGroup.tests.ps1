@@ -2,27 +2,29 @@ Remove-Module ADOPS -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS
 
 InModuleScope -ModuleName ADOPS {
-    Describe 'Remove-ADOPSVariableGroup tests' {
-        $TestCases = @(
-            @{
-                Name = 'Organization'
-                Mandatory = $false
-                Type = 'string'
-            },
-            @{
-                Name = 'Project'
-                Mandatory = $true
-                Type = 'string'
-            },
-            @{
-                Name = 'VariableGroupName'
-                Mandatory = $true
-                Type = 'string'
+    Describe 'Remove-ADOPSVariableGroup' {
+        Context 'Parameters' {
+            $TestCases = @(
+                @{
+                    Name = 'Organization'
+                    Mandatory = $false
+                    Type = 'string'
+                },
+                @{
+                    Name = 'Project'
+                    Mandatory = $true
+                    Type = 'string'
+                },
+                @{
+                    Name = 'VariableGroupName'
+                    Mandatory = $true
+                    Type = 'string'
+                }
+            )
+        
+            It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+                Get-Command Remove-ADOPSVariableGroup | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
             }
-        )
-    
-        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Remove-ADOPSVariableGroup | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
 
         Context 'Removing variable group' {

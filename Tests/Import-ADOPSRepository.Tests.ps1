@@ -2,7 +2,7 @@ Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
 Describe 'Import-ADOPSRepository' {
-    Context 'Command structure' {
+    Context 'Parameters' {
         BeforeAll {
             $r  = Get-Command -Name Import-ADOPSRepository -Module ADOPS
         }
