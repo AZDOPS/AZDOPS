@@ -6,12 +6,39 @@ Describe 'Import-ADOPSRepository' {
         BeforeAll {
             $r  = Get-Command -Name Import-ADOPSRepository -Module ADOPS
         }
-        It 'Command should exist' {
-            $r | Should -Not -BeNullOrEmpty
+
+        $TestCases = @(
+            @{
+                Name = 'GitSource'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'RepositoryId'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'RepositoryName'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'Project'
+                Mandatory = $true
+                Type = 'string'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command Import-ADOPSRepository | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
-        It 'Has parameter <_>' -TestCases 'GitSource', 'RepositoryId', 'RepositoryName', 'Organization', 'Project' {
-            $r.Parameters.Keys | Should -Contain $_
-        }
+        
         It 'GitSource parameter should be in all parametersets: <_>' -TestCases $r.ParameterSets.Name {
             $r.Parameters['GitSource'].ParameterSets.Keys | Should -Contain $_
         }
