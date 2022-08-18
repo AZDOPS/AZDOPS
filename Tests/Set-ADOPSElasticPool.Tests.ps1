@@ -3,12 +3,26 @@ Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
 Describe "Set-ADOPSElasticPool" {
     Context "Function tests" {
-        It "Function exists" {
-            { Get-Command -Name Set-ADOPSElasticPool -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
+        $TestCases = @(
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'PoolId'
+                Mandatory = $true
+                Type = 'int'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command Set-ADOPSElasticpool | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
-
-        It 'Has parameter <_>' -TestCases 'Organization', 'ElasticPoolObject', 'PoolId' {
-            (Get-Command -Name Set-ADOPSElasticPool).Parameters.Keys | Should -Contain $_
+        
+        # Since this parameter accepts multiple types we create a separate test for it.
+        It 'Should have parameter ElasticPoolObject'  {
+            Get-Command Set-ADOPSElasticpool | Should -HaveParameter 'ElasticPoolObject' -Mandatory
         }
     }
 
