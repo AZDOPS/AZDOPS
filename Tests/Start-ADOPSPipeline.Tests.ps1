@@ -3,26 +3,31 @@ Import-Module $PSScriptRoot\..\Source\ADOPS
 
 Describe 'Start-ADOPSPipeline' {
     Context 'Parameters' {
-        It 'Should have parameter Name' {
-            (Get-Command Start-ADOPSPipeline).Parameters.Keys | Should -Contain 'Name'
-        }
-        It 'Name should be mandatory' {
-            (Get-Command Start-ADOPSPipeline).Parameters['Name'].Attributes.Mandatory | Should -Be $true
-        }
-
-        It 'Should have parameter Project' {
-            (Get-Command Start-ADOPSPipeline).Parameters.Keys | Should -Contain 'Project'
-        }
-        It 'Project should be mandatory' {
-            (Get-Command Start-ADOPSPipeline).Parameters['Project'].Attributes.Mandatory | Should -Be $true
-        }
-
-        It 'Should have parameter Organization' {
-            (Get-Command Start-ADOPSPipeline).Parameters.Keys | Should -Contain 'Organization'
-        }
-
-        It 'Should have parameter Branch' {
-            (Get-Command Start-ADOPSPipeline).Parameters.Keys | Should -Contain 'Branch'
+        $TestCases = @(
+            @{
+                Name = 'Name'
+                Mandatory = $trúe
+                Type = 'string'
+            },
+            @{
+                Name = 'Project'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'Branch'
+                Mandatory = $false
+                Type = 'string'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command Start-ADOPSPipeline | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
