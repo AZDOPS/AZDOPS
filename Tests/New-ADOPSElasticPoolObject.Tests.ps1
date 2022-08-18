@@ -2,13 +2,72 @@ Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
 Describe "New-ADOPSElasticPoolObject" {
-    Context "Function tests" {
-        It "Function exists" {
-            { Get-Command -Name New-ADOPSElasticPoolObject -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-
-        It 'Has parameter <_>' -TestCases 'ServiceEndpointId', 'ServiceEndpointScope', 'AzureId', 'OsType', 'MaxCapacity', 'DesiredIdle', 'RecycleAfterEachUse', 'DesiredSize', 'AgentInteractiveUI', 'TimeToLiveMinues', 'MaxSavedNodeCount', 'OutputType' {
-            (Get-Command -Name New-ADOPSElasticPoolObject).Parameters.Keys | Should -Contain $_
+    Context "Parameters" {
+        $TestCases = @(
+            @{
+                Name = 'ServiceEndpointId'
+                Mandatory = $true
+                Type = 'guid'
+            },
+            @{
+                Name = 'ServiceEndpointScope'
+                Mandatory = $true
+                Type = 'guid'
+            },
+            @{
+                Name = 'AzureId'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'OsType'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'MaxCapacity'
+                Mandatory = $false
+                Type = 'int'
+            },
+            @{
+                Name = 'DesiredIdle'
+                Mandatory = $false
+                Type = 'int'
+            },
+            @{
+                Name = 'RecycleAfterEachUse'
+                Mandatory = $false
+                Type = 'bool'
+            },
+            @{
+                Name = 'DesiredSize'
+                Mandatory = $false
+                Type = 'int'
+            },
+            @{
+                Name = 'AgentInteractiveUI'
+                Mandatory = $false
+                Type = 'bool'
+            },
+            @{
+                Name = 'TimeToLiveMinues'
+                Mandatory = $false
+                Type = 'int'
+            },
+            @{
+                Name = 'MaxSavedNodeCount'
+                Mandatory = $false
+                Type = 'int'
+            },
+            @{
+                Name = 'OutputType'
+                Mandatory = $false
+                Type = 'string'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command New-ADOPSElasticPoolObject | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 

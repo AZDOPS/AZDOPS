@@ -2,15 +2,52 @@ Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
 Describe "New-ADOPSVariableGroup" {
-    Context "General function tests" {
-        It "Function exist" {
-            { Get-Command -Name New-ADOPSVariableGroup -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-    }
-
-    Context "Check that we have all the parameters we need" {
-        It "Contains parameter: <_>" -TestCases 'Organization', 'Project', 'VariableGroupName', 'VariableName', 'VariableValue', 'IsSecret', 'Description', 'VariableHashtable' {
-            (Get-Command -Name New-ADOPSVariableGroup).Parameters.Keys | Should -Contain $_
+    Context "Parameters" {
+        $TestCases = @(
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'Project'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'VariableGroupName'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'VariableName'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'VariableValue'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'IsSecret'
+                Mandatory = $false
+                Type = 'switch'
+            },
+            @{
+                Name = 'Description'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'VariableHashtable'
+                Mandatory = $false
+                Type = 'hashtable[]'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command New-ADOPSVariableGroup | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 

@@ -1,6 +1,9 @@
 function New-ADOPSServiceConnection {
     [cmdletbinding()]
     param(
+        [Parameter()]
+        [string]$Organization,
+        
         [Parameter(Mandatory)]
         [string]$TenantId,
 
@@ -17,10 +20,7 @@ function New-ADOPSServiceConnection {
         [string]$ConnectionName,
       
         [Parameter(Mandatory)]
-        [pscredential]$ServicePrincipal,
-
-        [Parameter()]
-        [string]$Organization
+        [pscredential]$ServicePrincipal
     )
 
     # Set organization

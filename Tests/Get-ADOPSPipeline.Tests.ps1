@@ -2,7 +2,31 @@ Remove-Module ADOPS -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS
 
 InModuleScope -ModuleName ADOPS {
-    Describe 'Get-ADOPSPipeline tests' {
+    Describe 'Get-ADOPSPipeline' {
+        Context 'Parameters' {
+            $TestCases = @(
+                @{
+                    Name = 'Organization'
+                    Mandatory = $false
+                    Type = 'string'
+                },
+                @{
+                    Name = 'Project'
+                    Mandatory = $true
+                    Type = 'string'
+                },
+                @{
+                    Name = 'name'
+                    Mandatory = $false
+                    Type = 'string'
+                }
+            )
+    
+            It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+                Get-Command Get-ADOPSPipeline | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            }
+        }
+        
         Context 'Getting Pipeline' {
             BeforeAll {
 
@@ -101,27 +125,6 @@ InModuleScope -ModuleName ADOPS {
             }
             It 'returns multiple outputs after getting pipelines' {
                 (Get-ADOPSPipeline -Organization $OrganizationName -Project $Project).count | Should -Be 2
-            }
-        }
-
-        Context 'Parameters' {
-            It 'Should have parameter Organization' {
-                (Get-Command Get-ADOPSPipeline).Parameters.Keys | Should -Contain 'Organization'
-            }
-            It 'Organization should not be required' {
-                (Get-Command Get-ADOPSPipeline).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
-            }
-            It 'Should have parameter Project' {
-                (Get-Command Get-ADOPSPipeline).Parameters.Keys | Should -Contain 'Project'
-            }
-            It 'Project should be required' {
-                (Get-Command Get-ADOPSPipeline).Parameters['Project'].Attributes.Mandatory | Should -Be $true
-            }
-            It 'Should have parameter Name' {
-                (Get-Command Get-ADOPSPipeline).Parameters.Keys | Should -Contain 'Name'
-            }
-            It 'Name should not be required' {
-                (Get-Command Get-ADOPSPipeline).Parameters['Name'].Attributes.Mandatory | Should -Be $false
             }
         }
     }

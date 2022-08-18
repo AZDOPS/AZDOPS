@@ -2,13 +2,42 @@ Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
 Describe "New-ADOPSElasticpool" {
-    Context "Function tests" {
-        It "Function exists" {
-            { Get-Command -Name New-ADOPSElasticpool -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
+    Context "Parameters" {
+        $TestCases = @(
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'ProjectId'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'PoolName'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'AuthorizeAllPipelines'
+                Mandatory = $false
+                Type = 'switch'
+            },
+            @{
+                Name = 'AutoProvisionProjectPools'
+                Mandatory = $false
+                Type = 'switch'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command New-ADOPSElasticpool | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
 
-        It 'Has parameter <_>' -TestCases 'Organization', 'ElasticPoolObject', 'ProjectId', 'PoolName', 'AuthorizeAllPipelines', 'AutoProvisionProjectPools' {
-            (Get-Command -Name New-ADOPSElasticpool).Parameters.Keys | Should -Contain $_
+        # Since this parameter accepts multiple types we create a separate test for it.
+        It 'Should have parameter ElasticPoolObject'  {
+            Get-Command New-ADOPSElasticpool | Should -HaveParameter 'ElasticPoolObject' -Mandatory
         }
     }
 

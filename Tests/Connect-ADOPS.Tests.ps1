@@ -1,5 +1,3 @@
-#Requires -Module @{ ModuleName = 'Pester'; ModuleVersion = '5.3.1' }
-
 Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
@@ -9,7 +7,38 @@ BeforeAll {
     }
 }
 
-Describe 'Creating connection variable' {
+
+
+Describe 'Connect-ADOPS' {
+    Context 'Parameters' {
+        $TestCases = @(
+            @{
+                Name = 'Username'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'PersonalAccessToken'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'Organization'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'Default'
+                Mandatory = $false
+                Type = 'switch'
+            }
+        )
+        
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command Connect-ADOPS | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+        }
+    }
+    
     Context 'Initial connection, No previous connection created' {
         BeforeAll {
             $DummyUser = 'DummyUserName'
@@ -136,41 +165,6 @@ Describe 'Creating connection variable' {
                 $res.Credential.UserName | Should -Be $DummyUser
             }
         }
-    }
-}
-
-
-Describe 'Verifying parameters' {
-    BeforeAll {
-        Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-        Import-Module $PSScriptRoot\..\Source\ADOPS -Force
-    }
-    It 'Should have parameter Username' {
-        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'Username'
-    }
-    It 'Username should be required' {
-        (Get-Command Connect-ADOPS).Parameters['Username'].Attributes.Mandatory | Should -Be $true
-    }
-    
-    It 'Should have parameter PersonalAccessToken' {
-        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'PersonalAccessToken'
-    }
-    It 'PersonalAccessToken should be required' {
-        (Get-Command Connect-ADOPS).Parameters['PersonalAccessToken'].Attributes.Mandatory | Should -Be $true
-    }
-    
-    It 'Should have parameter Organization' {
-        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'Organization'
-    }
-    It 'Organization should be required' {
-        (Get-Command Connect-ADOPS).Parameters['Organization'].Attributes.Mandatory | Should -Be $true
-    }
-    
-    It 'Should have parameter Default' {
-        (Get-Command Connect-ADOPS).Parameters.Keys | Should -Contain 'Default'
-    }
-    It 'Default should be switch' {
-        (Get-Command Connect-ADOPS).Parameters['Default'].SwitchParameter | Should -Be $true
     }
 }
 

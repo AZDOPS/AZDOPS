@@ -3,29 +3,31 @@ Import-Module $PSScriptRoot\..\Source\ADOPS
 
 Describe 'Test-ADOPSYamlFile' {
     Context 'Parameters' {
-        It 'Should have parameter Name' {
-            (Get-Command Test-ADOPSYamlFile).Parameters.Keys | Should -Contain 'Organization'
-        }
-        
-        It 'Should have parameter Project' {
-            (Get-Command Test-ADOPSYamlFile).Parameters.Keys | Should -Contain 'Project'
-        }
-        It 'Project should be mandatory' {
-            (Get-Command Test-ADOPSYamlFile).Parameters['Project'].Attributes.Mandatory | Should -Be $true
-        }
-
-        It 'Should have parameter File' {
-            (Get-Command Test-ADOPSYamlFile).Parameters.Keys | Should -Contain 'File'
-        }
-        It 'File should be mandatory' {
-            (Get-Command Test-ADOPSYamlFile).Parameters['File'].Attributes.Mandatory | Should -Be $true
-        }
-        
-        It 'Should have parameter PipelineId' {
-            (Get-Command Test-ADOPSYamlFile).Parameters.Keys | Should -Contain 'PipelineId'
-        }
-        It 'PipelineId should be mandatory' {
-            (Get-Command Test-ADOPSYamlFile).Parameters['PipelineId'].Attributes.Mandatory | Should -Be $true
+        $TestCases = @(
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'Project'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'File'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'PipelineId'
+                Mandatory = $true
+                Type = 'Int32'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command Test-ADOPSYamlFile | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 

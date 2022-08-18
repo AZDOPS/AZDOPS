@@ -2,21 +2,27 @@ Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
 Describe 'New-ADOPSRepository' {
-    Context 'Command structure' {
-        BeforeAll {
-            $r  = Get-Command -Name New-ADOPSRepository -Module ADOPS
-        }
-        It 'Command should exist' {
-            $r | Should -Not -BeNullOrEmpty
-        }
-        It 'Has parameter <_>' -TestCases 'Organization', 'Project', 'Name' {
-            $r.Parameters.Keys | Should -Contain $_
-        }
-        It 'Name should be mandatory' {
-            (Get-Command New-ADOPSRepository).Parameters['Name'].Attributes.Mandatory | Should -Be $true
-        }
-        It 'Project should be mandatory' {
-            (Get-Command New-ADOPSRepository).Parameters['Project'].Attributes.Mandatory | Should -Be $true
+    Context 'Parameters' {
+        $TestCases = @(
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'Project'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'name'
+                Mandatory = $true
+                Type = 'string'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command New-ADOPSRepository | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 

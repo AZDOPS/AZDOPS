@@ -1,44 +1,44 @@
-#Requires -Module @{ ModuleName = 'Pester'; ModuleVersion = '5.3.1' }
-
 Remove-Module ADOPS -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS
 
 InModuleScope -ModuleName ADOPS {
-    Describe 'New-ADOPSUserStory tests' {
-
+    Describe 'New-ADOPSUserStory' {
         Context 'Parameters' {
-            It 'Should have parameter Organization' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Organization'
-            }
-            It 'Should have parameter ProjectName' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'ProjectName'
-            }
-            It 'ProjectName should be required' {
-                (Get-Command New-ADOPSUserStory).Parameters['ProjectName'].Attributes.Mandatory | Should -Be $true
-            }
-            It 'Should have parameter Title' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Title'
-            }
-            It 'Title should be required' {
-                (Get-Command New-ADOPSUserStory).Parameters['Title'].Attributes.Mandatory | Should -Be $true
-            }
-            It 'Should have parameter Description' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Description'
-            }
-            It 'Description should not be required' {
-                (Get-Command New-ADOPSUserStory).Parameters['Description'].Attributes.Mandatory | Should -Be $false
-            }
-            It 'Should have parameter Tags' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Tags'
-            }
-            It 'Tags should not be required' {
-                (Get-Command New-ADOPSUserStory).Parameters['Tags'].Attributes.Mandatory | Should -Be $false
-            }
-            It 'Should have parameter Priority' {
-                (Get-Command New-ADOPSUserStory).Parameters.Keys | Should -Contain 'Priority'
-            }
-            It 'Priority should not be required' {
-                (Get-Command New-ADOPSUserStory).Parameters['Priority'].Attributes.Mandatory | Should -Be $false
+            $TestCases = @(
+                @{
+                    Name = 'Organization'
+                    Mandatory = $false
+                    Type = 'string'
+                },
+                @{
+                    Name = 'ProjectName'
+                    Mandatory = $true
+                    Type = 'string'
+                },
+                @{
+                    Name = 'Title'
+                    Mandatory = $true
+                    Type = 'string'
+                },
+                @{
+                    Name = 'Description'
+                    Mandatory = $false
+                    Type = 'string'
+                },
+                @{
+                    Name = 'Tags'
+                    Mandatory = $false
+                    Type = 'string'
+                },
+                @{
+                    Name = 'Priority'
+                    Mandatory = $false
+                    Type = 'string'
+                }
+            )
+        
+            It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+                Get-Command New-ADOPSUserStory | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
             }
         }
     }

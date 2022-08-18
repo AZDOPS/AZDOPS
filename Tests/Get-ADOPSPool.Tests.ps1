@@ -2,13 +2,32 @@ Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS -Force
 
 Describe "Get-ADOPSPool" {
-    Context "Function tests" {
-        It "Function exists" {
-            { Get-Command -Name Get-ADOPSPool -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-
-        It 'Has parameter <_>' -TestCases 'Organization', 'PoolId', 'PoolName', 'IncludeLegacy' {
-            (Get-Command -Name Get-ADOPSPool).Parameters.Keys | Should -Contain $_
+    Context "Parameters" {
+        $TestCases = @(
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'PoolId'
+                Mandatory = $true
+                Type = 'int32'
+            },
+            @{
+                Name = 'PoolName'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'IncludeLegacy'
+                Mandatory = $false
+                Type = 'switch'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command Get-ADOPSPool | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 

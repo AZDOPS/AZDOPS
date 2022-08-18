@@ -27,17 +27,42 @@ Describe "New-ADOPSWiki" {
         Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
     }
 
-    Context "General function tests" {
-        It "Function exist" {
-            { Get-Command -Name New-ADOPSWiki -Module ADOPS -ErrorAction Stop } | Should -Not -Throw
-        }
-
-        It "Contains mandatory parameter: <_>" -TestCases 'Project', 'WikiName', 'WikiRepository' {
-            Get-Command -Name New-ADOPSWiki | Should -HaveParameter $_ -Mandatory
-        }
-
-        It "Contains non mandatory parameter: <_>" -TestCases 'Organization', 'WikiRepositoryPath', 'GitBranch' {
-            Get-Command -Name New-ADOPSWiki | Should -HaveParameter $_
+    Context "Parameters" {
+        $TestCases = @(
+            @{
+                Name = 'Project'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'WikiName'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'WikiRepository'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'WikiRepositoryPath'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'GitBranch'
+                Mandatory = $false
+                Type = 'string'
+            }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command New-ADOPSWiki | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 

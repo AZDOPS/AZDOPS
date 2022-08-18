@@ -2,7 +2,26 @@ Remove-Module ADOPS -ErrorAction SilentlyContinue
 Import-Module $PSScriptRoot\..\Source\ADOPS
 
 InModuleScope -ModuleName ADOPS {
-    Describe 'Get-ADOPSProject tests' {
+    Describe 'Get-ADOPSProject' {
+        Context 'Parameters' {
+            $TestCases = @(
+                @{
+                    Name = 'Organization'
+                    Mandatory = $false
+                    Type = 'string'
+                },
+                @{
+                    Name = 'Project'
+                    Mandatory = $false
+                    Type = 'string'
+                }
+            )
+        
+            It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+                Get-Command Get-ADOPSProject | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            }
+        }
+
         Context 'Get project' {
             BeforeAll {
                 Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
@@ -53,21 +72,6 @@ InModuleScope -ModuleName ADOPS {
             }
             It 'should not throw with no parameters' {
                 { Get-ADOPSProject } | Should -Not -Throw
-            }
-        }
-
-        Context 'Parameters' {
-            It 'Should have parameter Organization' {
-                (Get-Command Get-ADOPSProject).Parameters.Keys | Should -Contain 'Organization'
-            }
-            It 'Organization should not be required' {
-                (Get-Command Get-ADOPSProject).Parameters['Organization'].Attributes.Mandatory | Should -Be $false
-            }
-            It 'Should have parameter Project' {
-                (Get-Command Get-ADOPSProject).Parameters.Keys | Should -Contain 'Project'
-            }
-            It 'Project not should be required' {
-                (Get-Command Get-ADOPSProject).Parameters['Project'].Attributes.Mandatory | Should -Be $false
             }
         }
     }
