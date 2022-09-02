@@ -9,8 +9,6 @@ BeforeAll {
     }
 }
 
-
-
 Describe 'Connect-ADOPS' {
     Context 'Parameters' {
         $TestCases = @(
@@ -41,6 +39,14 @@ Describe 'Connect-ADOPS' {
         }
     }
     
+    Context 'Connect-ADOPS' {
+        it 'Should trow if InvokeADOPSRestMethod returns error.' {
+            Mock -CommandName InvokeADOPSRestMethod -MockWith {return throw} -ModuleName ADOPS
+            
+            {Connect-ADOPS -Username 'DummyUser1' -PersonalAccessToken 'MyPatGoesHere' -Organization 'MyOrg'} | Should -Throw
+        }
+    }
+
     Context 'Initial connection, No previous connection created' {
         BeforeAll {
             $DummyUser = 'DummyUserName'
@@ -182,16 +188,6 @@ Describe 'Bugfixes' {
         }
         AfterAll {  
             Remove-Variable -Name ADOPSCredentials -Scope Global
-        }
-    }
-}
-
-Describe 'Validating try catch.' {
-    Context 'Connect-ADOPS' {
-        it 'Should trow if InvokeADOPSRestMethod returns error.' {
-            Mock -CommandName InvokeADOPSRestMethod -MockWith {return throw} -ModuleName ADOPS
-            
-            {Connect-ADOPS -Username 'DummyUser1' -PersonalAccessToken 'MyPatGoesHere' -Organization 'MyOrg'} | Should -Throw
         }
     }
 }
