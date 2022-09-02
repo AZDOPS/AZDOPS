@@ -51,6 +51,44 @@ Describe "New-ADOPSVariableGroup" {
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
             Get-Command New-ADOPSVariableGroup | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
+
+        It 'Should throw if VariableHashtable is used and not correct, to many keys' {
+            {New-ADOPSVariableGroup -Project "myproject" -VariableGroupName "mygroup" -VariableHashtable @{
+                Name = 'Name'
+                IsSecret = $True
+                Value = 'Value'
+                OneTooMany = $True
+            }} | Should -Throw
+        }
+
+        It 'Should throw if VariableHashtable is used and not correct, missing Name' {
+            {New-ADOPSVariableGroup -Project "myproject" -VariableGroupName "mygroup" -VariableHashtable @{
+                IsSecret = $True
+                Value = 'Value'
+            }} | Should -Throw
+        }
+
+        It 'Should throw if VariableHashtable is used and not correct, missing IsSecret' {
+            {New-ADOPSVariableGroup -Project "myproject" -VariableGroupName "mygroup" -VariableHashtable @{
+                Name = 'Name'
+                Value = 'Value'
+            }} | Should -Throw
+        }
+
+        It 'Should throw if VariableHashtable is used and not correct, missing Value' {
+            {New-ADOPSVariableGroup -Project "myproject" -VariableGroupName "mygroup" -VariableHashtable @{
+                Name = 'Name'
+                IsSecret = $True
+            }} | Should -Throw
+        }
+
+        It 'Should throw if VariableHashtable is used and not correct, Wrong keys' {
+            {New-ADOPSVariableGroup -Project "myproject" -VariableGroupName "mygroup" -VariableHashtable @{
+                WrongName = 'Name'
+                IsSecret = $True
+                Value = 'Value'
+            }} | Should -Throw
+        }
     }
 
     Context "Adding variable group" {
@@ -102,6 +140,40 @@ Describe "New-ADOPSVariableGroup" {
 
         It "Should invoke corret Uri when organization is used" {
             (New-ADOPSVariableGroup -Organization "someorg" -Project "myproject" -VariableGroupName "mygroup" -VariableName "myvar" -VariableValue "myvalue").Uri | Should -Be "https://dev.azure.com/someorg/_apis/distributedtask/variablegroups?api-version=7.1-preview.2"
-        }        
+        }     
+
+        It 'Given VariableHashtable should construct a correct variables object, Single variable' {
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                return $Body
+            }
+            
+            $r = New-ADOPSVariableGroup -Project "myproject" -VariableGroupName "mygroup" -VariableHashtable @{
+                Name = 'VariableName'
+                IsSecret = $True
+                Value = 'Value'
+            } | ConvertFrom-Json
+            
+            $r.variables.VariableName.value | Should -Be 'Value'
+        }
+
+        
+        It 'Given VariableHashtable should construct a correct variables object, Multi variable' {
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                return $Body
+            }
+            
+            $r = New-ADOPSVariableGroup -Project "myproject" -VariableGroupName "mygroup" -VariableHashtable @{
+                Name = 'VariableName1'
+                IsSecret = $True
+                Value = 'Value1'
+            }, @{
+                Name = 'VariableName2'
+                IsSecret = $True
+                Value = 'Value2'
+            } | ConvertFrom-Json
+            
+            $r.variables.VariableName1.value | Should -Be 'Value1'
+            $r.variables.VariableName2.value | Should -Be 'Value2'
+        }
     }
 }
