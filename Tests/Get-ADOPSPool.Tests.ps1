@@ -119,6 +119,10 @@ Describe "Get-ADOPSPool" {
             (Get-ADOPSPool -Organization 'DummyOrg' -IncludeLegacy).Count | Should -Be 3
         }
 
+        It 'Returns only non legacy pools when Legacy is not set and no parameters given' {
+            (Get-ADOPSPool).Count | Should -Be 2
+        }
+
         It 'Calls InvokeADOPSRestMethod with correct parameters when Organization is used' {
             Get-ADOPSPool -Organization 'MySecondOrg' -PoolId 10
             Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/MySecondOrg/_apis/distributedtask/pools/10?api-version=7.1-preview.1' }
