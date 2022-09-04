@@ -153,6 +153,17 @@ failTaskOnFailedTests: false
 
         }
 
+        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+            Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666 -Organization 'DummyOrg'
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'DummyOrg' } -Times 1 -Exactly
+        }
+
+        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+            Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'DummyOrg' } -Times 0 -Exactly
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+        }
+
         It 'Should call mocks' {
             $null = Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666
             Should -Invoke -CommandName GetADOPSHeader -Times 1 -Exactly -ModuleName ADOPS
