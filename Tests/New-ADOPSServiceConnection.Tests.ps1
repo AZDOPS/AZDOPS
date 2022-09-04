@@ -101,7 +101,7 @@ Describe 'New-ADOPSServiceConnection' {
         It 'Verifying body is correct' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { return $body}
             $r = New-ADOPSServiceConnection @Splat | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 10
-            $r | Should -Be '{"serviceEndpointProjectReferences":[{"name":"AzureSubscriptionName","projectReference":{"name":"myproj","id":"ProjectInfoId"}}],"isShared":false,"data":{"subscriptionName":"AzureSubscriptionName","environment":"AzureCloud","creationMode":"Manual","scopeLevel":"Subscription","subscriptionId":"AzureSubscriptionId"},"url":"https://management.azure.com/","authorization":{"scheme":"ServicePrincipal","parameters":{"tenantid":"AzureTennantId","authenticationType":"spnKey","serviceprincipalkey":"PassWord","serviceprincipalid":"User"}},"type":"AzureRM","name":"AzureSubscriptionName","isReady":true}'
+            $r | Should -Be '{"data":{"creationMode":"Manual","scopeLevel":"Subscription","environment":"AzureCloud","subscriptionId":"AzureSubscriptionId","subscriptionName":"AzureSubscriptionName"},"name":"AzureSubscriptionName","type":"AzureRM","url":"https://management.azure.com/","authorization":{"scheme":"ServicePrincipal","parameters":{"authenticationType":"spnKey","serviceprincipalkey":"PassWord","tenantid":"AzureTennantId","serviceprincipalid":"User"}},"isShared":false,"isReady":true,"serviceEndpointProjectReferences":[{"projectReference":{"id":"ProjectInfoId","name":"myproj"},"name":"AzureSubscriptionName"}]}'
         }
     }
 }
