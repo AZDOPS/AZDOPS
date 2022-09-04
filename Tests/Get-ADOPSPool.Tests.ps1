@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
+    Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+}
 
 Describe "Get-ADOPSPool" {
     Context "Parameters" {
@@ -115,6 +117,10 @@ Describe "Get-ADOPSPool" {
 
         It 'Returns all pools when Legacy is included' {
             (Get-ADOPSPool -Organization 'DummyOrg' -IncludeLegacy).Count | Should -Be 3
+        }
+
+        It 'Returns only non legacy pools when Legacy is not set and no parameters given' {
+            (Get-ADOPSPool).Count | Should -Be 2
         }
 
         It 'Calls InvokeADOPSRestMethod with correct parameters when Organization is used' {

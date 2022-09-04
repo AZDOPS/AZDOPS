@@ -1,5 +1,7 @@
-Remove-Module ADOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS
+BeforeDiscovery {
+    Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
+    Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+}
 
 InModuleScope -ModuleName ADOPS {
     Describe 'New-ADOPSUserStory' {
@@ -78,6 +80,17 @@ Describe 'New-ADOPSUserStory' {
                 Tags = 'USTags'
                 Priority = 'USPrio'
             }
+        }
+
+        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+            New-ADOPSUserStory -Organization 'Organization' -ProjectName 'DummyProj' -Title 'USTitle' -Description 'USDescription' -Tags 'USTags' -Priority 'USPrio'
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'Organization' } -Times 1 -Exactly
+        }
+
+        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+            New-ADOPSUserStory -ProjectName 'DummyProj' -Title 'USTitle' -Description 'USDescription' -Tags 'USTags' -Priority 'USPrio'
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'Organization' } -Times 0 -Exactly
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
         }
         
         It 'Should have called mock InvokeADOPSRestMethod' {

@@ -1,13 +1,13 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
+    Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+}
 
 BeforeAll {
     InModuleScope -ModuleName 'ADOPS' {
         Remove-Variable ADOPSCredentials -Scope 'Script' -ErrorAction SilentlyContinue
     }
 }
-
-
 
 Describe 'Connect-ADOPS' {
     Context 'Parameters' {
@@ -39,6 +39,14 @@ Describe 'Connect-ADOPS' {
         }
     }
     
+    Context 'Connect-ADOPS' {
+        it 'Should trow if InvokeADOPSRestMethod returns error.' {
+            Mock -CommandName InvokeADOPSRestMethod -MockWith {return throw} -ModuleName ADOPS
+            
+            {Connect-ADOPS -Username 'DummyUser1' -PersonalAccessToken 'MyPatGoesHere' -Organization 'MyOrg'} | Should -Throw
+        }
+    }
+
     Context 'Initial connection, No previous connection created' {
         BeforeAll {
             $DummyUser = 'DummyUserName'
@@ -180,16 +188,6 @@ Describe 'Bugfixes' {
         }
         AfterAll {  
             Remove-Variable -Name ADOPSCredentials -Scope Global
-        }
-    }
-}
-
-Describe 'Validating try catch.' {
-    Context 'Connect-ADOPS' {
-        it 'Should trow if InvokeADOPSRestMethod returns error.' {
-            Mock -CommandName InvokeADOPSRestMethod -MockWith {return throw} -ModuleName ADOPS
-            
-            {Connect-ADOPS -Username 'DummyUser1' -PersonalAccessToken 'MyPatGoesHere' -Organization 'MyOrg'} | Should -Throw
         }
     }
 }

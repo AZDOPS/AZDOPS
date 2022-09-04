@@ -1,5 +1,7 @@
-Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+BeforeDiscovery {
+    Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
+    Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+}
 
 Describe "Get-ADOPSUser" {
     Context "Parameters" {
@@ -29,6 +31,82 @@ Describe "Get-ADOPSUser" {
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
             Get-Command Get-ADOPSUser | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
+    }
+
+    Context 'Organization' {
+        BeforeAll {
+            Mock InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                [PSCustomObject]@{
+                    Content    = @{
+                        value = @(
+                            @{
+                                user = @{
+                                    subjectKind    = 'user'
+                                    metaType       = 'member'
+                                    directoryAlias = 'john.doe'
+                                    domain         = 'b3435cb9-0c61-4c5f-aa9d-eb022d95b57f'
+                                    principalName  = 'john.doe@example.org'
+                                    mailAddress    = 'john.doe@example.org'
+                                    origin         = 'aad'
+                                    originId       = 'ef317b7a-1db1-4e39-a87e-856a106b4a2f'
+                                    displayName    = 'John Doe'
+                                    url            = 'https://vssps.dev.azure.com/DummyOrg/_apis/Graph/Users/aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
+                                    descriptor     = 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
+                                }
+                            }
+                            @{
+                                user = @{
+                                    subjectKind    = 'user'
+                                    metaType       = 'member'
+                                    directoryAlias = 'john.doe2'
+                                    domain         = '4fac19ba-89ff-4a26-9f00-ff0ea5df74e8'
+                                    principalName  = 'john.doe2@example.org'
+                                    mailAddress    = 'john.doe@example.org'
+                                    origin         = 'aad'
+                                    originId       = '47a0d6f2-dd29-4b7c-b28a-9088bbd76612'
+                                    displayName    = 'John Doe2'
+                                    url            = 'https://vssps.dev.azure.com/DummyOrg/_apis/Graph/Users/aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U2'
+                                    descriptor     = 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U2'
+                                }
+                            }
+                        )
+                    }
+                    StatusCode = 200
+                    Headers    = @{
+                    }
+                }
+            }
+
+            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
+                @{
+                    Header       = @{
+                        'Authorization' = 'Basic Base64=='
+                    }
+                    Organization = 'DummyOrg'
+                }
+            } -ParameterFilter { $Organization -eq 'Organization' }
+            
+            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
+                @{
+                    Header       = @{
+                        'Authorization' = 'Basic Base64=='
+                    }
+                    Organization = 'DummyOrg'
+                }
+            }
+        }
+
+        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+            Get-ADOPSUser -Organization 'Organization'
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'Organization' } -Times 1 -Exactly
+        }
+        
+        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+            Get-ADOPSUser
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'Organization' } -Times 0 -Exactly
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+        }
+        
     }
 
     Context "Function returns all users" {

@@ -41,7 +41,7 @@ function New-ADOPSServiceConnection {
     }
 
     # Create body for the API call
-    $Body = @{
+    $Body = [ordered]@{
         data                             = @{
             subscriptionId   = $SubscriptionId
             subscriptionName = $SubscriptionName

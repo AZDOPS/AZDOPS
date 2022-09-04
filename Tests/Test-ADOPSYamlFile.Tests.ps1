@@ -1,5 +1,7 @@
-Remove-Module ADOPS -ErrorAction SilentlyContinue
-Import-Module $PSScriptRoot\..\Source\ADOPS
+BeforeDiscovery {
+    Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
+    Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+}
 
 Describe 'Test-ADOPSYamlFile' {
     Context 'Parameters' {
@@ -90,31 +92,30 @@ failTaskOnFailedTests: false
 
     Context 'Functionality' {
         BeforeAll {
-            InModuleScope -ModuleName ADOPS {
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = 'DummyOrg'
+            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
+                @{
+                    Header       = @{
+                        'Authorization' = 'Basic Base64=='
                     }
-                } -ParameterFilter { $Organization -eq 'Organization' }
-                
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = 'DummyOrg'
-                    }
+                    Organization = 'DummyOrg'
                 }
+            } -ParameterFilter { $Organization -eq 'Organization' }
+            
+            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
+                @{
+                    Header       = @{
+                        'Authorization' = 'Basic Base64=='
+                    }
+                    Organization = 'DummyOrg'
+                }
+            }
 
-                Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
-                    return $InvokeSplat
-                } -ParameterFilter { $method -eq 'post' }
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                return $InvokeSplat
+            } -ParameterFilter { $method -eq 'post' }
 
-                Mock -CommandName Get-Content -ModuleName ADOPS -MockWith {
-                    return @'
+            Mock -CommandName Get-Content -ModuleName ADOPS -MockWith {
+                return @'
 pool:
 vmImage: 'windows-latest'
 
@@ -129,26 +130,35 @@ pwsh: true
 inputs:
 testResultsFormat: NUnit
 testResultsFiles: |
-    **\test*.xml
+**\test*.xml
 failTaskOnFailedTests: false          
 '@
-                }
-
-                Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
-                    $errorDetails =  '{"typeName": "Exception", "message": "Some Error."}'
-                    $statusCode = 400
-                    $response = New-Object System.Net.Http.HttpResponseMessage $statusCode
-                    $exception = New-Object Microsoft.PowerShell.Commands.HttpResponseException "$statusCode ($($response.ReasonPhrase))", $response
-                    $errorCategory = [System.Management.Automation.ErrorCategory]::InvalidOperation
-                    $errorID = 'WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeWebRequestCommand'
-                    $targetObject = $null
-                    $errorRecord = New-Object Management.Automation.ErrorRecord $exception, $errorID, $errorCategory, $targetObject
-                    $errorRecord.ErrorDetails = $errorDetails
-                
-                    Throw $errorRecord
-                } -ParameterFilter { $method -eq 'post' -and $Uri -like '*/22/runs?*' }
             }
 
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                $errorDetails =  '{"typeName": "Exception", "message": "Some Error."}'
+                $statusCode = 400
+                $response = New-Object System.Net.Http.HttpResponseMessage $statusCode
+                $exception = New-Object Microsoft.PowerShell.Commands.HttpResponseException "$statusCode ($($response.ReasonPhrase))", $response
+                $errorCategory = [System.Management.Automation.ErrorCategory]::InvalidOperation
+                $errorID = 'WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeWebRequestCommand'
+                $targetObject = $null
+                $errorRecord = New-Object Management.Automation.ErrorRecord $exception, $errorID, $errorCategory, $targetObject
+                $errorRecord.ErrorDetails = $errorDetails
+            
+                Throw $errorRecord
+            } -ParameterFilter { $method -eq 'post' -and $Uri -like '*/22/runs?*' }
+        }
+
+        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+            Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666 -Organization 'DummyOrg'
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'DummyOrg' } -Times 1 -Exactly
+        }
+
+        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+            Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'DummyOrg' } -Times 0 -Exactly
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'Should call mocks' {
@@ -170,6 +180,29 @@ failTaskOnFailedTests: false
 
         It 'Should throw if yaml file is not valid' {
             {Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yaml' -PipelineId 22} | Should -Throw -ExpectedMessage '400 (Bad Request)'
+        }
+
+        It 'Should handle normal yaml validation failures' {
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                $errorDetails =  '{"typeName": "PipelineValidationException", "message": "Some Error."}'
+                $statusCode = 400
+                $response = New-Object System.Net.Http.HttpResponseMessage $statusCode
+                $exception = New-Object Microsoft.PowerShell.Commands.HttpResponseException "$statusCode ($($response.ReasonPhrase))", $response
+                $errorCategory = [System.Management.Automation.ErrorCategory]::InvalidOperation
+                $errorID = 'WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeWebRequestCommand'
+                $targetObject = $null
+                $errorRecord = New-Object Management.Automation.ErrorRecord $exception, $errorID, $errorCategory, $targetObject
+                $errorRecord.ErrorDetails = $errorDetails
+            
+                Throw $errorRecord
+            } -ParameterFilter { $method -eq 'post' }
+
+            Mock -CommandName Write-Warning -ModuleName ADOPS -MockWith {
+                Write-Output @PesterBoundParameters
+            }
+
+            # When using @PesterBoundParameters like this mock does it kind of messes up the output. Use -join to solve it.
+            -join (Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666) | Should -BeLike "*Validation failed*"
         }
     }
 }
