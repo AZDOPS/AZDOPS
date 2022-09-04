@@ -52,12 +52,15 @@ Describe "Set-ADOPSElasticPool" {
                     }
                 }
             }
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
+            
+            Mock GetADOPSHeader -ModuleName ADOPS -MockWith {
                 @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
+                    Organization = "myorg"
+                }
+            }
+            Mock GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'DummyOrg' } -MockWith {
+                @{
+                    Organization = "DummyOrg"
                 }
             }
 
@@ -80,6 +83,17 @@ Describe "Set-ADOPSElasticPool" {
 
         }
 
+        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+            Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg'
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'DummyOrg' } -Times 1 -Exactly
+        }
+
+        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+            Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'DummyOrg' } -Times 0 -Exactly
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+        }
+
         It "Returns updated elastic pool" {
             Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' | Should -Not -BeNullOrEmpty
         }
@@ -88,5 +102,33 @@ Describe "Set-ADOPSElasticPool" {
             (Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg').elasticPool.maxCapacity | Should -Be 2
         }
 
+        It 'Creates correct URI' {
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                return $URI
+            }
+            $required = 'https://dev.azure.com/DummyOrg/_apis/distributedtask/elasticpools/59?api-version=7.1-preview.1'
+            $actual = Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg'
+            $actual | Should -Be $required
+        }
+
+        It 'If it is an object, converts ElasticPoolObject to json' {
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                return $body
+            }
+
+            $ElasticPoolObject = $ElasticPoolObject | ConvertFrom-Json
+            $actual = Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg'
+            {$actual | ConvertFrom-Json} | Should -Not -Throw
+        }
+
+        
+        It 'If ElasticPoolObject is an object that cant be converted to Json, it should throw' {
+            Mock -CommandName ConvertTo-Json -ModuleName ADOPS -MockWith {
+                throw
+            }
+
+            $ElasticPoolObject = $ElasticPoolObject | ConvertFrom-Json            
+            {Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg'} | Should -Throw
+        }
     }
 }

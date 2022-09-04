@@ -98,7 +98,6 @@ Describe "New-ADOPSElasticpool" {
 
         }
 
-        
         It 'Should get organization from GetADOPSHeader when organization parameter is used' {
             New-ADOPSElasticpool -Organization 'anotherorg' -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -AuthorizeAllPipelines -AutoProvisionProjectPools
             Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 1 -Exactly
@@ -153,7 +152,7 @@ Describe "New-ADOPSElasticpool" {
             }
 
             $ElasticPoolObject = $ElasticPoolObject | ConvertFrom-Json            
-            {New-ADOPSElasticpool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' -AuthorizeAllPipelines -AutoProvisionProjectPools | ConvertFrom-Json} | Should -Throw
+            {New-ADOPSElasticpool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' -AuthorizeAllPipelines -AutoProvisionProjectPools} | Should -Throw
         }
     }
 }
