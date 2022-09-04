@@ -81,6 +81,17 @@ Describe 'New-ADOPSUserStory' {
                 Priority = 'USPrio'
             }
         }
+
+        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+            New-ADOPSUserStory -Organization 'Organization' -ProjectName 'DummyProj' -Title 'USTitle' -Description 'USDescription' -Tags 'USTags' -Priority 'USPrio'
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'Organization' } -Times 1 -Exactly
+        }
+
+        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+            New-ADOPSUserStory -ProjectName 'DummyProj' -Title 'USTitle' -Description 'USDescription' -Tags 'USTags' -Priority 'USPrio'
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'Organization' } -Times 0 -Exactly
+            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+        }
         
         It 'Should have called mock InvokeADOPSRestMethod' {
             $TesRes = New-ADOPSUserStory @TestRunSplat
