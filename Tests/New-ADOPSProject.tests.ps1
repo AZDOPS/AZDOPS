@@ -148,7 +148,7 @@ Describe 'New-ADOPSProject' {
             } -ParameterFilter { $method -eq 'Post' }
 
             $r = New-ADOPSProject -Organization $OrganizationName -Name $Project -Visibility 'Public' -Description 'DummyDescription'
-            $r | Should -Be '{"name":"DummyOrg","visibility":"Public","capabilities":{"processTemplate":{"templateTypeId":"e5317e66-94c8-48cb-bed8-3f44ebdb0963"},"versioncontrol":{"sourceControlType":"Git"}},"description":"DummyDescription"}'
+            $r | Should -Be '{"name":"DummyOrg","visibility":"Public","capabilities":{"versioncontrol":{"sourceControlType":"Git"},"processTemplate":{"templateTypeId":"e5317e66-94c8-48cb-bed8-3f44ebdb0963"}},"description":"DummyDescription"}'
         }
                 
         It 'Verify uri' {

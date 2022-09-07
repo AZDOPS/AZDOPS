@@ -62,11 +62,11 @@ function New-ADOPSProject {
     $Body = [ordered]@{
         'name'         = $Name
         'visibility'   = $Visibility
-        'capabilities' = @{
-            'versioncontrol'  = @{
+        'capabilities' = [ordered]@{
+            'versioncontrol'  = [ordered]@{
                 'sourceControlType' = $SourceControlType
             }
-            'processTemplate' = @{
+            'processTemplate' = [ordered]@{
                 'templateTypeId' = $ProcessTemplateTypeId
             }
         }
