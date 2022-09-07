@@ -1,6 +1,10 @@
-BeforeDiscovery {
+param(
+    $PSM1 = "$PSScriptRoot\..\Source\ADOPS.psm1"
+)
+
+BeforeAll {
     Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-    Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+    Import-Module $PSM1 -Force
 }
 
 Describe 'New-ADOPSServiceConnection' {
@@ -101,7 +105,7 @@ Describe 'New-ADOPSServiceConnection' {
         It 'Verifying body is correct' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { return $body}
             $r = New-ADOPSServiceConnection @Splat | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 10
-            $r | Should -Be '{"data":{"creationMode":"Manual","scopeLevel":"Subscription","environment":"AzureCloud","subscriptionId":"AzureSubscriptionId","subscriptionName":"AzureSubscriptionName"},"name":"AzureSubscriptionName","type":"AzureRM","url":"https://management.azure.com/","authorization":{"scheme":"ServicePrincipal","parameters":{"authenticationType":"spnKey","serviceprincipalkey":"PassWord","tenantid":"AzureTennantId","serviceprincipalid":"User"}},"isShared":false,"isReady":true,"serviceEndpointProjectReferences":[{"projectReference":{"id":"ProjectInfoId","name":"myproj"},"name":"AzureSubscriptionName"}]}'
+            $r | Should -Be '{"data":{"subscriptionId":"AzureSubscriptionId","subscriptionName":"AzureSubscriptionName","environment":"AzureCloud","scopeLevel":"Subscription","creationMode":"Manual"},"name":"AzureSubscriptionName","type":"AzureRM","url":"https://management.azure.com/","authorization":{"parameters":{"tenantid":"AzureTennantId","serviceprincipalid":"User","authenticationType":"spnKey","serviceprincipalkey":"PassWord"},"scheme":"ServicePrincipal"},"isShared":false,"isReady":true,"serviceEndpointProjectReferences":[{"projectReference":{"id":"ProjectInfoId","name":"myproj"},"name":"AzureSubscriptionName"}]}'
         }
     }
 }

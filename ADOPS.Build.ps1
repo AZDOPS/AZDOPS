@@ -4,7 +4,7 @@
 [string]$ModuleSourcePath = "$PSScriptRoot\Source"
 [string]$HelpSourcePath = "$PSScriptRoot\Docs\Help"
 
-[string]$Version = '1.0.0'
+[string]$Version = '1.1.1'
 
 [string]$OutputPath = "$PSScriptRoot\Bin\$ModuleName\$Version"
 
@@ -20,7 +20,11 @@ task Clean {
 }
 
 task Unit_Tests {
-    .$PSScriptRoot\Tests\TestRunner.ps1 -Verbosity Normal -CodeCoverage
+    .$PSScriptRoot\Tests\TestRunner.ps1 -ModuleLoadPath "$PSScriptRoot\Source\ADOPS.psm1" -Verbosity Normal -CodeCoveragePath "$PSScriptRoot\Source\Public" 
+}
+
+task Unit_Tests_Compiled {
+    .$PSScriptRoot\Tests\TestRunner.ps1 -ModuleLoadPath "$OutputPath\ADOPS.psm1" -Verbosity Normal -CodeCoveragePath "$OutputPath\ADOPS.psm1"
 }
 
 task RunScriptAnalyzer {
@@ -89,4 +93,5 @@ task . Clean,
     Unit_Tests,
     RunScriptAnalyzer,
     Build_Documentation,
-    Compile_Module
+    Compile_Module,
+    Unit_Tests_Compiled

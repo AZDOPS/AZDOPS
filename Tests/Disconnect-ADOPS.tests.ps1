@@ -1,6 +1,10 @@
-BeforeDiscovery {
+param(
+    $PSM1 = "$PSScriptRoot\..\Source\ADOPS.psm1"
+)
+
+BeforeAll {
     Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-    Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+    Import-Module $PSM1 -Force
 }
 
 Describe 'Disconnect-ADOPS' {
@@ -18,29 +22,26 @@ Describe 'Disconnect-ADOPS' {
         }
     }
 
-    InModuleScope -ModuleName 'ADOPS' {
-        Context 'Command tests' {
-            BeforeAll {
-                $Organization1 = 'ADOPS1'
-                $Organization2 = 'ADOPS2'
-                $Organization3 = 'ADOPS3'
+    Context 'Command tests' {
+        BeforeAll {
+            InModuleScope -ModuleName 'ADOPS' {
                 $Script:ADOPSCredentials = @"
                 {
-                    "$Organization1": {
+                    "ADOPS1": {
                       "Credential": {
                         "UserName": "john.doe@domain.com",
                         "Password": "first"
                       },
                       "Default": true
                     },
-                    "$Organization2": {
+                    "ADOPS2": {
                       "Credential": {
                         "UserName": "john.doe@domain.com",
                         "Password": "second"
                       },
                       "Default": false
                     },
-                    "$Organization3": {
+                    "ADOPS3": {
                       "Credential": {
                         "UserName": "john.doe@domain.com",
                         "Password": "third"
@@ -50,44 +51,59 @@ Describe 'Disconnect-ADOPS' {
                 }
 "@ | ConvertFrom-Json -AsHashtable
             }
+        }
 
-            It 'should throw when organization not specified if multiple connections' {
+        
+        It 'should throw when organization not specified if multiple connections' {
+            InModuleScope -ModuleName 'ADOPS' {
                 $Script:ADOPSCredentials.Count | Should -BeExactly 3
+
                 { Disconnect-ADOPS } | Should -Throw
+            
                 $Script:ADOPSCredentials.Count | Should -BeExactly 3
             }
+        }
 
-            # Removes 1 of 3 connections
-            It 'removes the credential for the specified organization' {
-                $Script:ADOPSCredentials[$Organization2] | Should -Not -BeNullOrEmpty
+        # Removes 1 of 3 connections
+        It 'removes the credential for the specified organization' {
+            InModuleScope -ModuleName 'ADOPS' {
+                $Script:ADOPSCredentials['ADOPS2'] | Should -Not -BeNullOrEmpty
                 $Script:ADOPSCredentials.Count | Should -BeExactly 3
-                Disconnect-ADOPS -Organization $Organization2
-                $Script:ADOPSCredentials[$Organization2] | Should -BeNullOrEmpty
+                Disconnect-ADOPS -Organization ADOPS2
+                $Script:ADOPSCredentials['ADOPS2'] | Should -BeNullOrEmpty
                 $Script:ADOPSCredentials.Count | Should -BeExactly 2
             }
+        }
 
-            # Removes 2 of 3 connections
-            It 'sets the credential of another organization to default if default is removed' {
-                $Script:ADOPSCredentials[$Organization1].Default | Should -BeTrue
-                $Script:ADOPSCredentials[$Organization3].Default | Should -BeFalse
-                Disconnect-ADOPS -Organization $Organization1
-                $Script:ADOPSCredentials[$Organization3].Default | Should -BeTrue
+        # Removes 2 of 3 connections
+        It 'sets the credential of another organization to default if default is removed' {
+            InModuleScope -ModuleName 'ADOPS' {
+                $Script:ADOPSCredentials['ADOPS1'].Default | Should -BeTrue
+                $Script:ADOPSCredentials['ADOPS3'].Default | Should -BeFalse
+                Disconnect-ADOPS -Organization ADOPS1
+                $Script:ADOPSCredentials['ADOPS3'].Default | Should -BeTrue
             }
+        }
 
-            # Removes 3 of 3 connections
-            It 'removes the last connection without parameter when only one' {
+        # Removes 3 of 3 connections
+        It 'removes the last connection without parameter when only one' {
+            InModuleScope -ModuleName 'ADOPS' {
                 $Script:ADOPSCredentials.Count | Should -BeExactly 1
                 { Disconnect-ADOPS } | Should -Not -Throw
                 $Script:ADOPSCredentials.Count | Should -BeExactly 0
             }
         }
+    }
 
-        Context 'Validate throw when no Connections.' {
-            BeforeAll {
+    Context 'Validate throw when no Connections.' {
+        BeforeAll {
+            InModuleScope -ModuleName 'ADOPS' {
                 $Script:ADOPSCredentials = $null
             }
+        }
 
-            It 'should throw when no Connections is availiable' {
+        It 'should throw when no Connections is availiable' {
+            InModuleScope -ModuleName 'ADOPS' {
                 $Script:ADOPSCredentials.Count | Should -BeExactly 0
                 { Disconnect-ADOPS } | Should -Throw
                 $Script:ADOPSCredentials.Count | Should -BeExactly 0

@@ -59,14 +59,14 @@ function New-ADOPSProject {
     # Create project endpoint
     $URI = "https://dev.azure.com/$Organization/_apis/projects?api-version=7.1-preview.4"
 
-    $Body = @{
+    $Body = [ordered]@{
         'name'         = $Name
         'visibility'   = $Visibility
-        'capabilities' = @{
-            'versioncontrol'  = @{
+        'capabilities' = [ordered]@{
+            'versioncontrol'  = [ordered]@{
                 'sourceControlType' = $SourceControlType
             }
-            'processTemplate' = @{
+            'processTemplate' = [ordered]@{
                 'templateTypeId' = $ProcessTemplateTypeId
             }
         }

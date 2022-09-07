@@ -1,9 +1,11 @@
-BeforeDiscovery {
-    Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-    Import-Module $PSScriptRoot\..\Source\ADOPS -Force
-}
+param(
+    $PSM1 = "$PSScriptRoot\..\Source\ADOPS.psm1"
+)
 
 BeforeAll {
+    Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
+    Import-Module $PSM1 -Force
+    
     InModuleScope -ModuleName 'ADOPS' {
         Remove-Variable ADOPSCredentials -Scope 'Script' -ErrorAction SilentlyContinue
     }

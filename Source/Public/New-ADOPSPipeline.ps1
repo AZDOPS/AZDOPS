@@ -44,13 +44,13 @@ function New-ADOPSPipeline {
         throw "The specified Repository $Repository was not found."
     }
 
-    $Body = @{
+    $Body = [ordered]@{
         "name" = $Name
         "folder" = "\$FolderPath"
-        "configuration" = @{
+        "configuration" = [ordered]@{
             "type" = "yaml"
             "path" = $YamlPath
-            "repository" = @{
+            "repository" = [ordered]@{
                 "id" = $RepositoryID
                 "type" = "azureReposGit"
             }

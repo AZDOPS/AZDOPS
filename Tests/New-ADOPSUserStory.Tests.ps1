@@ -1,47 +1,53 @@
-BeforeDiscovery {
+param(
+    $PSM1 = "$PSScriptRoot\..\Source\ADOPS.psm1"
+)
+
+BeforeAll {
     Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-    Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+    Import-Module $PSM1 -Force
 }
 
-InModuleScope -ModuleName ADOPS {
-    Describe 'New-ADOPSUserStory' {
-        Context 'Parameters' {
-            $TestCases = @(
-                @{
-                    Name = 'Organization'
-                    Mandatory = $false
-                    Type = 'string'
-                },
-                @{
-                    Name = 'ProjectName'
-                    Mandatory = $true
-                    Type = 'string'
-                },
-                @{
-                    Name = 'Title'
-                    Mandatory = $true
-                    Type = 'string'
-                },
-                @{
-                    Name = 'Description'
-                    Mandatory = $false
-                    Type = 'string'
-                },
-                @{
-                    Name = 'Tags'
-                    Mandatory = $false
-                    Type = 'string'
-                },
-                @{
-                    Name = 'Priority'
-                    Mandatory = $false
-                    Type = 'string'
-                }
-            )
-        
-            It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-                Get-Command New-ADOPSUserStory | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+AfterAll {
+    Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
+}
+
+Describe 'New-ADOPSUserStory' {
+    Context 'Parameters' {
+        $TestCases = @(
+            @{
+                Name = 'Organization'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'ProjectName'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'Title'
+                Mandatory = $true
+                Type = 'string'
+            },
+            @{
+                Name = 'Description'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'Tags'
+                Mandatory = $false
+                Type = 'string'
+            },
+            @{
+                Name = 'Priority'
+                Mandatory = $false
+                Type = 'string'
             }
+        )
+    
+        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+            Get-Command New-ADOPSUserStory | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 }
@@ -49,28 +55,25 @@ InModuleScope -ModuleName ADOPS {
 Describe 'New-ADOPSUserStory' {
     Context 'Creating new user story' {
         BeforeAll {
-            InModuleScope -ModuleName ADOPS {
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = $OrganizationName
+            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
+                @{
+                    Header       = @{
+                        'Authorization' = 'Basic Base64=='
                     }
-                } -ParameterFilter { $OrganizationName -eq 'Organization' }
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = 'DummyOrg'
-                    }
+                    Organization = $OrganizationName
                 }
-
-                Mock -CommandName InvokeADOPSRestMethod -MockWith {
-                    return $InvokeSplat
+            } -ParameterFilter { $OrganizationName -eq 'Organization' }
+            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
+                @{
+                    Header       = @{
+                        'Authorization' = 'Basic Base64=='
+                    }
+                    Organization = 'DummyOrg'
                 }
             }
+
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
+        
 
             $TestRunSplat = @{
                 Organization = 'DummyOrg' 
@@ -103,12 +106,20 @@ Describe 'New-ADOPSUserStory' {
         }
         
         It 'Verifying post object, ContentType' {
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                return $ContentType
+            }
+
             $TesRes = New-ADOPSUserStory @TestRunSplat
-            $TesRes.ContentType | Should -Be "application/json-patch+json"
+            $TesRes | Should -Be "application/json-patch+json"
         }
         It 'Verifying post object, Body' {
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                return $Body
+            }
+            
             $DesiredReslt = '[{"op":"add","path":"/fields/System.Title","value":"USTitle"},{"op":"add","path":"/fields/System.Description","value":"USDescription"},{"op":"add","path":"/fields/System.Tags","value":"USTags"},{"op":"add","path":"/fields/Microsoft.VSTS.Common.Priority","value":"USPrio"}]'
-            $TesRes = (New-ADOPSUserStory @TestRunSplat).Body | ConvertFrom-Json | ConvertTo-Json -Compress
+            $TesRes = (New-ADOPSUserStory @TestRunSplat) | ConvertFrom-Json | ConvertTo-Json -Compress
             $TesRes | Should -Be $DesiredReslt
         }
     }

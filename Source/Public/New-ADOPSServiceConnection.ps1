@@ -42,7 +42,7 @@ function New-ADOPSServiceConnection {
 
     # Create body for the API call
     $Body = [ordered]@{
-        data                             = @{
+        data                             = [ordered]@{
             subscriptionId   = $SubscriptionId
             subscriptionName = $SubscriptionName
             environment      = "AzureCloud"
@@ -52,8 +52,8 @@ function New-ADOPSServiceConnection {
         name                             = ($SubscriptionName -replace " ")
         type                             = "AzureRM"
         url                              = "https://management.azure.com/"
-        authorization                    = @{
-            parameters = @{
+        authorization                    = [ordered]@{
+            parameters = [ordered]@{
                 tenantid            = $TenantId
                 serviceprincipalid  = $ServicePrincipal.UserName
                 authenticationType  = "spnKey"
@@ -64,8 +64,8 @@ function New-ADOPSServiceConnection {
         isShared                         = $false
         isReady                          = $true
         serviceEndpointProjectReferences = @(
-            @{
-                projectReference = @{
+            [ordered]@{
+                projectReference = [ordered]@{
                     id   = $ProjectInfo.Id
                     name = $Project
                 }
