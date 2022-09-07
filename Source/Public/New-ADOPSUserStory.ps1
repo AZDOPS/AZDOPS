@@ -57,9 +57,11 @@ function New-ADOPSUserStory {
       },	 
     ]"
     
+  $ContentType= "application/json-patch+json"  
+  
   $InvokeSplat = @{
     Uri           = $URI
-    ContentType   = "application/json-patch+json"
+    ContentType   = $ContentType
     Method        = $Method
     Body          = $Body
     Organization  = $Organization

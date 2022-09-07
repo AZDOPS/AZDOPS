@@ -1,6 +1,10 @@
-BeforeDiscovery {
+param(
+    $PSM1 = "$PSScriptRoot\..\Source\ADOPS.psm1"
+)
+
+BeforeAll {
     Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-    Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+    Import-Module $PSM1 -Force
 }
 
 Describe "New-ADOPSVariableGroup" {

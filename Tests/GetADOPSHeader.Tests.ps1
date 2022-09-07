@@ -1,10 +1,14 @@
-BeforeDiscovery {
+param(
+    $PSM1 = "$PSScriptRoot\..\Source\ADOPS.psm1"
+)
+
+BeforeAll {
     Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
-    Import-Module $PSScriptRoot\..\Source\ADOPS -Force
+    Import-Module $PSM1 -Force
 }
 
-InModuleScope -ModuleName ADOPS {
-    BeforeAll {
+BeforeAll {
+    InModuleScope -ModuleName ADOPS {
         $Script:ADOPSCredentials = @{
             'org1' = @{
                 Credential = [pscredential]::new('DummyUser1',(ConvertTo-SecureString -String 'DummyPassword1' -AsPlainText -Force))
@@ -34,18 +38,26 @@ InModuleScope -ModuleName ADOPS {
         
         Context 'Given no input, should return the default connection' {
             It 'Should return credential value of default organization, org2' {
-                (GetADOPSHeader).Header.Authorization | Should -BeLike "basic*"
+                InModuleScope -ModuleName ADOPS {
+                    (GetADOPSHeader).Header.Authorization | Should -BeLike "basic*"
+                }
             }
             It 'Token should contain organization name' {
-                (GetADOPSHeader).Organization | Should -Be 'org2'
+                InModuleScope -ModuleName ADOPS {
+                    (GetADOPSHeader).Organization | Should -Be 'org2'
+                }
             }
         }
         Context 'Given an organization as input, should return that organization' {
             It 'Should return credential value of default organization, org1' {
-                (GetADOPSHeader -Organization 'org1').Header.Authorization | Should -BeLike "basic*"
+                InModuleScope -ModuleName ADOPS {
+                    (GetADOPSHeader -Organization 'org1').Header.Authorization | Should -BeLike "basic*"
+                }
             }
             It 'Token should contain organization name' {
-                (GetADOPSHeader -Organization 'org1').Organization | Should -Be 'org1'
+                InModuleScope -ModuleName ADOPS {
+                    (GetADOPSHeader -Organization 'org1').Organization | Should -Be 'org1'
+                }
             }
         }
     }
