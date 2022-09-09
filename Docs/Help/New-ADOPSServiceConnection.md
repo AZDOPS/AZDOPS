@@ -12,9 +12,17 @@ Create an Azure DevOps Service Connection to Azure.
 
 ## SYNTAX
 
+### ServicePrincipal (Default)
 ```
-New-ADOPSServiceConnection [-TenantId] <String> [-SubscriptionName] <String> [-SubscriptionId] <String>
- [-Project] <String> [[-ConnectionName] <String>] [-ServicePrincipal] <PSCredential> [[-Organization] <String>]
+New-ADOPSServiceConnection [[-Organization] <String>] [-TenantId] <String> [-SubscriptionName] <String>
+ [-SubscriptionId] <String> [-Project] <String> [[-ConnectionName] <String>] [-ServicePrincipal] <PSCredential>
+ [<CommonParameters>]
+```
+
+### ManagedServiceIdentity
+```
+New-ADOPSServiceConnection [[-Organization] <String>] [-TenantId] <String> [-SubscriptionName] <String>
+ [-SubscriptionId] <String> [-Project] <String> [[-ConnectionName] <String>] [-ManagedIdentity]
  [<CommonParameters>]
 ```
 
@@ -86,11 +94,11 @@ Accept wildcard characters: False
 ```
 
 ### -ServicePrincipal
-Azure AD Service principal, Application (Client) ID and valid secret-
+Azure AD Service principal, Application (Client) ID and valid secret.
 
 ```yaml
 Type: PSCredential
-Parameter Sets: (All)
+Parameter Sets: ServicePrincipal
 Aliases:
 
 Required: True
@@ -140,6 +148,21 @@ Aliases:
 
 Required: True
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ManagedIdentity
+If a managed identity will be used for the connection.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: ManagedServiceIdentity
+Aliases:
+
+Required: True
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

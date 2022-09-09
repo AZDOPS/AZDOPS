@@ -15,7 +15,7 @@ Fetch one or more users
 
 ### Default (Default)
 ```
-Get-ADOPSUser [-Organization <String>] [<CommonParameters>]
+Get-ADOPSUser [-Organization <String>] [-ContinuationToken <String>] [<CommonParameters>]
 ```
 
 ### Name
@@ -99,6 +99,21 @@ The organization to get users from.
 ```yaml
 Type: String
 Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ContinuationToken
+Used to fetch the new page from the API.
+
+```yaml
+Type: String
+Parameter Sets: Default
 Aliases:
 
 Required: False
