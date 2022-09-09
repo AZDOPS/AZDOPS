@@ -44,6 +44,11 @@ Describe 'New-ADOPSServiceConnection' {
                 Name = 'ServicePrincipal'
                 Mandatory = $true
                 Type = 'pscredential'
+            },
+            @{
+                Name = 'ManagedIdentity'
+                Mandatory = $true
+                Type = 'switch'
             }
         )
     
