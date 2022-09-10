@@ -1,5 +1,5 @@
 function New-ADOPSServiceConnection {
-    [cmdletbinding(DefaultParameterSetName='ServicePrincipal')]
+    [cmdletbinding(DefaultParameterSetName = 'ServicePrincipal')]
     param(
         [Parameter()]
         [string]$Organization,
@@ -19,10 +19,10 @@ function New-ADOPSServiceConnection {
         [Parameter()]
         [string]$ConnectionName,
       
-        [Parameter(Mandatory,ParameterSetName = 'ServicePrincipal')]
+        [Parameter(Mandatory, ParameterSetName = 'ServicePrincipal')]
         [pscredential]$ServicePrincipal,
 
-        [Parameter(Mandatory,ParameterSetName = 'ManagedServiceIdentity')]
+        [Parameter(Mandatory, ParameterSetName = 'ManagedServiceIdentity')]
         [switch]$ManagedIdentity
     )
 
@@ -43,43 +43,48 @@ function New-ADOPSServiceConnection {
         $ConnectionName = $SubscriptionName -replace " "
     }
     
-    if ($PSCmdlet.ParameterSetName -eq 'ServicePrincipal') {
-        $authorization = [ordered]@{
-            parameters = [ordered]@{
-                tenantid            = $TenantId
-                serviceprincipalid  = $ServicePrincipal.UserName
-                authenticationType  = "spnKey"
-                serviceprincipalkey = $ServicePrincipal.GetNetworkCredential().Password
+    switch ($PSCmdlet.ParameterSetName) {
+        
+        'ServicePrincipal' {
+            $authorization = [ordered]@{
+                parameters = [ordered]@{
+                    tenantid            = $TenantId
+                    serviceprincipalid  = $ServicePrincipal.UserName
+                    authenticationType  = "spnKey"
+                    serviceprincipalkey = $ServicePrincipal.GetNetworkCredential().Password
+                }
+                scheme     = "ServicePrincipal"
             }
-            scheme     = "ServicePrincipal"
+    
+            $data = [ordered]@{
+                subscriptionId   = $SubscriptionId
+                subscriptionName = $SubscriptionName
+                environment      = "AzureCloud"
+                scopeLevel       = "Subscription"
+                creationMode     = "Manual"
+            }
         }
 
-        $data = [ordered]@{
-            subscriptionId   = $SubscriptionId
-            subscriptionName = $SubscriptionName
-            environment      = "AzureCloud"
-            scopeLevel       = "Subscription"
-            creationMode     = "Manual"
-        }
-    } elseif ($PSCmdlet.ParameterSetName -eq 'ManagedServiceIdentity') {
-        $authorization = [ordered]@{
-            parameters = [ordered]@{
-                tenantid            = $TenantId
+        'ManagedServiceIdentity' {
+            $authorization = [ordered]@{
+                parameters = [ordered]@{
+                    tenantid = $TenantId
+                }
+                scheme     = "ManagedServiceIdentity"
             }
-            scheme     = "ManagedServiceIdentity"
-        }
-
-        $data = [ordered]@{
-            subscriptionId   = $SubscriptionId
-            subscriptionName = $SubscriptionName
-            environment      = "AzureCloud"
-            scopeLevel       = "Subscription"
+    
+            $data = [ordered]@{
+                subscriptionId   = $SubscriptionId
+                subscriptionName = $SubscriptionName
+                environment      = "AzureCloud"
+                scopeLevel       = "Subscription"
+            }
         }
     }
 
     # Create body for the API call
     $Body = [ordered]@{
-        data                             =  $data
+        data                             = $data
         name                             = ($SubscriptionName -replace " ")
         type                             = "AzureRM"
         url                              = "https://management.azure.com/"
