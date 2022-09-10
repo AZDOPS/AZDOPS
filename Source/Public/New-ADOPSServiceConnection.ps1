@@ -1,5 +1,5 @@
 function New-ADOPSServiceConnection {
-    [cmdletbinding()]
+    [cmdletbinding(DefaultParameterSetName = 'ServicePrincipal')]
     param(
         [Parameter()]
         [string]$Organization,
@@ -19,8 +19,11 @@ function New-ADOPSServiceConnection {
         [Parameter()]
         [string]$ConnectionName,
       
-        [Parameter(Mandatory)]
-        [pscredential]$ServicePrincipal
+        [Parameter(Mandatory, ParameterSetName = 'ServicePrincipal')]
+        [pscredential]$ServicePrincipal,
+
+        [Parameter(Mandatory, ParameterSetName = 'ManagedServiceIdentity')]
+        [switch]$ManagedIdentity
     )
 
     # Set organization
@@ -39,28 +42,53 @@ function New-ADOPSServiceConnection {
     if (-not $ConnectionName) {
         $ConnectionName = $SubscriptionName -replace " "
     }
+    
+    switch ($PSCmdlet.ParameterSetName) {
+        
+        'ServicePrincipal' {
+            $authorization = [ordered]@{
+                parameters = [ordered]@{
+                    tenantid            = $TenantId
+                    serviceprincipalid  = $ServicePrincipal.UserName
+                    authenticationType  = "spnKey"
+                    serviceprincipalkey = $ServicePrincipal.GetNetworkCredential().Password
+                }
+                scheme     = "ServicePrincipal"
+            }
+    
+            $data = [ordered]@{
+                subscriptionId   = $SubscriptionId
+                subscriptionName = $SubscriptionName
+                environment      = "AzureCloud"
+                scopeLevel       = "Subscription"
+                creationMode     = "Manual"
+            }
+        }
+
+        'ManagedServiceIdentity' {
+            $authorization = [ordered]@{
+                parameters = [ordered]@{
+                    tenantid = $TenantId
+                }
+                scheme     = "ManagedServiceIdentity"
+            }
+    
+            $data = [ordered]@{
+                subscriptionId   = $SubscriptionId
+                subscriptionName = $SubscriptionName
+                environment      = "AzureCloud"
+                scopeLevel       = "Subscription"
+            }
+        }
+    }
 
     # Create body for the API call
     $Body = [ordered]@{
-        data                             = [ordered]@{
-            subscriptionId   = $SubscriptionId
-            subscriptionName = $SubscriptionName
-            environment      = "AzureCloud"
-            scopeLevel       = "Subscription"
-            creationMode     = "Manual"
-        }
+        data                             = $data
         name                             = ($SubscriptionName -replace " ")
         type                             = "AzureRM"
         url                              = "https://management.azure.com/"
-        authorization                    = [ordered]@{
-            parameters = [ordered]@{
-                tenantid            = $TenantId
-                serviceprincipalid  = $ServicePrincipal.UserName
-                authenticationType  = "spnKey"
-                serviceprincipalkey = $ServicePrincipal.GetNetworkCredential().Password
-            }
-            scheme     = "ServicePrincipal"
-        }
+        authorization                    = $authorization
         isShared                         = $false
         isReady                          = $true
         serviceEndpointProjectReferences = @(
