@@ -22,9 +22,16 @@ function Connect-ADOPS {
         $ShouldBeDefault = $true
         $Script:ADOPSCredentials = @{}
     }
-    elseif ($default.IsPresent) {
-        $r = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
-        $ADOPSCredentials[$r].Default = $false
+    else {
+        $CurrentDefault = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
+        if ($CurrentDefault -eq $Organization) {
+            # If we are overwriting current default it should stay default regardless of -Default parameter.
+            $ShouldBeDefault = $true
+        }
+        elseif ($Default.IsPresent) {
+            # We are adding a new default, remove the current.  
+            $ADOPSCredentials[$CurrentDefault].Default = $false
+        }
     }
 
     $OrgData = @{
