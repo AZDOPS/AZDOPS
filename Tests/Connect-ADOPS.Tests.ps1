@@ -113,6 +113,24 @@ Describe 'Connect-ADOPS' {
         }
     }
 
+    Context 'Adding same connection again, not setting default' {
+        BeforeAll {
+            $DummyUser = 'DummyUserName'
+            $DummyPassword = 'DummyPassword'
+            $DummyOrg = 'DummyOrg'
+
+            Mock -CommandName InvokeADOPSRestMethod -MockWith {} -ModuleName ADOPS
+            Connect-ADOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg
+        }
+        
+        It 'Should have set one default conenction' {
+            InModuleScope -ModuleName 'ADOPS' {
+                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $r.Count | Should -Be 1 -Because 'If this is the first connection we create we should always set it as default'
+            }
+        }
+    }
+
     Context 'Adding a second connection, not setting default' {
         BeforeAll {
             $DummyUser = 'DummyUserName2'
