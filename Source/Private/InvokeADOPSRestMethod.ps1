@@ -16,7 +16,10 @@ function InvokeADOPSRestMethod {
         [string]$ContentType = 'application/json',
 
         [Parameter()]
-        [switch]$FullResponse
+        [switch]$FullResponse,
+
+        [Parameter()]
+        [string]$OutFile
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
@@ -41,16 +44,21 @@ function InvokeADOPSRestMethod {
         $InvokeSplat.Add('ResponseHeadersVariable', 'ResponseHeaders')
         $InvokeSplat.Add('StatusCodeVariable', 'ResponseStatusCode')
     }
-    
-    $Result = Invoke-RestMethod @InvokeSplat
 
-    if ($Result -like "*Azure DevOps Services | Sign In*") {
-        throw 'Failed to call Azure DevOps API. Please login before using.'
-    }
-    elseif ($FullResponse) {
-        @{ Content = $Result; Headers = $ResponseHeaders; StatusCode = $ResponseStatusCode }
+    if ($OutFile) {
+        Invoke-RestMethod @InvokeSplat -OutFile $OutFile
     }
     else {
-        $Result
+        $Result = Invoke-RestMethod @InvokeSplat
+
+        if ($Result -like "*Azure DevOps Services | Sign In*") {
+            throw 'Failed to call Azure DevOps API. Please login before using.'
+        }
+        elseif ($FullResponse) {
+            @{ Content = $Result; Headers = $ResponseHeaders; StatusCode = $ResponseStatusCode }
+        }
+        else {
+            $Result
+        }
     }
 }
