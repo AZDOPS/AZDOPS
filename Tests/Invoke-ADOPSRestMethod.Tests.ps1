@@ -51,14 +51,14 @@ Describe 'Invoke-ADOPSRestMethod' {
     Context "Functionality" {
         BeforeAll {
             InModuleScope -ModuleName ADOPS {
-                Mock -CommandName InvokeADOPSRestMethod  -ModuleName ADOPS -MockWith {
+                Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                     return $InvokeSplat
                 }
             }
         }
 
         it 'Method should default to "Get"' {
-            Mock -CommandName InvokeADOPSRestMethod  -ModuleName ADOPS -MockWith {
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $Method
             }
 
@@ -66,7 +66,7 @@ Describe 'Invoke-ADOPSRestMethod' {
         }
 
         it 'Method should be set' {
-            Mock -CommandName InvokeADOPSRestMethod  -ModuleName ADOPS -MockWith {
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $Method
             }
 
@@ -74,7 +74,7 @@ Describe 'Invoke-ADOPSRestMethod' {
         }
 
         it 'Uri should be set' {
-            Mock -CommandName InvokeADOPSRestMethod  -ModuleName ADOPS -MockWith {
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $Uri
             }
 
@@ -82,7 +82,7 @@ Describe 'Invoke-ADOPSRestMethod' {
         }
 
         it 'If a body is given, post should include body'  {
-            Mock -CommandName InvokeADOPSRestMethod  -ModuleName ADOPS -MockWith {
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $Body
             }
 
