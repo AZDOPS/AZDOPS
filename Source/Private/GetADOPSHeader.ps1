@@ -5,7 +5,11 @@ function GetADOPSHeader {
     )
 
     $Res = @{}
-    
+
+    if ($script:ADOPSCredentials.Count -eq 0) {
+        throw 'No ADOPS credentials found. Have you used Connect-ADOPS to log in?'
+    }
+
     if (-not [string]::IsNullOrEmpty($Organization)) {
         $HeaderObj = $Script:ADOPSCredentials[$Organization]
         $res.Add('Organization', $Organization)
