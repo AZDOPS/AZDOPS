@@ -1,21 +1,28 @@
 function Connect-ADOPS {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'PAT')]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(ParameterSetName = 'PAT', Mandatory)]
         [string]$Username,
         
-        [Parameter(Mandatory)]
+        [Parameter(ParameterSetName = 'PAT', Mandatory)]
         [string]$PersonalAccessToken,
 
-        [Parameter(Mandatory)]
+        [Parameter(ParameterSetName = 'PSCredential', Mandatory)]
+        [pscredential]$Credential,
+
+        [Parameter(ParameterSetName = 'PSCredential', Mandatory)]
+        [Parameter(ParameterSetName = 'PAT', Mandatory)]
         [string]$Organization,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'PSCredential')]
+        [Parameter(ParameterSetName = 'PAT')]
         [switch]$Default
     )
     
-    $Credential = [pscredential]::new($Username, (ConvertTo-SecureString -String $PersonalAccessToken -AsPlainText -Force))
+    if ($PSCmdlet.ParameterSetName -eq 'PAT') {
+        $Credential = [pscredential]::new($Username, (ConvertTo-SecureString -String $PersonalAccessToken -AsPlainText -Force))
+    }
     $ShouldBeDefault = $Default.IsPresent
 
     if ($script:ADOPSCredentials.Count -eq 0) {
