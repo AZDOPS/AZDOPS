@@ -13,9 +13,15 @@ Establish a connection to Azure DevOps using a PAT.
 
 ## SYNTAX
 
+### PAT (Default)
 ```
-Connect-ADOPS [-Username] <String> [-PersonalAccessToken] <String> [-Organization] <String> [-Default]
+Connect-ADOPS -Username <String> -PersonalAccessToken <String> -Organization <String> [-Default]
  [<CommonParameters>]
+```
+
+### PSCredential
+```
+Connect-ADOPS -Credential <PSCredential> -Organization <String> [-Default] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -37,12 +43,38 @@ Connect to Azure DevOps organization using a personal access token.
 ### Example 2
 
 ```powershell
+$Creds = Get-Credential -Username 'john.doe@ADOPS.com' 
+# Insert PAT as password
+
+Connect-ADOPS -Credential $Creds -Organization 'ADOPS'
+```
+
+Connect to Azure DevOps organization using a credential object.
+
+### Example 3
+
+```powershell
 Connect-ADOPS -Username 'john.doe@ADOPS.com' -PersonalAccessToken '<myPersonalAccessToken>' -Organization 'ADOPS' -Default
 ```
 
 Connect to Azure DevOps organization using a personal access token and setting it as default organization.
 
 ## PARAMETERS
+
+### -Credential
+Username and PAT in a PSCredential object.
+
+```yaml
+Type: PSCredential
+Parameter Sets: PSCredential
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -Default
 
@@ -70,7 +102,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 2
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -82,11 +114,11 @@ Specifies the Personal Access Token to use for the connection.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: PAT
 Aliases:
 
 Required: True
-Position: 1
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -98,11 +130,11 @@ Username to use for the connection in the format of UPN.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: PAT
 Aliases:
 
 Required: True
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

@@ -33,6 +33,11 @@ Describe 'Connect-ADOPS' {
                 Name = 'Default'
                 Mandatory = $false
                 Type = 'switch'
+            },
+            @{
+                Name = 'credential'
+                Mandatory = $false
+                Type = 'pscredential'
             }
         )
         
@@ -51,6 +56,10 @@ Describe 'Connect-ADOPS' {
 
     Context 'Initial connection, No previous connection created' {
         BeforeAll {
+            InModuleScope -ModuleName 'ADOPS' {
+                Remove-Variable -Name 'ADOPSCredentials' -Scope 'Script'
+            }
+            
             $DummyUser = 'DummyUserName'
             $DummyPassword = 'DummyPassword'
             $DummyOrg = 'DummyOrg'
@@ -192,6 +201,78 @@ Describe 'Connect-ADOPS' {
                 $res = $ADOPSCredentials[$r]
                 $res.Credential.UserName | Should -Be $DummyUser
             }
+        }
+    }
+}
+
+Describe 'Adding connection using PSCredential' {
+    Context 'Initial connection, No previous connection created' {
+        BeforeAll {
+            InModuleScope -ModuleName 'ADOPS' {
+                Remove-Variable -Name 'ADOPSCredentials' -Scope 'Script'
+            }
+
+            $DummyUser = 'DummyPSCREDUserName'
+            $DummyPassword = 'DummyPSCREDPassword'
+            $DummyOrg = 'DummyOrg'
+
+            Mock -CommandName InvokeADOPSRestMethod -MockWith {} -ModuleName ADOPS
+
+            $Credential = [pscredential]::new($DummyUser, (ConvertTo-SecureString -String $DummyPassword -AsPlainText -Force))
+            Connect-ADOPS -Credential $Credential -Organization $DummyOrg 
+        }
+
+        It 'Should create a ADOPSCredentials variable' {
+            InModuleScope -ModuleName 'ADOPS' {
+                Get-Variable -Name 'ADOPSCredentials' -Scope 'Script' | Should -Not -BeNullOrEmpty
+            }
+        }
+        It 'ADOPSCredentials variable Should be a hashtable' {
+            InModuleScope -ModuleName 'ADOPS' {
+                $script:ADOPSCredentials.GetType().Name | Should -Be 'hashtable'
+            }
+        }
+        It 'Variable should contain one conenction' {
+            InModuleScope -ModuleName 'ADOPS' {
+                $script:ADOPSCredentials.Keys.Count | Should -Be 1
+            }
+        }
+        It 'Should have set one default conenction' {
+            InModuleScope -ModuleName 'ADOPS' {
+                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $r.Count | Should -Be 1 -Because 'If this is the first connection we create we should always set it as default'
+            }
+        }
+
+        It 'Variable should be encrypted (PSCredential)' {
+            InModuleScope -ModuleName 'ADOPS' {
+                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $res = $ADOPSCredentials[$r]
+                $res.Credential| Should -BeOfType [pscredential]
+            }
+        }
+        It 'Username should be set' {
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyUser' = $DummyUser} {
+                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $res = $ADOPSCredentials[$r]
+                $res.Credential.UserName | Should -Be $DummyUser
+            }
+        }
+        It 'Password should be set' {
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyPassword' = $DummyPassword} {
+                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $res = $ADOPSCredentials[$r]
+                $res.Credential.GetNetworkCredential().Password| Should -Be $DummyPassword
+            }
+        }
+        It 'AzDoOrganization should be set as key' {
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyOrg' = $DummyOrg} {
+                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $r | Should -Be $DummyOrg
+            }
+        }
+        It 'Should have called mock' {
+            Should -Invoke InvokeADOPSRestMethod -Exactly 1 -Scope Context -ModuleName ADOPS
         }
     }
 }
