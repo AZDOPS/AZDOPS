@@ -131,6 +131,10 @@ Describe 'New-ADOPSPipeline' {
             { New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath 'MissingYamlPath' -Repository $Repository} | Should -Throw
         }
         
+        It 'should not throw if YamlPath is *.yml' {
+            {New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath '.path/to/mePipeline.yml' -Repository $Repository} | Should -Not -Throw
+        }
+
         It 'should not throw without optional parameters' {
             { New-ADOPSPipeline -Project $Project -Name $PipeName -YamlPath $YamlPath -Repository $Repository} | Should -Not -Throw
         }

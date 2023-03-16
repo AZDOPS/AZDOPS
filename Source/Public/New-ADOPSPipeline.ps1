@@ -10,8 +10,11 @@ function New-ADOPSPipeline {
         [string]$Project,
 
         [Parameter(Mandatory)]
-        [ValidateScript( { $_ -like '*.yaml' },
-        ErrorMessage = "Path must be to a yaml file in your repository like: folder/file.yaml")] 
+        [ValidateScript( { 
+            $_ -like '*.yaml' -or
+            $_ -like '*.yml'
+        },
+        ErrorMessage = "Path must be to a yaml file in your repository like: folder/file.yaml or folder/file.yml")] 
         [string]$YamlPath,
 
         [Parameter(Mandatory)]

@@ -118,6 +118,8 @@ Accept wildcard characters: False
 The path to the Yaml file in your repository.
 Like: File.yaml or Folder/Folder/File.yaml
 
+Only allows extensions .yaml or .yml
+
 ```yaml
 Type: String
 Parameter Sets: (All)
