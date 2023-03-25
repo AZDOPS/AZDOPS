@@ -29,14 +29,14 @@ function Get-ADOPSUser {
             $Uri += "&continuationToken=$ContinuationToken"
         }
         $Response = (InvokeADOPSRestMethod -FullResponse -Uri $Uri -Method $Method -Organization $Organization)
-        $Users = [System.Collections.ArrayList]::new(1000)
-        $Users.AddRange($Response.Content.value)
+        $Users = $Response.Content.value
         Write-Verbose "Found $($Response.Content.count) users"
+
         if($Response.Headers.ContainsKey('X-MS-ContinuationToken')) {
             Write-Verbose "Found continuationToken. Will fetch more users."
             $parameters = [hashtable]$PSBoundParameters
             $parameters.Add('ContinuationToken', $Response.Headers['X-MS-ContinuationToken']?[0])
-            $Users.AddRange((Get-ADOPSUser @parameters))
+            $Users += Get-ADOPSUser @parameters
         }   
         Write-Output $Users
     }

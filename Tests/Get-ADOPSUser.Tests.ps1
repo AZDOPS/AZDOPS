@@ -122,34 +122,31 @@ Describe "Get-ADOPSUser" {
                     Content    = @{
                         value = @(
                             @{
-                                user = @{
-                                    subjectKind    = 'user'
-                                    metaType       = 'member'
-                                    directoryAlias = 'john.doe'
-                                    domain         = 'b3435cb9-0c61-4c5f-aa9d-eb022d95b57f'
-                                    principalName  = 'john.doe@example.org'
-                                    mailAddress    = 'john.doe@example.org'
-                                    origin         = 'aad'
-                                    originId       = 'ef317b7a-1db1-4e39-a87e-856a106b4a2f'
-                                    displayName    = 'John Doe'
-                                    url            = 'https://vssps.dev.azure.com/DummyOrg/_apis/Graph/Users/aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
-                                    descriptor     = 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
-                                }
-                            }
+                                subjectKind    = 'user'
+                                metaType       = 'member'
+                                directoryAlias = 'john.doe'
+                                domain         = 'b3435cb9-0c61-4c5f-aa9d-eb022d95b57f'
+                                principalName  = 'john.doe@example.org'
+                                mailAddress    = 'john.doe@example.org'
+                                origin         = 'aad'
+                                originId       = 'ef317b7a-1db1-4e39-a87e-856a106b4a2f'
+                                displayName    = 'John Doe'
+                                url            = 'https://vssps.dev.azure.com/DummyOrg/_apis/Graph/Users/aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
+                                descriptor     = 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
+                            
+                            },
                             @{
-                                user = @{
-                                    subjectKind    = 'user'
-                                    metaType       = 'member'
-                                    directoryAlias = 'john.doe2'
-                                    domain         = '4fac19ba-89ff-4a26-9f00-ff0ea5df74e8'
-                                    principalName  = 'john.doe2@example.org'
-                                    mailAddress    = 'john.doe@example.org'
-                                    origin         = 'aad'
-                                    originId       = '47a0d6f2-dd29-4b7c-b28a-9088bbd76612'
-                                    displayName    = 'John Doe2'
-                                    url            = 'https://vssps.dev.azure.com/DummyOrg/_apis/Graph/Users/aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U2'
-                                    descriptor     = 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U2'
-                                }
+                                subjectKind    = 'user'
+                                metaType       = 'member'
+                                directoryAlias = 'john.doe2'
+                                domain         = '4fac19ba-89ff-4a26-9f00-ff0ea5df74e8'
+                                principalName  = 'john.doe2@example.org'
+                                mailAddress    = 'john.doe@example.org'
+                                origin         = 'aad'
+                                originId       = '47a0d6f2-dd29-4b7c-b28a-9088bbd76612'
+                                displayName    = 'John Doe2'
+                                url            = 'https://vssps.dev.azure.com/DummyOrg/_apis/Graph/Users/aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U2'
+                                descriptor     = 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U2'
                             }
                         )
                     }
@@ -166,19 +163,17 @@ Describe "Get-ADOPSUser" {
                     Content    = @{
                         value = @(
                             @{
-                                user = @{
-                                    subjectKind    = 'user'
-                                    metaType       = 'member'
-                                    directoryAlias = 'john.doe3'
-                                    domain         = 'b3435cb9-0c61-4c5f-aa9d-eb022d95b57f'
-                                    principalName  = 'john.doe3@example.org'
-                                    mailAddress    = 'john.doe3@example.org'
-                                    origin         = 'aad'
-                                    originId       = '41cd5b95-508a-4d5b-b445-100d7a6890a6'
-                                    displayName    = 'John Doe3'
-                                    url            = 'https://vssps.dev.azure.com/DummyOrg/_apis/Graph/Users/aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U3'
-                                    descriptor     = 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
-                                }
+                                subjectKind    = 'user'
+                                metaType       = 'member'
+                                directoryAlias = 'john.doe3'
+                                domain         = 'b3435cb9-0c61-4c5f-aa9d-eb022d95b57f'
+                                principalName  = 'john.doe3@example.org'
+                                mailAddress    = 'john.doe3@example.org'
+                                origin         = 'aad'
+                                originId       = '41cd5b95-508a-4d5b-b445-100d7a6890a6'
+                                displayName    = 'John Doe3'
+                                url            = 'https://vssps.dev.azure.com/DummyOrg/_apis/Graph/Users/aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U3'
+                                descriptor     = 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
                             }
                         )
                     }
@@ -250,40 +245,108 @@ Describe "Get-ADOPSUser" {
     Context "Function returns users by query" {
         BeforeAll {
             Mock InvokeADOPSRestMethod -ModuleName ADOPS {
-                [PSCustomObject]@{
+                @{
                     members = @(
-                        @{
-                            user = @{
-                                subjectKind    = 'user'
-                                metaType       = 'member'
-                                directoryAlias = 'john.doe'
-                                domain         = 'b3435cb9-0c61-4c5f-aa9d-eb022d95b57f'
-                                principalName  = 'john.doe@example.org'
-                                mailAddress    = 'john.doe@example.org'
-                                origin         = 'aad'
-                                originId       = 'ef317b7a-1db1-4e39-a87e-856a106b4a2f'
-                                displayName    = 'John Doe'
-                                url            = 'https://vssps.dev.azure.com/DummyOrg/_apis/Graph/Users/aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
-                                descriptor     = 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
+                      @{
+                        user = @{
+                          subjectKind = "user"
+                          metaType = "member"
+                          directoryAlias = "nomail@no"
+                          domain = "11111111-1111-1111-1111-111111111111"
+                          principalName = "nomail@no"
+                          mailAddress = "nomail@no"
+                          origin = "aad"
+                          originId = "11111111-1111-1111-1111-111111111111"
+                          displayName = "dummy.user"
+                          _links = @{
+                            self = @{
+                              href = "https://vssps.dev.azure.com/organization/_apis/Graph/Users/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
                             }
-                        }
-                        @{
-                            user = @{
-                                subjectKind    = 'user'
-                                metaType       = 'member'
-                                directoryAlias = 'john.doe2'
-                                domain         = '4fac19ba-89ff-4a26-9f00-ff0ea5df74e8'
-                                principalName  = 'john.doe2@example.org'
-                                mailAddress    = 'john.doe@example.org'
-                                origin         = 'aad'
-                                originId       = '47a0d6f2-dd29-4b7c-b28a-9088bbd76612'
-                                displayName    = 'John Doe2'
-                                url            = 'https://vssps.dev.azure.com/DummyOrg/_apis/Graph/Users/aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U2'
-                                descriptor     = 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U2'
+                            memberships = @{
+                              href = "https://vssps.dev.azure.com/organization/_apis/Graph/Memberships/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
                             }
+                            membershipState = @{
+                              href = "https://vssps.dev.azure.com/organization/_apis/Graph/MembershipStates/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                            }
+                            storageKey = @{
+                              href = "https://vssps.dev.azure.com/organization/_apis/Graph/StorageKeys/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                            }
+                            avatar = @{
+                              href = "https://dev.azure.com/organization/_apis/GraphProfile/MemberAvatars/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                            }
+                          }
+                          url = "https://vssps.dev.azure.com/organization/_apis/Graph/Users/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                          descriptor = "2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
                         }
+                        extensions = @()
+                        id = "11111111-1111-1111-1111-111111111111"
+                        accessLevel = @{
+                          licensingSource = "account"
+                          accountLicenseType = "express"
+                          msdnLicenseType = "none"
+                          licenseDisplayName = "Basic"
+                          status = "active"
+                          statusMessage = ""
+                          assignmentSource = "unknown"
+                        }
+                        lastAccessedDate = "1901-01-01T00:00:00.0000000Z"
+                        dateCreated = "1901-01-01T00:00:00.0000000Z"
+                        projectEntitlements = @()
+                        groupAssignments = @()
+                      }
                     )
-                }
+                    continuationToken = $null
+                    totalCount = 1
+                    items = @(
+                      @{
+                        user = @{
+                          subjectKind = "user"
+                          metaType = "member"
+                          directoryAlias = "nomail@no"
+                          domain = "11111111-1111-1111-1111-111111111111"
+                          principalName = "nomail@no"
+                          mailAddress = "nomail@no"
+                          origin = "aad"
+                          originId = "11111111-1111-1111-1111-111111111111"
+                          displayName = "dummy.user"
+                          _links = @{
+                            self = @{
+                              href = "https://vssps.dev.azure.com/organization/_apis/Graph/Users/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                            }
+                            memberships = @{
+                              href = "https://vssps.dev.azure.com/organization/_apis/Graph/Memberships/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                            }
+                            membershipState = @{
+                              href = "https://vssps.dev.azure.com/organization/_apis/Graph/MembershipStates/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                            }
+                            storageKey = @{
+                              href = "https://vssps.dev.azure.com/organization/_apis/Graph/StorageKeys/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                            }
+                            avatar = @{
+                              href = "https://dev.azure.com/organization/_apis/GraphProfile/MemberAvatars/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                            }
+                          }
+                          url = "https://vssps.dev.azure.com/organization/_apis/Graph/Users/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                          descriptor = "2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                        }
+                        extensions = @()
+                        id = "11111111-1111-1111-1111-111111111111"
+                        accessLevel = @{
+                          licensingSource = "account"
+                          accountLicenseType = "express"
+                          msdnLicenseType = "none"
+                          licenseDisplayName = "Basic"
+                          status = "active"
+                          statusMessage = ""
+                          assignmentSource = "unknown"
+                        }
+                        lastAccessedDate = "1901-01-01T00:00:00.0000000Z"
+                        dateCreated = "1901-01-01T00:00:00.0000000Z"
+                        projectEntitlements = @()
+                        groupAssignments = @()
+                      }
+                    )
+                  }                  
             }
             Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
                 @{
