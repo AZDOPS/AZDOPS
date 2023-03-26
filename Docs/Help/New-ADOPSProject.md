@@ -15,7 +15,8 @@ Creates a new project in Azure DevOps.
 
 ```
 New-ADOPSProject [-Name] <String> [[-Description] <String>] [-Visibility] <String>
- [[-SourceControlType] <String>] [[-ProcessTypeName] <String>] [[-Organization] <String>] [<CommonParameters>]
+ [[-SourceControlType] <String>] [[-ProcessTypeName] <String>] [[-Organization] <String>] [-Wait]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -145,6 +146,22 @@ Accepted values: Private, Public
 
 Required: True
 Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Wait
+If defined this command will wait for the project to be created and return the project object.
+Default will return the process started.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

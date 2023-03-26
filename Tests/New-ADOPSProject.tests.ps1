@@ -39,6 +39,11 @@ Describe 'New-ADOPSProject' {
                 Name = 'ProcessTypeName'
                 Mandatory = $false
                 Type = 'string'
+            },
+            @{
+                Name = 'Wait'
+                Mandatory = $false
+                Type = 'switch'
             }
         )
     
@@ -158,6 +163,41 @@ Describe 'New-ADOPSProject' {
 
             $r = New-ADOPSProject -Organization $OrganizationName -Name $Project -Visibility 'Public' -Description 'DummyDescription'
             $r.OriginalString | Should -Be 'https://dev.azure.com/DummyOrg/_apis/projects?api-version=7.1-preview.4'
+        }
+
+        It 'if wait is defined, waits until status is "succeeded"' {
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                @{
+                    id = "066488b8-b14e-43d1-befc-a2e655266e2b"
+                    status = "queued"
+                    url = "https://dev.azure.com/fabrikam/_apis/operations/066488b8-b14e-43d1-befc-a2e655266e2b"
+                }
+            } -ParameterFilter { $method -eq 'Post' }
+
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                @{
+                    id = "066488b8-b14e-43d1-befc-a2e655266e2b"
+                    status = "succeeded"
+                    url = "https://dev.azure.com/fabrikam/_apis/operations/066488b8-b14e-43d1-befc-a2e655266e2b"
+                }
+            } -ParameterFilter { $method -eq 'Get' -and $Uri -eq 'https://dev.azure.com/fabrikam/_apis/operations/066488b8-b14e-43d1-befc-a2e655266e2b'}
+
+            Mock -CommandName Get-ADOPSProject -ModuleName ADOPS -MockWith {
+                @{
+                    id = "00000000-0000-0000-0000-000000000000"
+                    name = "MyProj"
+                    url = "https://dev.azure.com/MyProj/_apis/projects/00000000-0000-0000-0000-000000000000"
+                    state = "wellFormed"
+                    revision = 1
+                    visibility = "private"
+                    lastUpdateTime = "1901-01-01T00:00:00.0000000Z"
+                  }
+            }
+
+            Mock -CommandName Start-Sleep -ModuleName ADOPS -MockWith {}
+
+            $r = New-ADOPSProject -Organization $OrganizationName -Name $Project -Visibility 'Public' -Description 'DummyDescription' -Wait
+            $r.name | Should -Be 'MyProj'
         }
     }
 

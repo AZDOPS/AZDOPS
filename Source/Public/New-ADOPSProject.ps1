@@ -24,7 +24,10 @@ function New-ADOPSProject {
         
         [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [string]$Organization
+        [string]$Organization,
+        
+        [Parameter()]
+        [switch]$Wait
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
@@ -83,5 +86,16 @@ function New-ADOPSProject {
         Organization = $Organization
     }
 
-    InvokeADOPSRestMethod @InvokeSplat
+    $Out = InvokeADOPSRestMethod @InvokeSplat
+
+    if ($PSBoundParameters.ContainsKey('Wait')) {
+        $projectCreated = $Out.status
+        while ($projectCreated -ne 'succeeded') {
+            $projectCreated = (Invoke-ADOPSRestMethod -Uri $Out.url -Method Get).status
+            Start-Sleep -Seconds 1
+        }
+        $Out = Get-ADOPSProject -Project $Name 
+    }
+
+    $Out
 }

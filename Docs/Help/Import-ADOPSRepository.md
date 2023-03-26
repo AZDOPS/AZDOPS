@@ -15,13 +15,13 @@ Import an external public git repo to Azure DevOps repos.
 ### RepositoryName (Default)
 ```
 Import-ADOPSRepository -GitSource <String> -RepositoryName <String> -Project <String> [-Organization <String>]
- [<CommonParameters>]
+ [-Wait] [<CommonParameters>]
 ```
 
 ### RepositoryId
 ```
 Import-ADOPSRepository -GitSource <String> -RepositoryId <String> -Project <String> [-Organization <String>]
- [<CommonParameters>]
+ [-Wait] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -110,6 +110,22 @@ Parameter Sets: RepositoryName
 Aliases:
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Wait
+If defined this command will wait for the import to complete.
+Default will return the process started.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
