@@ -14,7 +14,10 @@ function Import-ADOPSRepository {
         [string]$Project,
 
         [Parameter()]
-        [string]$Organization
+        [string]$Organization,
+
+        [Parameter()]
+        [switch]$Wait
     )
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
@@ -37,5 +40,16 @@ function Import-ADOPSRepository {
         Organization = $Organization
     }
 
-    InvokeADOPSRestMethod @InvokeSplat
+    $repoImport = InvokeADOPSRestMethod @InvokeSplat
+
+    if ($PSBoundParameters.ContainsKey('Wait')) {
+        # There appears to be a bug in this API where sometimes you don't get the correct status Uri back. Fix it by constructing a correct one instead.
+        $verifyUri = "https://dev.azure.com/$Organization/$Project/_apis$($repoImport.url.Split('_apis')[1])"
+        while ($repoImport.status -ne 'completed') {
+            $repoImport = InvokeADOPSRestMethod -Uri $verifyUri -Method Get
+            Start-Sleep -Seconds 1
+        }
+    }
+
+    $repoImport
 }

@@ -38,6 +38,11 @@ Describe 'Import-ADOPSRepository' {
                 Name = 'Project'
                 Mandatory = $true
                 Type = 'string'
+            },
+            @{
+                Name = 'wait'
+                Mandatory = $false
+                Type = 'switch'
             }
         )
     
@@ -120,6 +125,38 @@ Describe 'Import-ADOPSRepository' {
         It 'Invoke should be correct, Verifying Organization' {
             $r = Import-ADOPSRepository -Organization 'Organization' -GitSource 'GitSource' -RepositoryId 'RepoId' -Project 'DummyProj'
             $r.Organization | Should -Be 'Organization'
+        }
+
+        
+        It 'if wait is defined, waits until status is "completed"' {
+            InModuleScope -ModuleName ADOPS {
+                Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                    @{
+                        importRequestId = 1
+                        repository = @{
+                        id = "00000000-0000-0000-0000-000000000000"
+                        }
+                        status = "queued"
+                        url = "https://dev.azure.com/DummyOrg/_apis/git/repositories/11111111-1111-1111-1111-111111111111/importRequests/1"
+                    }                  
+                } -ParameterFilter { $method -eq 'Post' }
+
+                Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                    @{
+                        importRequestId = 1
+                        repository = @{
+                            id = "00000000-0000-0000-0000-000000000000"
+                        }
+                        status = "completed"
+                        url = "https://dev.azure.com/DummyOrg/_apis/git/repositories/11111111-1111-1111-1111-111111111111/importRequests/1"
+                    }  
+                } -ParameterFilter { $Method -eq 'Get' }
+            }
+
+            Mock -CommandName Start-Sleep -ModuleName ADOPS -MockWith {}
+            
+            $r = Import-ADOPSRepository -Organization 'Organization' -GitSource 'GitSource' -RepositoryId 'RepoId' -Project 'DummyProj' -Wait
+            $r.status | Should -Be 'completed'
         }
     }
 }
