@@ -21,13 +21,13 @@ jobs:
     - name: Get version number and run build
       run: |
         $Pattern = '^(refs\/tags\/|)v?(?<versionNumber>[1-9\.]{1,10}).*'
-        $versionNumber = [regex]::Match(${{ github.ref }},$Pattern).Groups['versionNumber'].Value
+        $versionNumber = [regex]::Match("${{ github.ref }}",$Pattern).Groups['versionNumber'].Value
 
         if ([string]::IsNullOrEmpty( $versionNumber )) {
           # If this is manually triggered we will see if latest release is already on PSGallery.
           # If it isn't, assume this is a retry and use this version
           $latestReleasedTag = (Invoke-RestMethod 'https://api.github.com/repos/AZDOPS/AZDOPS/releases/latest').tag_name
-          $versionNumber = [regex]::Match($latestReleasedTag, $Pattern).Groups['versionNumber'].Value
+          $versionNumber = [regex]::Match("$latestReleasedTag", $Pattern).Groups['versionNumber'].Value
 
           $PublishedVersion = Find-Module ADOPS -MinimumVersion $versionNumber -MaximumVersion $versionNumber -ErrorAction SilentlyContinue
           if ($PublishedVersion.Version -eq $versionNumber) {
