@@ -34,4 +34,4 @@ jobs:
       shell: pwsh
       run: |
         Get-ChildItem "${{ github.workspace }}/Bin/ADOPS" -recurse
-        # Publish-Module -Path "${{ github.workspace }}/Bin/ADOPS" -NuGetApiKey $env:NUGET_KEY -Verbose
+        Publish-Module -Path "${{ github.workspace }}/Bin/ADOPS" -NuGetApiKey $env:NUGET_KEY -Verbose
