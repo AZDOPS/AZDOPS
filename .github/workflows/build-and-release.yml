@@ -1,0 +1,37 @@
+name: build and release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+  
+    - name: PSSecretScanner
+      uses: bjompen/PSSecretScanner@v2.0.1
+  
+    - name: Import required modules
+      run: |
+        Set-PSRepository PSGallery -InstallationPolicy Trusted
+        Install-Module -Name Pester, InvokeBuild, PlatyPS, PSScriptAnalyzer -Force
+      shell: pwsh
+
+    - name: Get version number and run build
+      run: |
+        $Pattern = '(?<=refs\/tags\/)v?(?<versionNumber>[1-9\.]{1,10}).*'
+        $versionNumber = [regex]::Match(${{ github.ref }},$Pattern).Groups['versionNumber'].Value
+        Write-Host "Versionnumber: $versionNumber"
+        Invoke-Build -Version $versionNumber
+      shell: pwsh
+    
+    - name: publish to PSGallery
+      env:
+        NUGET_KEY: ${{ secrets.NUGET_KEY }}
+      shell: pwsh
+      run: |
+        Get-ChildItem "${{ github.workspace }}/Bin/ADOPS" -recurse
+        # Publish-Module -Path "${{ github.workspace }}/Bin/ADOPS" -NuGetApiKey $env:NUGET_KEY -Verbose
