@@ -1,10 +1,12 @@
 #Requires -Modules 'InvokeBuild', 'PlatyPS', 'Pester'
 
+param (
+    [string]$Version = '1.1.2'
+)
+
 [string]$ModuleName = 'ADOPS'
 [string]$ModuleSourcePath = "$PSScriptRoot\Source"
 [string]$HelpSourcePath = "$PSScriptRoot\Docs\Help"
-
-[string]$Version = '1.1.1'
 
 [string]$OutputPath = "$PSScriptRoot\Bin\$ModuleName\$Version"
 
