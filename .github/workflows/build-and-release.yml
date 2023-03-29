@@ -3,6 +3,7 @@ name: build and release
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -10,9 +11,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-  
-    - name: PSSecretScanner
-      uses: bjompen/PSSecretScanner@v2.0.1
   
     - name: Import required modules
       run: |
