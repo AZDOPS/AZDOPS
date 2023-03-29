@@ -20,7 +20,7 @@ jobs:
 
     - name: Get version number and run build
       run: |
-        $Pattern = '^(refs\/tags\/|)v?(?<versionNumber>[1-9\.]{1,10}).*'
+        $Pattern = '^(refs\/tags\/|)v?(?<versionNumber>[0-9\.]{1,10}).*'
         $versionNumber = [regex]::Match("${{ github.ref }}",$Pattern).Groups['versionNumber'].Value
 
         if ([string]::IsNullOrEmpty( $versionNumber )) {
@@ -47,4 +47,4 @@ jobs:
       shell: pwsh
       run: |
         Get-ChildItem "${{ github.workspace }}\Bin\ADOPS" -recurse
-        Publish-Module -Path "${{ github.workspace }}\Bin\" -NuGetApiKey $env:NUGET_KEY -Verbose
+        Publish-Module -Path "${{ github.workspace }}\Bin\ADOPS" -NuGetApiKey $env:NUGET_KEY -Verbose
