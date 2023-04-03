@@ -7,25 +7,41 @@ function GetADOPSHeader {
     $Res = @{}
 
     if ($script:ADOPSCredentials.Count -eq 0) {
-        throw 'No ADOPS credentials found. Have you used Connect-ADOPS to log in?'
+        try {
+            $Script:ADOPSCredentials = NewAzToken
+        }
+        catch {
+            throw 'No usable ADOPS credentials found. Use Connect-AzAccount or az login to connect.'
+        }
     }
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
-        $HeaderObj = $Script:ADOPSCredentials[$Organization]
+        $r = $Script:ADOPSCredentials[$Organization]
+        if ($null -eq $r) {
+            throw "No organization named $Organization found."
+        }
+        if ($r.OAuthToken.ExpiresOn -lt (Get-Date)) {
+            # Token has expired. Try to renew
+            $r.OAuthToken = (NewAzToken)[$Organization].OauthToken
+        }
+        $HeaderObj = $r.OauthToken.token
         $res.Add('Organization', $Organization)
     }
     else {
         $r = $script:ADOPSCredentials.Keys | Where-Object {$script:ADOPSCredentials[$_].Default -eq $true}
-        $HeaderObj = $script:ADOPSCredentials[$r]
+        if ($null -eq $r) {
+            throw 'No default organization set. Please state organization, or use "Set-ADOPSConnection -DefaultOrganization $myOrg"'
+        }
+        if ($Script:ADOPSCredentials[$r].OAuthToken.ExpiresOn -lt (Get-Date)) {
+            # Token has expired. Try to renew
+            $Script:ADOPSCredentials[$r].OAuthToken = (NewAzToken)[$Organization].OauthToken
+        }
+        $HeaderObj = $script:ADOPSCredentials[$r].OauthToken.token
         $res.Add('Organization', $r)
     }
 
-    $UserName = $HeaderObj.Credential.UserName
-    $Password = $HeaderObj.Credential.GetNetworkCredential().Password
-
-    $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $UserName, $Password)))
     $Header = @{
-        Authorization = ("Basic {0}" -f $base64AuthInfo)
+        Authorization = ("Bearer {0}" -f $HeaderObj)
     }
 
     $Res.Add('Header',$Header)
