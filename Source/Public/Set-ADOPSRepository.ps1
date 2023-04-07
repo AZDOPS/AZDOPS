@@ -59,6 +59,7 @@ function Set-ADOPSRepository {
             URI = $Uri
             Method = 'Patch'
             Body = $Body | ConvertTo-Json -Compress
+            Organization = $Organization
         }
 
         InvokeADOPSRestMethod @InvokeSplat

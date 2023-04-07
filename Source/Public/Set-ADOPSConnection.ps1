@@ -19,6 +19,4 @@ function Set-ADOPSConnection {
     catch {
         throw "No organization with name $DefaultOrganization found."
     }
-
-
 } 

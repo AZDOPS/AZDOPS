@@ -42,6 +42,7 @@ function New-ADOPSEnvironment {
         Uri = $Uri
         Method = 'Post'
         Body = $Body
+        Organization = $Organization
     }
 
     Write-Verbose "Setting up environment"
@@ -65,6 +66,7 @@ function New-ADOPSEnvironment {
             Uri = $secUri
             Method = 'Put'
             Body = "[{`"userId`":`"$ProjAdm`",`"roleName`":`"Administrator`"}]"
+            Organization = $Organization
         }
 
         try {

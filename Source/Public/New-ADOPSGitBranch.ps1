@@ -43,6 +43,7 @@ function New-ADOPSGitBranch {
         Uri = $Uri
         Method = 'Post'
         Body = $Body
+        Organization = $Organization
     }
 
     InvokeADOPSRestMethod @InvokeSplat

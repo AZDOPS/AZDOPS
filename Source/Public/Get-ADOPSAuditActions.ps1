@@ -11,5 +11,5 @@ function Get-ADOPSAuditActions {
         $Organization = $Org['Organization']
     }
 
-    (InvokeADOPSRestMethod -Uri "https://auditservice.dev.azure.com/$Organization/_apis/audit/actions" -Method Get).value
+    (InvokeADOPSRestMethod -Uri "https://auditservice.dev.azure.com/$Organization/_apis/audit/actions" -Method Get -Organization $Organization).value
 }

@@ -59,7 +59,7 @@ function Save-ADOPSPipelineTask {
 
         foreach ($File in $FilesToDownload) {
             $Url = "https://dev.azure.com/$Organization/_apis/distributedtask/tasks/$($File.TaskId)/$($File.TaskversionString)"
-            InvokeADOPSRestMethod -Uri $Url -Method Get -OutFile $File.OutputFile
+            InvokeADOPSRestMethod -Uri $Url -Method Get -OutFile $File.OutputFile -Organization $Organization 
         }
     }
     end {}

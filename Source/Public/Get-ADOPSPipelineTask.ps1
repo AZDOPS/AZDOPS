@@ -20,7 +20,7 @@ function Get-ADOPSPipelineTask {
 
     $Uri =  "https://dev.azure.com/$Organization/_apis/distributedtask/tasks?api-version=7.1-preview.1"
 
-    $result = InvokeADOPSRestMethod -Uri $Uri -Method Get
+    $result = InvokeADOPSRestMethod -Uri $Uri -Method Get -Organization $Organization
 
     $ReturnValue = $result | ConvertFrom-Json -AsHashtable | Select-Object -ExpandProperty value
 

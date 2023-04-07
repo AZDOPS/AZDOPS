@@ -68,6 +68,7 @@ function New-ADOPSAuditStream {
         Uri = "https://auditservice.dev.azure.com/$Organization/_apis/audit/streams?api-version=7.1-preview.1"
         Method = 'Post'
         Body = $Body
+        Organization = $Organization
     }
 
     InvokeADOPSRestMethod @InvokeSplat

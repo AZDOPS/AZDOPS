@@ -46,7 +46,7 @@ function Import-ADOPSRepository {
         # There appears to be a bug in this API where sometimes you don't get the correct status Uri back. Fix it by constructing a correct one instead.
         $verifyUri = "https://dev.azure.com/$Organization/$Project/_apis$($repoImport.url.Split('_apis')[1])"
         while ($repoImport.status -ne 'completed') {
-            $repoImport = InvokeADOPSRestMethod -Uri $verifyUri -Method Get
+            $repoImport = InvokeADOPSRestMethod -Uri $verifyUri -Method Get -Organization $Organization
             Start-Sleep -Seconds 1
         }
     }

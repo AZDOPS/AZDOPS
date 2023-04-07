@@ -51,7 +51,7 @@ function Set-ADOPSGitPermission {
             $Organization = $Org['Organization']
         }
         
-        $SubjectDescriptor = (InvokeADOPSRestMethod -Uri "https://vssps.dev.azure.com/$Organization/_apis/identities?subjectDescriptors=$Descriptor&queryMembership=None&api-version=7.1-preview.1" -Method Get).value.descriptor
+        $SubjectDescriptor = (InvokeADOPSRestMethod -Uri "https://vssps.dev.azure.com/$Organization/_apis/identities?subjectDescriptors=$Descriptor&queryMembership=None&api-version=7.1-preview.1" -Method Get -Organization $Organization).value.descriptor
 
         $Body = [ordered]@{
             token                = "repov2/$Projectid/$RepositoryId"
@@ -71,6 +71,7 @@ function Set-ADOPSGitPermission {
             Uri = $Uri 
             Method = 'Post' 
             Body = $Body
+            Organization = $Organization
         }
         
         InvokeADOPSRestMethod @InvokeSplat

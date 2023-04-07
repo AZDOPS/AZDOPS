@@ -27,5 +27,5 @@ function Get-ADOPSFileContent {
     $UrlEncodedFilePath = [System.Web.HttpUtility]::UrlEncode($FilePath)
     $Uri = "https://dev.azure.com/$Organization/$Project/_apis/git/repositories/$RepositoryId/items?path=$UrlEncodedFilePath&api-version=7.0"
 
-    InvokeADOPSRestMethod -Uri $Uri -Method Get
+    InvokeADOPSRestMethod -Uri $Uri -Method Get -Organization $Organization
 }

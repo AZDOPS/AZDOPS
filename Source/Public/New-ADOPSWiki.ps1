@@ -47,6 +47,7 @@ function New-ADOPSWiki {
         Uri = $URI
         Method = $Method
         Body = $Body | ConvertTo-Json -Compress
+        Organization = $Organization
     }
 
     InvokeADOPSRestMethod @InvokeSplat

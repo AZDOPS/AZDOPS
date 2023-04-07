@@ -73,6 +73,7 @@ function New-ADOPSBuildPolicy {
         Uri = "https://dev.azure.com/$Organization/$Project/_apis/policy/configurations?api-version=7.1-preview.1"
         Method = 'POST'
         Body = $Body
+        Organization = $Organization
     }
 
     InvokeADOPSRestMethod @InvokeSplat
