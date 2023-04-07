@@ -16,29 +16,25 @@ function GetADOPSHeader {
     }
 
     if (-not [string]::IsNullOrEmpty($Organization)) {
-        $r = $Script:ADOPSCredentials[$Organization]
+        $r = $Script:ADOPSCredentials | Where-Object {$_.organization -eq $Organization}
         if ($null -eq $r) {
             throw "No organization named $Organization found."
         }
-        if ($r.OAuthToken.ExpiresOn -lt (Get-Date)) {
-            # Token has expired. Try to renew
-            $r.OAuthToken = (NewAzToken)[$Organization].OauthToken
-        }
-        $HeaderObj = $r.OauthToken.token
-        $res.Add('Organization', $Organization)
     }
     else {
-        $r = $script:ADOPSCredentials.Keys | Where-Object {$script:ADOPSCredentials[$_].Default -eq $true}
+        $r = $script:ADOPSCredentials | Where-Object {$_.default}
         if ($null -eq $r) {
             throw 'No default organization set. Please state organization, or use "Set-ADOPSConnection -DefaultOrganization $myOrg"'
         }
-        if ($Script:ADOPSCredentials[$r].OAuthToken.ExpiresOn -lt (Get-Date)) {
-            # Token has expired. Try to renew
-            $Script:ADOPSCredentials[$r].OAuthToken = (NewAzToken)[$Organization].OauthToken
-        }
-        $HeaderObj = $script:ADOPSCredentials[$r].OauthToken.token
-        $res.Add('Organization', $r)
     }
+
+    
+    if ($r.OAuthToken.ExpiresOn -lt (Get-Date)) {
+        # Token has expired. Try to renew
+        ($Script:ADOPSCredentials | Where-Object {$_.organization -eq $r.Organization}).Oauthtoken = (NewAzToken | Where-Object {$_.Organization -eq $r.Organization}).Oauthtoken
+    }
+    $HeaderObj = $r.OauthToken.token
+    $res.Add('Organization', $r.Organization)
 
     $Header = @{
         Authorization = ("Bearer {0}" -f $HeaderObj)

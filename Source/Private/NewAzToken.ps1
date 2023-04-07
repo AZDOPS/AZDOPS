@@ -15,16 +15,22 @@ function NewAzToken {
         Authorization = "Bearer $($t.token)"
     } | Select-Object -ExpandProperty value).accountName
 
-    $res = [ordered]@{}
+    $res = @()
 
     foreach ($organization in $Orgs) {
         $tokenData = [ordered]@{
+            Organization = $organization
             OauthToken = $t
             UserContext = $me
             Default = [bool]($ShouldBeDefault -eq $organization)
         }
-        $res.Add($organization, $tokenData)
+        $res += $tokenData
     }
 
+    if ($res.Count -eq 1) {
+        # If only one organization is found, set it as default
+        $res[0].Default = $true
+    }
+    
     $res
 }
