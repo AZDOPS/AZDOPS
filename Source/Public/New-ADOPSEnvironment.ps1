@@ -55,7 +55,7 @@ function New-ADOPSEnvironment {
         $secUri = "https://dev.azure.com/$organization/_apis/securityroles/scopes/distributedtask.environmentreferencerole/roleassignments/resources/$($Environment.project.id)_$($Environment.id)?api-version=7.1-preview.1"
 
         if ([string]::IsNullOrEmpty($AdminGroup)) {
-            $AdmGroupPN = "[$organization]\Project Administrators"
+            $AdmGroupPN = "[$project]\Project Administrators"
         } 
         else {
             $AdmGroupPN = $AdminGroup

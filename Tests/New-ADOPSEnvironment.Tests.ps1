@@ -46,7 +46,7 @@ Describe 'New-ADOPSEnvironment' {
             Mock -CommandName Get-ADOPSGroup -ModuleName ADOPS -MockWith {
                 @(
                     @{
-                        principalName = '[DummyOrg]\Project Administrators'
+                        principalName = '[DummyProj]\Project Administrators'
                         originId = 'ProjAdmOriginId'
                     },
                     @{
