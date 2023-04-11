@@ -1,4 +1,7 @@
 function NewAzToken {
+    [CmdletBinding()]
+    [SkipTest('HasOrganizationParameter')]
+    [OutputType([array], ParameterSetName="Name")]
     param ()
 
     $t = Get-AzToken -Resource 499b84ac-1321-427f-aa17-267ca6975798 
@@ -13,7 +16,7 @@ function NewAzToken {
         Authorization = "Bearer $($t.token)"
     } | Select-Object -ExpandProperty value).accountName
 
-    $res = @()
+    [array]$res = @()
 
     foreach ($organization in $Orgs) {
         $tokenData = [ordered]@{
@@ -22,7 +25,7 @@ function NewAzToken {
             UserContext = $me
             Default = $false
         }
-        $res += $tokenData
+        [array]$res += $tokenData
     }
 
     if ($res.Count -eq 1) {
@@ -30,5 +33,5 @@ function NewAzToken {
         $res[0].Default = $true
     }
     
-    $res
+    [array]$res
 }
