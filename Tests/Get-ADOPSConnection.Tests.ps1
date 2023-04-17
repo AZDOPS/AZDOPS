@@ -7,7 +7,7 @@ BeforeAll {
     Import-Module $PSM1 -Force
 }
 
-Describe 'GetADOPSHeader' {
+Describe 'Get-ADOPSConnection' {
     BeforeAll {
         InModuleScope -ModuleName ADOPS {
            
@@ -24,15 +24,13 @@ Describe 'GetADOPSHeader' {
         )
 
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command GetADOPSHeader | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSConnection | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
     Context '' {
         it '' {
-            InModuleScope -ModuleName ADOPS {
-                {throw} | Should -not -Throw
-            }
+            {throw} | Should -not -Throw
         }
     }
 }

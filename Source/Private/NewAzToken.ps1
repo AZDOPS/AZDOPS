@@ -1,7 +1,7 @@
 function NewAzToken {
     [CmdletBinding()]
     [SkipTest('HasOrganizationParameter')]
-    [OutputType([array], ParameterSetName="Name")]
+    [OutputType([array])]
     param ()
 
     $t = Get-AzToken -Resource 499b84ac-1321-427f-aa17-267ca6975798 
