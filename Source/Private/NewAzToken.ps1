@@ -33,5 +33,7 @@ function NewAzToken {
         $res[0].Default = $true
     }
     
-    [array]$res
+    # Use -NoEnumerate to prevent PowerShell from unwrapping array with one object.
+    # https://learn.microsoft.com/en-us/powershell/scripting/learn/deep-dives/everything-about-arrays?view=powershell-7.3#write-output--noenumerate
+    Write-Output $res -NoEnumerate
 }
