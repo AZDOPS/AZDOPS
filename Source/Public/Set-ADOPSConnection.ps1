@@ -2,8 +2,15 @@ function Set-ADOPSConnection {
     [SkipTest('HasOrganizationParameter')]
     [CmdletBinding()]
     Param(
-        [string]$DefaultOrganization
+        [string]$DefaultOrganization,
+        
+        [switch]$ForceRefresh
     )
+
+    if ($ForceRefresh.IsPresent) {
+        $Script:ADOPSCredentials = @()
+        $Script:ADOPSCredentials = NewAzToken
+    }
 
     if (-not [string]::IsNullOrEmpty($DefaultOrganization)) {
         if ($script:ADOPSCredentials.Count -eq 0) {

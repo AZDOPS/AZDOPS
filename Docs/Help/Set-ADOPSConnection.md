@@ -13,7 +13,7 @@ Changes connection properties of ADOPS connections.
 ## SYNTAX
 
 ```
-Set-ADOPSConnection [[-DefaultOrganization] <String>] [<CommonParameters>]
+Set-ADOPSConnection [[-DefaultOrganization] <String>] [-ForceRefresh] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -41,6 +41,21 @@ Aliases:
 
 Required: False
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ForceRefresh
+If set this will force a token refresh. This will remove any connected Azure DevOps organizations and get current azure connections.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
