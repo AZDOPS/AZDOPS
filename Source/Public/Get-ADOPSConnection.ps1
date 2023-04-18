@@ -1,7 +1,6 @@
 function Get-ADOPSConnection {
-    Param(
-
-    )
+    [CmdletBinding()]
+    Param()
 
     if ($script:ADOPSCredentials.Count -eq 0) {
         try {

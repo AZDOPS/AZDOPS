@@ -13,7 +13,7 @@ Gets all established connections to Azure DevOps.
 ## SYNTAX
 
 ```
-Get-ADOPSConnection [[-Organization] <String>] [<CommonParameters>]
+Get-ADOPSConnection
 ```
 
 ## DESCRIPTION
@@ -27,34 +27,19 @@ PS C:\> Get-ADOPSConnection
 
 Name                           Value
 ----                           -----
-MyOrganization                 {Credential, Default}
+Organization                   Org1
+OauthToken                     OAuthToken
+UserContext                    @{UserData}
+Default                        False
+Organization                   Org2
+OauthToken                     OAuthToken
+UserContext                    @{UserData}
+Default                        False
 ```
 
-### Example 2
-```powershell
-PS C:\> Get-ADOPSConnection -Organization "MyOrganization"
-
-Name                           Value
-----                           -----
-MyOrganization                 {Credential, Default}
-```
+This command lists all organizations your OAuth token is valid with.
 
 ## PARAMETERS
-
-### -Organization
-Lists a specific Organization connection.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
