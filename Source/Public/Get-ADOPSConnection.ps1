@@ -1,4 +1,5 @@
 function Get-ADOPSConnection {
+    [SkipTest('HasOrganizationParameter')]
     [CmdletBinding()]
     Param()
 

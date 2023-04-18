@@ -1,4 +1,6 @@
 function Set-ADOPSConnection {
+    [SkipTest('HasOrganizationParameter')]
+    [CmdletBinding()]
     Param(
         [string]$DefaultOrganization
     )
