@@ -8,6 +8,10 @@ BeforeAll {
 }
 
 Describe 'NewAzToken' {
+    BeforeDiscovery {
+        $TokenProperties = 'Organization', 'OauthToken', 'UserContext', 'Default'
+    }
+    
     BeforeAll {
         InModuleScope -ModuleName ADOPS {
             Mock -CommandName Get-AzToken -MockWith {
@@ -65,6 +69,16 @@ Describe 'NewAzToken' {
             $actual[0].Default | Should -BeFalse
             $actual[1].Default | Should -BeFalse
         }
+
+        It 'Verifying other properties, org1, <_>' -TestCases $TokenProperties {
+            $actual = NewAzToken
+            $actual[0].Keys | Should -Contain $_
+        } 
+
+        It 'Verifying other properties, org2, <_>' -TestCases $TokenProperties {
+            $actual = NewAzToken
+            $actual[1].Keys | Should -Contain $_
+        } 
     }
 
     Context 'Get tokens - one org' {
@@ -95,7 +109,6 @@ Describe 'NewAzToken' {
         
         It 'Output should be array, one organization' {
             InModuleScope -ModuleName ADOPS {
-                # ([array](NewAzToken)).Count
                 (NewAzToken).Count | Should -Be 1
             }
         }
@@ -104,5 +117,10 @@ Describe 'NewAzToken' {
             $actual = NewAzToken
             $actual[0].Default | Should -BeTrue
         }
+
+        It 'Verifying other properties, <_>' -TestCases $TokenProperties {
+            $actual = NewAzToken
+            $actual[0].Keys | Should -Contain $_
+        } 
     }
 }
