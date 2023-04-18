@@ -29,10 +29,11 @@ function GetADOPSHeader {
     }
 
     
-    if ($r.OAuthToken.ExpiresOn -lt (Get-Date)) {
+    if ([DateTime]$r.OAuthToken.ExpiresOn -lt (Get-Date)) {
         # Token has expired. Try to renew
         ($Script:ADOPSCredentials | Where-Object {$_.organization -eq $r.Organization}).Oauthtoken = (NewAzToken | Where-Object {$_.Organization -eq $r.Organization}).Oauthtoken
     }
+
     $HeaderObj = $r.OauthToken.token
     $res.Add('Organization', $r.Organization)
 
@@ -42,5 +43,5 @@ function GetADOPSHeader {
 
     $Res.Add('Header',$Header)
 
-    $Res
+    Write-Output $Res
 }
