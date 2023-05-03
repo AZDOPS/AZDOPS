@@ -36,7 +36,7 @@ function Set-ADOPSPipelinePermission {
         $Org = GetADOPSHeader -Organization $Organization
     }
     
-    $URI = "https://dev.azure.com/${Organization}/${Project}/_apis/pipelines/pipelinepermissions/${ResourceType}/${ResourceId}?api-version=7.0-preview.1"
+    $URI = "https://dev.azure.com/${Organization}/${Project}/_apis/pipelines/pipelinepermissions/${ResourceType}/${ResourceId}?api-version=7.1-preview.1"
     $method = 'PATCH'
 
     $Body = switch ($PSCmdlet.ParameterSetName) {

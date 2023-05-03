@@ -91,23 +91,23 @@ Describe "Revoke-ADOPSPipelinePermission" {
         }
 
         It "Should invoke corret Uri when organization is not used" {
-            (Revoke-ADOPSPipelinePermission -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1).Uri | Should -Be "https://dev.azure.com/myorg/myproject/_apis/pipelines/pipelinepermissions/variablegroup/1?api-version=7.0-preview.1"
+            (Revoke-ADOPSPipelinePermission -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1).Uri | Should -Be "https://dev.azure.com/myorg/myproject/_apis/pipelines/pipelinepermissions/variablegroup/1?api-version=7.1-preview.1"
         }
 
         It "Should invoke corret Uri when organization is used" {
-            (Revoke-ADOPSPipelinePermission -Organization "someorg" -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1).Uri | Should -Be "https://dev.azure.com/someorg/myproject/_apis/pipelines/pipelinepermissions/variablegroup/1?api-version=7.0-preview.1"
+            (Revoke-ADOPSPipelinePermission -Organization "someorg" -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1).Uri | Should -Be "https://dev.azure.com/someorg/myproject/_apis/pipelines/pipelinepermissions/variablegroup/1?api-version=7.1-preview.1"
         }     
 
         It "Should invoke with correct body for single pipeline" {
             $Request = (Revoke-ADOPSPipelinePermission -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1)
             $Request.Body | Should -Be '{"pipelines":[{"id":42,"authorized":false}]}'
-            $Request.Uri | Should -Be "https://dev.azure.com/myorg/myproject/_apis/pipelines/pipelinepermissions/variablegroup/1?api-version=7.0-preview.1"
+            $Request.Uri | Should -Be "https://dev.azure.com/myorg/myproject/_apis/pipelines/pipelinepermissions/variablegroup/1?api-version=7.1-preview.1"
         }
 
         It "Should invoke with correct body for all pipelines" {
             $Request = (Revoke-ADOPSPipelinePermission -Project "myproject" -AllPipelines -ResourceType "variablegroup" -ResourceId 1)
             $Request.Body | Should -Be '{"allpipelines":{"authorized":false}}'
-            $Request.Uri | Should -Be "https://dev.azure.com/myorg/myproject/_apis/pipelines/pipelinepermissions/variablegroup/1?api-version=7.0-preview.1"
+            $Request.Uri | Should -Be "https://dev.azure.com/myorg/myproject/_apis/pipelines/pipelinepermissions/variablegroup/1?api-version=7.1-preview.1"
         }
     }
 }
