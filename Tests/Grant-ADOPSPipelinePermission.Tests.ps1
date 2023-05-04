@@ -13,31 +13,33 @@ Describe "Grant-ADOPSPipelinePermission" {
             @{
                 Name = 'Organization'
                 Mandatory = $false
-                Type = 'string'
+                Type = 'String'
             },
             @{
                 Name = 'Project'
                 Mandatory = $true
-                Type = 'string'
+                Type = 'String'
             },
             @{
                 Name = 'PipelineId'
                 Mandatory = $true
-                Type = 'int'
+                Type = 'Int32'
             },
             @{
                 Name = 'ResourceType'
                 Mandatory = $true
+                Type = 'ResourceType'
             },
             @{
                 Name = 'ResourceId'
                 Mandatory = $true
-                Type = 'string'
+                Type = 'String'
             }
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Grant-ADOPSPipelinePermission | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Grant-ADOPSPipelinePermission | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory
+            (Get-Command Grant-ADOPSPipelinePermission | Select-Object -ExpandProperty parameters)."$($_.Name)".ParameterType.Name | Should -Be $_.Type
         }
 
         It 'Should throw if ResourceType is not correct' {

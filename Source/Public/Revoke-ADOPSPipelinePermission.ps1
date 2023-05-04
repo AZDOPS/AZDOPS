@@ -24,5 +24,5 @@ function Revoke-ADOPSPipelinePermission {
         [string]$Organization
     )
 
-    Set-ADOPSPipelinePermission @PSBoundParameters -Authorized $false
+    SetADOPSPipelinePermission @PSBoundParameters -Authorized $false
 }

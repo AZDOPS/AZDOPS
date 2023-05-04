@@ -1,4 +1,4 @@
-function Set-ADOPSPipelinePermission {
+function SetADOPSPipelinePermission {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory, ParameterSetName = 'AllPipelines')]

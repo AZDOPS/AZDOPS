@@ -24,5 +24,5 @@ function Grant-ADOPSPipelinePermission {
         [string]$Organization
     )
 
-    Set-ADOPSPipelinePermission @PSBoundParameters -Authorized $true
+    SetADOPSPipelinePermission @PSBoundParameters -Authorized $true
 }
