@@ -34,6 +34,11 @@ Describe "Revoke-ADOPSPipelinePermission" {
                 Name = 'ResourceId'
                 Mandatory = $true
                 Type = 'String'
+            },
+            @{
+                Name = 'AllPipelines'
+                Mandatory = $true
+                Type = 'SwitchParameter'
             }
         )
     
