@@ -1,1 +1,1 @@
- #Requires -Modules @{ ModuleName="AzAuth"; ModuleVersion="1.1.1" }
+ #Requires -Modules @{ ModuleName="AzAuth"; ModuleVersion="2.0.1" }

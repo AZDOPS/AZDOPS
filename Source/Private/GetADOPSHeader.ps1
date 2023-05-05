@@ -6,39 +6,33 @@ function GetADOPSHeader {
 
     $Res = @{}
 
-    if ($script:ADOPSCredentials.Count -eq 0) {
-        try {
-            $Script:ADOPSCredentials = NewAzToken
-        }
-        catch {
-            throw 'No usable ADOPS credentials found. Use Connect-AzAccount or az login to connect.'
-        }
-    }
-
     if (-not [string]::IsNullOrEmpty($Organization)) {
-        $r = $Script:ADOPSCredentials | Where-Object {$_.organization -eq $Organization}
-        if ($null -eq $r) {
-            throw "No organization named $Organization found."
-        }
+        $res.Add('Organization', $Organization)
     }
     else {
-        $r = $script:ADOPSCredentials | Where-Object {$_.default}
-        if ($null -eq $r) {
-            throw 'No default organization set. Please state organization, or use "Set-ADOPSConnection -DefaultOrganization $myOrg"'
+        $organizationResult = $script:ADOPSCredentials # Check if creds are set in this session
+        
+        if ($null -eq $organizationResult) {
+            # If no cache is found see if persisant creds are set
+            $SavePath = GetADOPSConfigPath
+            if (Test-Path -Path $SavePath) {
+                try {
+                    $organizationResult = Get-Content $SavePath | ConvertTo-SecureString | ConvertFrom-SecureString -AsPlainText | ConvertFrom-Json -AsHashtable
+                }
+                catch {
+                    throw 'Found persistant credentials, but failed to read them. Please recreate persistant store using Set-ADOPSConnection.'
+                }
+            }
+            else {
+                throw 'No default organization set. Please state organization, or use "Set-ADOPSConnection -DefaultOrganization $myOrg"'
+            }
         }
+        $res.Add('Organization', $organizationResult.Organization)
     }
 
-    
-    if ([System.DateTimeOffset]$r.OAuthToken.ExpiresOn -lt [System.DateTimeOffset]::new((Get-Date))) {
-        # Token has expired. Try to renew
-        ($Script:ADOPSCredentials | Where-Object {$_.organization -eq $r.Organization}).Oauthtoken = (NewAzToken | Where-Object {$_.Organization -eq $r.Organization}).Oauthtoken
-    }
-
-    $HeaderObj = $r.OauthToken.token
-    $res.Add('Organization', $r.Organization)
-
+    $token = NewAzToken
     $Header = @{
-        Authorization = ("Bearer {0}" -f $HeaderObj)
+        Authorization = ("Bearer {0}" -f $token.token)
     }
 
     $Res.Add('Header',$Header)

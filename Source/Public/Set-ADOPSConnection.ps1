@@ -3,32 +3,43 @@ function Set-ADOPSConnection {
     [CmdletBinding()]
     Param(
         [string]$DefaultOrganization,
-        
-        [switch]$ForceRefresh
+
+        [string]$AzureADTennantId,
+
+        [switch]$Persist
     )
 
-    if ($ForceRefresh.IsPresent) {
-        $Script:ADOPSCredentials = @()
-        $Script:ADOPSCredentials = NewAzToken
+    $staticStoragePath = GetADOPSConfigPath
+
+    if ($Script:ADOPSCredentials) {
+        $ConnectionObj = $Script:ADOPSCredentials
     }
-
-    if (-not [string]::IsNullOrEmpty($DefaultOrganization)) {
-        if ($script:ADOPSCredentials.Count -eq 0) {
-            try {
-                $Script:ADOPSCredentials = NewAzToken
-            }
-            catch {
-                throw 'No usable ADOPS credentials found. Use Connect-AzAccount or az login to connect.'
-            }
-        }
-
-        
+    elseif (Test-Path -Path $staticStoragePath) {
         try {
-            ($Script:ADOPSCredentials | Where-Object {$_.organization -eq $DefaultOrganization}).default = $true
-            $script:ADOPSCredentials | Where-Object {$_.default -and $_.organization -ne $DefaultOrganization} | ForEach-Object {$_.Default = $false}
+            $ConnectionObj = Get-Content $staticStoragePath | ConvertTo-SecureString | ConvertFrom-SecureString -AsPlainText | ConvertFrom-Json -AsHashtable
         }
         catch {
-            throw "No organization with name $DefaultOrganization found."
+            Write-Warning 'Found ADOPS settings file, but failed to read it. Create a new setting and use Persist to recreate it.'
+            $ConnectionObj = @{}
         }
     }
+    else {
+        $ConnectionObj = @{}
+    }
+
+    if ($PSBoundParameters.ContainsKey('DefaultOrganization')) {
+        $ConnectionObj['Organization'] = $DefaultOrganization
+    }
+
+    if ($PSBoundParameters.ContainsKey('AzureADTennantId')) {
+        $ConnectionObj['TenantId'] = $AzureADTennantId
+    }
+
+    if ($PSBoundParameters.ContainsKey('Persist')) {
+        
+        $SecureString = ConvertTo-SecureString -String ($ConnectionObj | ConvertTo-Json -Depth 10 -Compress) -AsPlainText -Force | ConvertFrom-SecureString
+        $SecureString | Out-File $staticStoragePath -Force
+    }
+
+    $Script:ADOPSCredentials = $ConnectionObj
 } 

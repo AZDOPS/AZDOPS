@@ -1,39 +1,25 @@
 function NewAzToken {
     [CmdletBinding()]
     [SkipTest('HasOrganizationParameter')]
-    [OutputType([array])]
     param ()
 
-    $t = Get-AzToken -Resource 499b84ac-1321-427f-aa17-267ca6975798 
-
-    # Get User context
-    $me = Invoke-RestMethod -Method GET 'https://app.vssps.visualstudio.com/_apis/profile/profiles/me?api-version=7.1-preview.3' -Headers @{
-        Authorization = "Bearer $($t.token)"
-    }
-
-    # Get available orgs
-    $Orgs = (Invoke-RestMethod -Method GET "https://app.vssps.visualstudio.com/_apis/accounts?memberId=$($me.publicAlias)&api-version=7.1-preview.1" -Headers @{
-        Authorization = "Bearer $($t.token)"
-    } | Select-Object -ExpandProperty value).accountName
-
-    [array]$res = @()
-
-    foreach ($organization in $Orgs) {
-        $tokenData = [ordered]@{
-            Organization = $organization
-            OauthToken = $t
-            UserContext = $me
-            Default = $false
+    try {
+        $tennantId = (Get-ADOPSConnection)['TenantId']
+        if (-Not [string]::IsNullOrEmpty( $tennantId )) {
+            $token = Get-AzToken -Resource 499b84ac-1321-427f-aa17-267ca6975798 -TenantId $tennantId
         }
-        [array]$res += $tokenData
+        else {
+            $token = Get-AzToken -Resource 499b84ac-1321-427f-aa17-267ca6975798
+        }
+    }
+    catch {
+        if ($_.Exception.GetType().FullName -eq 'Azure.Identity.CredentialUnavailableException') {
+            $token = Get-AzToken -Resource 499b84ac-1321-427f-aa17-267ca6975798 -Interactive   
+        }
+        else {
+            throw $_
+        }
     }
 
-    if ($res.Count -eq 1) {
-        # If only one organization is found, set it as default
-        $res[0].Default = $true
-    }
-    
-    # Use -NoEnumerate to prevent PowerShell from unwrapping array with one object.
-    # https://learn.microsoft.com/en-us/powershell/scripting/learn/deep-dives/everything-about-arrays?view=powershell-7.3#write-output--noenumerate
-    Write-Output $res -NoEnumerate
+    $token
 }

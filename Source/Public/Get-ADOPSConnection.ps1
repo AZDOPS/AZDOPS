@@ -3,14 +3,27 @@ function Get-ADOPSConnection {
     [CmdletBinding()]
     Param()
 
-    if ($script:ADOPSCredentials.Count -eq 0) {
+    
+    if ($Script:ADOPSCredentials) {
+        $Res = $Script:ADOPSCredentials
+    }
+    else {
         try {
-            $Script:ADOPSCredentials = NewAzToken
+            $staticStoragePath = GetADOPSConfigPath
+            if (Test-Path -Path $staticStoragePath) {
+                $Res = Get-Content $staticStoragePath | ConvertTo-SecureString | ConvertFrom-SecureString -AsPlainText | ConvertFrom-Json
+            }
         }
         catch {
-            throw 'No usable ADOPS credentials found. Use Connect-AzAccount or az login to connect.'
+            Write-Warning 'Found ADOPS settings file, but failed to read it. Create a new setting and use Persist to recreate it.'
         }
     }
 
-    $script:ADOPSCredentials
+    if ($Res) {
+        Write-Verbose "ADOPS connection found."
+        Return $Res
+    }
+    else {
+        Write-Verbose "No ADOPS connection found. Use Set-ADOPSConnection to create it."
+    }
 } 
