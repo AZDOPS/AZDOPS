@@ -1,3 +1,5 @@
+ #Requires -Modules @{ ModuleName="AzAuth"; ModuleVersion="2.0.1" }
+
 # import classes
 foreach ($file in (Get-ChildItem "$PSScriptRoot\Classes\*.ps1"))
 {
