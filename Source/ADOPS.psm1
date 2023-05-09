@@ -1,4 +1,6 @@
- #Requires -Modules @{ ModuleName="AzAuth"; ModuleVersion="2.0.1" }
+#Requires -Modules @{ ModuleName="AzAuth"; ModuleVersion="2.1.0" }
+$script:AzTokenCache = 'adops.cache'
+$script:loginMethod = 'Default'
 
 # import classes
 foreach ($file in (Get-ChildItem "$PSScriptRoot\Classes\*.ps1"))

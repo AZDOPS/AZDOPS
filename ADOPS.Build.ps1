@@ -7,6 +7,7 @@ param (
 [string]$ModuleName = 'ADOPS'
 [string]$ModuleSourcePath = "$PSScriptRoot\Source"
 [string]$HelpSourcePath = "$PSScriptRoot\Docs\Help"
+[string]$BuildSourcePath = "$PSScriptRoot"
 
 [string]$OutputPath = "$PSScriptRoot\Bin\$ModuleName\$Version"
 
@@ -48,6 +49,14 @@ task Compile_Module {
 
     $ExportedFunctionList = [System.Collections.Generic.List[string]]::new()
 
+    # PreCode
+    Get-ChildItem "$BuildSourcePath\Tools\_PreModule*.ps1" | ForEach-Object {
+        $FileContent = Get-Content $_.FullName
+        "#region PreCode $($_.BaseName)`n"    | Out-File $PSM1Path -Append
+        $FileContent                          | Out-File $PSM1Path -Append
+        "#endregion PreCode $($_.BaseName)`n" | Out-File $PSM1Path -Append
+    }
+
     # Classes
     Get-ChildItem "$ModuleSourcePath\Classes" *.ps1 | ForEach-Object {
         $FileContent = Get-Content $_.FullName
@@ -74,6 +83,14 @@ task Compile_Module {
         "#endregion $($_.BaseName)`n" | Out-File $PSM1Path -Append
     }
 
+    # PostCode
+    Get-ChildItem "$BuildSourcePath\Tools\_PostModule*.ps1" | ForEach-Object {
+        $FileContent = Get-Content $_.FullName
+        "#region PostCode $($_.BaseName)`n"    | Out-File $PSM1Path -Append
+        $FileContent                           | Out-File $PSM1Path -Append
+        "#endregion PostCode $($_.BaseName)`n" | Out-File $PSM1Path -Append
+    }
+    
     # Manifest
     $ManifestContent = (Get-Content "$ModuleSourcePath\$ModuleName.psd1" ) -replace 'ModuleVersion\s*=\s*[''"][0-9\.]{1,10}[''"]',"Moduleversion = '$Version'" -replace 'FunctionsToExport\s*=\s*[''"]\*[''"]',"FunctionsToExport = @('$($ExportedFunctionList -join "','")')"
     $ManifestContent | Out-File $PSD1Path 
