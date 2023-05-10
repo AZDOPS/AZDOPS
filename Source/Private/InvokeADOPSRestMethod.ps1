@@ -22,13 +22,6 @@ function InvokeADOPSRestMethod {
         [string]$OutFile
     )
 
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $CallHeaders = GetADOPSHeader -Organization $Organization
-    }
-    else {
-        $CallHeaders = GetADOPSHeader
-    }
-
     $InvokeSplat = @{
         'Uri' = $Uri
         'Method' = $Method
