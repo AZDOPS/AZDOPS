@@ -62,6 +62,8 @@ Describe 'InvokeADOPSRestMethod' {
                     Organization = "org2"
                 }
             } -ModuleName ADOPS
+
+            Mock -CommandName NewAzToken -ModuleName ADOPS -MockWith { 'eyJ0eXAiOiLoremIpsum' }
             Mock -CommandName Invoke-RestMethod -MockWith {Return $InvokeSplat} -ModuleName ADOPS
         }
 

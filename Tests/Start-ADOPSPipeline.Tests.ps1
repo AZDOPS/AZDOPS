@@ -11,28 +11,28 @@ Describe 'Start-ADOPSPipeline' {
     Context 'Parameters' {
         $TestCases = @(
             @{
-                Name = 'Name'
-                Mandatory = $trúe
-                Type = 'string'
-            },
-            @{
-                Name = 'Project'
+                Name      = 'Name'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'Organization'
-                Mandatory = $false
-                Type = 'string'
+                Name      = 'Project'
+                Mandatory = $true
+                Type      = 'string'
             },
             @{
-                Name = 'Branch'
+                Name      = 'Organization'
                 Mandatory = $false
-                Type = 'string'
+                Type      = 'string'
+            },
+            @{
+                Name      = 'Branch'
+                Mandatory = $false
+                Type      = 'string'
             }
         )
     
-        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+        It 'Should have parameter <_.Name>' -TestCases $TestCases {
             Get-Command Start-ADOPSPipeline | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
@@ -40,30 +40,15 @@ Describe 'Start-ADOPSPipeline' {
     Context 'Starting pipeline' {
         BeforeAll {
             InModuleScope -ModuleName ADOPS {
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = 'DummyOrg'
-                    }
-                } -ParameterFilter { $Organization -eq 'Organization' }
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = 'DummyOrg'
-                    }
-                }
-
+                Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
+            
                 Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
-                    '{"count":2,"value":[{"_links":{"self":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/1?revision=1"},"web":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_build/definition?definitionId=1"}},"url":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/1?revision=1","id":1,"revision":1,"name":"dummypipeline1","folder":"\\"},{"_links":{"self":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/3?revision=1"},"web":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_build/definition?definitionId=3"}},"url":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/3?revision=1","id":3,"revision":1,"name":"ummypipeline2","folder":"\\"}]}' | ConvertFrom-Json     
-                } -ParameterFilter { $method -eq 'Get' }
-
+                    '{"count":2,"value":[{"_links":{"self":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/1?revision=1"},"web":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_build/definition?definitionId=1"}},"url":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/1?revision=1","id":1,"revision":1,"name":"dummypipeline1","folder":"\\"},{"_links":{"self":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/3?revision=1"},"web":{"href":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_build/definition?definitionId=3"}},"url":"https://dev.azure.com/dummyorg/9ca5975f-7615-4f60-927d-d9222b095544/_apis/pipelines/3?revision=1","id":3,"revision":1,"name":"dummypipeline2","folder":"\\"}]}' | ConvertFrom-Json     
+                } -ParameterFilter { $Method -eq 'Get' }
+    
                 Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                     return $InvokeSplat
-                } -ParameterFilter { $method -eq 'post' }
+                } -ParameterFilter { $Method -eq 'Post' }
             }
         }
 
@@ -71,19 +56,17 @@ Describe 'Start-ADOPSPipeline' {
             Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject'
             Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 2
         }
-        It 'If no organization is passed, Get default' {
+        It 'If no organization is passed, get default' {
             Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject'
-            Should -Invoke 'GetADOPSHeader' -ModuleName 'ADOPS' -Exactly -Times 1
+            Should -Invoke 'GetADOPSDefaultOrganization' -ModuleName 'ADOPS' -Exactly -Times 1
         }
-
         It 'If an organization is passed, that organization should be used for URI' {
             Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject' -Organization 'Organization'
-            Should -Invoke 'GetADOPSHeader' -ModuleName 'ADOPS' -Exactly -Times 1 -ParameterFilter { $Organization -eq 'Organization' }
+            Should -Invoke 'GetADOPSDefaultOrganization' -ModuleName 'ADOPS' -Exactly -Times 0
         }
         It 'If no pipeline with correct name is found we should throw error' {
             { Start-ADOPSPipeline -Name 'NonExistingPipeline' -Project 'DummyProject' -Organization 'Organization' } | Should -Throw
         }
-
         It 'Uri should be set correct' {
             $r = Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject'
             $r.Uri | Should -Be 'https://dev.azure.com/DummyOrg/DummyProject/_apis/pipelines/1/runs?api-version=7.1-preview.1'

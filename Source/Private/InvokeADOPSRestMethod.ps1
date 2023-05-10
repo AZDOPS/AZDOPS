@@ -49,7 +49,7 @@ function InvokeADOPSRestMethod {
         $Result = Invoke-RestMethod @InvokeSplat
 
         if ($Result -like "*Azure DevOps Services | Sign In*") {
-            throw 'Failed to call Azure DevOps API. Please login before using.'
+            throw 'Failed to call Azure DevOps API. Please login using Connect-ADOPS before running commands.'
         }
         elseif ($FullResponse) {
             @{ Content = $Result; Headers = $ResponseHeaders; StatusCode = $ResponseStatusCode }

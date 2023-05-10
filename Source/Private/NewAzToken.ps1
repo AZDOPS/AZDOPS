@@ -3,14 +3,23 @@ function NewAzToken {
     [SkipTest('HasOrganizationParameter')]
     param ()
 
+    $TokenSplat = @{
+        Resource = '499b84ac-1321-427f-aa17-267ca6975798'
+    }
     switch ($script:LoginMethod) {
         'Default' {
             try {
-                Get-AzToken -TokenCache $script:AzTokenCache
+                $UserContext = GetADOPSConfigFile
+
+                $TokenSplat['Username'] = $Usercontext['Default']['Identity']
+                $TokenSplat['TenantId'] = $Usercontext['Default']['TenantId']
+                Get-AzToken @TokenSplat -TokenCache $script:AzTokenCache
             }
             catch {
                 if ($_.Exception.GetType().FullName -eq 'Azure.Identity.CredentialUnavailableException') {
-                    throw (New-Object -TypeName 'System.InvalidOperationException' -ArgumentList "Could not find existing token, please run the command Connect-ADOPS!",$_)
+                    $Exception = New-Object System.InvalidOperationException "Could not find existing token, please run the command Connect-ADOPS!", $_.Exception
+                    $ErrorRecord = New-Object Management.Automation.ErrorRecord $Exception, 'ADOPSGetTokenError', ([System.Management.Automation.ErrorCategory]::InvalidOperation), $null
+                    throw $ErrorRecord
                 }
                 else {
                     throw $_
@@ -18,7 +27,7 @@ function NewAzToken {
             }
         }
         'ManagedIdentity' {
-            Get-AzToken -ManagedIdentity
+            Get-AzToken @TokenSplat -ManagedIdentity
         }
         'Token' {
             return $Script:ScriptToken

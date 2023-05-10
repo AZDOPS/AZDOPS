@@ -8,11 +8,9 @@ BeforeAll {
     
     Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
 
-    Mock -CommandName NewAzToken -ModuleName ADOPS -MockWith { 'eyJ0eXAiOiLoremIpsum' }
-
     Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
         return $InvokeSplat
-    } -ParameterFilter { $method -eq 'post' }
+    } -ParameterFilter { $Method -eq 'Post' }
 
     Mock -CommandName Get-Content -ModuleName ADOPS -MockWith {
         return @'
