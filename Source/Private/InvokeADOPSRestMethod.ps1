@@ -22,10 +22,14 @@ function InvokeADOPSRestMethod {
         [string]$OutFile
     )
 
+    $Token = NewAzToken
+
     $InvokeSplat = @{
         'Uri' = $Uri
         'Method' = $Method
-        'Headers' = $CallHeaders.Header
+        'Headers' = @{
+            'Authorization' = "Bearer $Token"
+        }
         'ContentType' = $ContentType
     }
 

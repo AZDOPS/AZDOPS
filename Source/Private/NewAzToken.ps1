@@ -5,7 +5,17 @@ function NewAzToken {
 
     switch ($script:LoginMethod) {
         'Default' {
-            Get-AzToken -TokenCache $script:AzTokenCache
+            try {
+                Get-AzToken -TokenCache $script:AzTokenCache
+            }
+            catch {
+                if ($_.Exception.GetType().FullName -eq 'Azure.Identity.CredentialUnavailableException') {
+                    throw [System.InvalidOperationException]::new("Could not find existing token, please run the command Connect-ADOPS!", $_)
+                }
+                else {
+                    throw $_
+                }
+            }
         }
         'ManagedIdentity' {
             Get-AzToken -ManagedIdentity
