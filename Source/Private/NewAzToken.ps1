@@ -10,7 +10,7 @@ function NewAzToken {
             }
             catch {
                 if ($_.Exception.GetType().FullName -eq 'Azure.Identity.CredentialUnavailableException') {
-                    throw [System.InvalidOperationException]::new("Could not find existing token, please run the command Connect-ADOPS!", $_)
+                    throw (New-Object -TypeName 'System.InvalidOperationException' -ArgumentList "Could not find existing token, please run the command Connect-ADOPS!",$_)
                 }
                 else {
                     throw $_
