@@ -66,20 +66,10 @@ Describe 'Set-ADOPSServiceConnection' {
             Get-Command Set-ADOPSServiceConnection | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
-
     
     Context "Functionality" {
         BeforeAll {
-            Mock GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Organization = "myorg"
-                }
-            }
-            Mock GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -MockWith {
-                @{
-                    Organization = "anotherOrg"
-                }
-            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
             
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
 
@@ -88,9 +78,7 @@ Describe 'Set-ADOPSServiceConnection' {
                     id = 'ProjectInfoId'
                 }
             }
-        }
-        
-        BeforeEach {
+            
             $Splat = @{
                 Project = 'myproj' 
                 TenantId = 'AzureTennantId' 
@@ -100,18 +88,15 @@ Describe 'Set-ADOPSServiceConnection' {
                 ServicePrincipal = [pscredential]::new('User', (ConvertTo-SecureString -String 'PassWord' -AsPlainText -Force))
             }
         }
-
-        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+        
+        It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Set-ADOPSServiceConnection -Organization 'anotherorg' @Splat
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
-        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+        It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Set-ADOPSServiceConnection @Splat
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
-
     }
 }
-
