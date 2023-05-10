@@ -1,10 +1,7 @@
 function Disconnect-ADOPS {
     [CmdletBinding()]
-    param (
-        [Parameter()]
-        [ValidateNotNullOrEmpty()]
-        [string]$Organization
-    )
+    [SkipTest('HasOrganizationParameter')]
+    param ()
 
     # Reset context
     NewADOPSConfigFile
