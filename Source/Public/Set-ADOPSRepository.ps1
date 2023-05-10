@@ -28,7 +28,6 @@ function Set-ADOPSRepository {
         # Nothing to do, exit early
     }
     else {
-        
         # If user didn't specify org, get it from saved context
         if ([string]::IsNullOrEmpty($Organization)) {
             $Organization = GetADOPSDefaultOrganization
