@@ -11,12 +11,9 @@ function Remove-ADOPSVariableGroup {
         [string]$Organization
     )
 
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $Org = GetADOPSHeader -Organization $Organization
-    }
-    else {
-        $Org = GetADOPSHeader
-        $Organization = $Org['Organization']
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
     }
 
     $Uri = "https://dev.azure.com/$Organization/$Project/_apis/distributedtask/variablegroups?api-version=7.1-preview.2"

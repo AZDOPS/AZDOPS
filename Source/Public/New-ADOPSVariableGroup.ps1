@@ -31,12 +31,9 @@ function New-ADOPSVariableGroup {
         [string]$Organization
     )
 
+    # If user didn't specify org, get it from saved context
     if ([string]::IsNullOrEmpty($Organization)) {
-        $Org = GetADOPSHeader
-        $Organization = $Org['Organization']
-    }
-    else {
-        $Org = GetADOPSHeader -Organization $Organization
+        $Organization = GetADOPSDefaultOrganization
     }
 
     $ProjectInfo = Get-ADOPSProject -Organization $Organization -Project $Project

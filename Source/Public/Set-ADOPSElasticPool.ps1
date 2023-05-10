@@ -11,12 +11,9 @@ function Set-ADOPSElasticPool {
         [string]$Organization
     )
 
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $Org = GetADOPSHeader -Organization $Organization
-    }
-    else {
-        $Org = GetADOPSHeader
-        $Organization = $Org['Organization']
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
     }
 
     $Uri = "https://dev.azure.com/$Organization/_apis/distributedtask/elasticpools/$PoolId`?api-version=7.1-preview.1"
@@ -29,7 +26,7 @@ function Set-ADOPSElasticPool {
             $Body = $ElasticPoolObject | ConvertTo-Json -Depth 100
         }
         catch {
-            throw "Unable to convert the content of the ElasticPoolObject to json."
+            throw 'Unable to convert the content of the ElasticPoolObject to json.'
         }
     }
     

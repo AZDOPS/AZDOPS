@@ -30,12 +30,9 @@ function New-ADOPSProject {
         [switch]$Wait
     )
 
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $OrgInfo = GetADOPSHeader -Organization $Organization
-    }
-    else {
-        $OrgInfo = GetADOPSHeader
-        $Organization = $OrgInfo['Organization']
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
     }
 
     # Get organization process templates

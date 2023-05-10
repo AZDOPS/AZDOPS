@@ -21,12 +21,9 @@ function New-ADOPSGitBranch {
     [string]$CommitId
     )
     
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $Org = GetADOPSHeader -Organization $Organization
-    }
-    else {
-        $Org = GetADOPSHeader
-        $Organization = $Org['Organization']
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
     }
 
     $Body = @(

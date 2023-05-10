@@ -14,12 +14,9 @@ function Get-ADOPSUser {
         [string]$ContinuationToken
     )
 
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $Org = GetADOPSHeader -Organization $Organization
-    }
-    else {
-        $Org = GetADOPSHeader
-        $Organization = $Org['Organization']
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
     }
 
     if ($PSCmdlet.ParameterSetName -eq 'Default') {

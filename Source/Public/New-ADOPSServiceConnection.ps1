@@ -26,13 +26,9 @@ function New-ADOPSServiceConnection {
         [switch]$ManagedIdentity
     )
 
-    # Set organization
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $Org = GetADOPSHeader -Organization $Organization
-    }
-    else {
-        $Org = GetADOPSHeader
-        $Organization = $Org['Organization']
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
     }
 
     # Get ProjectId
@@ -40,7 +36,7 @@ function New-ADOPSServiceConnection {
 
     # Set connection name if not set by parameter
     if (-not $ConnectionName) {
-        $ConnectionName = $SubscriptionName -replace " "
+        $ConnectionName = $SubscriptionName -replace ' '
     }
     
     switch ($PSCmdlet.ParameterSetName) {
@@ -50,18 +46,18 @@ function New-ADOPSServiceConnection {
                 parameters = [ordered]@{
                     tenantid            = $TenantId
                     serviceprincipalid  = $ServicePrincipal.UserName
-                    authenticationType  = "spnKey"
+                    authenticationType  = 'spnKey'
                     serviceprincipalkey = $ServicePrincipal.GetNetworkCredential().Password
                 }
-                scheme     = "ServicePrincipal"
+                scheme     = 'ServicePrincipal'
             }
     
             $data = [ordered]@{
                 subscriptionId   = $SubscriptionId
                 subscriptionName = $SubscriptionName
-                environment      = "AzureCloud"
-                scopeLevel       = "Subscription"
-                creationMode     = "Manual"
+                environment      = 'AzureCloud'
+                scopeLevel       = 'Subscription'
+                creationMode     = 'Manual'
             }
         }
 
@@ -70,14 +66,14 @@ function New-ADOPSServiceConnection {
                 parameters = [ordered]@{
                     tenantid = $TenantId
                 }
-                scheme     = "ManagedServiceIdentity"
+                scheme     = 'ManagedServiceIdentity'
             }
     
             $data = [ordered]@{
                 subscriptionId   = $SubscriptionId
                 subscriptionName = $SubscriptionName
-                environment      = "AzureCloud"
-                scopeLevel       = "Subscription"
+                environment      = 'AzureCloud'
+                scopeLevel       = 'Subscription'
             }
         }
     }
@@ -85,9 +81,9 @@ function New-ADOPSServiceConnection {
     # Create body for the API call
     $Body = [ordered]@{
         data                             = $data
-        name                             = ($SubscriptionName -replace " ")
-        type                             = "AzureRM"
-        url                              = "https://management.azure.com/"
+        name                             = ($SubscriptionName -replace ' ')
+        type                             = 'AzureRM'
+        url                              = 'https://management.azure.com/'
         authorization                    = $authorization
         isShared                         = $false
         isReady                          = $true
@@ -106,7 +102,7 @@ function New-ADOPSServiceConnection {
     $URI = "https://dev.azure.com/$Organization/$Project/_apis/serviceendpoint/endpoints?api-version=6.0-preview.4"
     $InvokeSplat = @{
         Uri          = $URI
-        Method       = "POST"
+        Method       = 'POST'
         Body         = $Body
         Organization = $Organization
     }

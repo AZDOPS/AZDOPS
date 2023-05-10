@@ -7,7 +7,7 @@ function Save-ADOPSPipelineTask {
 
         [Parameter(ParameterSetName = 'InputData')]
         [Parameter(ParameterSetName = 'InputObject')]
-        [string]$Path = ".",
+        [string]$Path = '.',
 
         [Parameter(Mandatory, ParameterSetName = 'InputData')]
         [string]$TaskId,
@@ -21,16 +21,13 @@ function Save-ADOPSPipelineTask {
         [Parameter(Mandatory, ParameterSetName = 'InputObject', ValueFromPipeline, Position = 0)]
         [psobject[]]$InputObject
     )
-    begin {}
+    begin {
+        # If user didn't specify org, get it from saved context
+        if ([string]::IsNullOrEmpty($Organization)) {
+            $Organization = GetADOPSDefaultOrganization
+        }
+    }
     process {
-        if (-not [string]::IsNullOrEmpty($Organization)) {
-            $Org = GetADOPSHeader -Organization $Organization
-        }
-        else {
-            $Org = GetADOPSHeader
-            $Organization = $Org['Organization']
-        }
-
         switch ($PSCmdlet.ParameterSetName) {
             'InputData' {
                 if ([string]::IsNullOrEmpty($FileName)) {
@@ -41,17 +38,17 @@ function Save-ADOPSPipelineTask {
                 }
 
                 [array]$FilesToDownload = @{
-                    TaskId = $TaskId
+                    TaskId            = $TaskId
                     TaskVersionString = $TaskVersion.ToString(3)
-                    OutputFile = Join-Path -Path $Path -ChildPath $FileName
+                    OutputFile        = Join-Path -Path $Path -ChildPath $FileName
                 }
             }
             'InputObject' {
                 [array]$FilesToDownload = foreach ($o in $InputObject) {
                     @{
-                        TaskId = $o.id
+                        TaskId            = $o.id
                         TaskVersionString = "$($o.version.major).$($o.version.minor).$($o.version.patch)"
-                        OutputFile = Join-Path -Path $Path -ChildPath "$($o.name)-$($o.id)-$($o.version.major).$($o.version.minor).$($o.version.patch).zip"
+                        OutputFile        = Join-Path -Path $Path -ChildPath "$($o.name)-$($o.id)-$($o.version.major).$($o.version.minor).$($o.version.patch).zip"
                     }
                 }
             }

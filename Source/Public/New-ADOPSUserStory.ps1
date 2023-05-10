@@ -1,40 +1,36 @@
 function New-ADOPSUserStory {
-  [CmdletBinding()]
-  param (
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [string]$Title,
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string]$Title,
 
-    [Parameter(Mandatory)]
-    [string]$ProjectName,
+        [Parameter(Mandatory)]
+        [string]$ProjectName,
 
-    [Parameter()]
-    [string]$Description,
+        [Parameter()]
+        [string]$Description,
 
-    [Parameter()]
-    [string]$Tags,
+        [Parameter()]
+        [string]$Tags,
 
-    [Parameter()]
-    [string]$Priority,
+        [Parameter()]
+        [string]$Priority,
 
-    [Parameter()]
-    [string]$Organization
-  )
+        [Parameter()]
+        [string]$Organization
+    )
 
-  if (-not [string]::IsNullOrEmpty($Organization)) {
-    $Org = GetADOPSHeader -Organization $Organization
-  }
-  else {
-    $Org = GetADOPSHeader
-    $Organization = $Org['Organization']
-  }
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
+    }
 
+    $URI = "https://dev.azure.com/$Organization/$ProjectName/_apis/wit/workitems/`$User Story?api-version=5.1"
+    $Method = 'POST'
 
-  $URI = "https://dev.azure.com/$Organization/$ProjectName/_apis/wit/workitems/`$User Story?api-version=5.1"
-  $Method = 'POST'
-
-  $desc = $Description.Replace('"', "'")
-  $Body = "[
+    $desc = $Description.Replace('"', "'")
+    $Body = "[
       {
         `"op`": `"add`",
         `"path`": `"/fields/System.Title`",
@@ -57,15 +53,15 @@ function New-ADOPSUserStory {
       },	 
     ]"
     
-  $ContentType= "application/json-patch+json"  
+    $ContentType = 'application/json-patch+json'  
   
-  $InvokeSplat = @{
-    Uri           = $URI
-    ContentType   = $ContentType
-    Method        = $Method
-    Body          = $Body
-    Organization  = $Organization
-  }
+    $InvokeSplat = @{
+        Uri          = $URI
+        ContentType  = $ContentType
+        Method       = $Method
+        Body         = $Body
+        Organization = $Organization
+    }
 
-  InvokeADOPSRestMethod @InvokeSplat
+    InvokeADOPSRestMethod @InvokeSplat
 }
