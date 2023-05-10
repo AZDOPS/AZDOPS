@@ -4,6 +4,7 @@ function Connect-ADOPS {
         [Parameter(Mandatory, ParameterSetName = 'Interactive')]
         [Parameter(Mandatory, ParameterSetName = 'ManagedIdentity')]
         [Parameter(Mandatory, ParameterSetName = 'Token')]
+        [Parameter(Mandatory, ParameterSetName = 'OAuthToken')]
         [string]$Organization,
         
         [Parameter(ParameterSetName = 'Interactive')]
