@@ -7,42 +7,42 @@ BeforeAll {
     Import-Module $PSM1 -Force
 }
 
-Describe "Save-ADOPSPipelineTask" {
-    Context "Parameters" {
+Describe 'Save-ADOPSPipelineTask' {
+    Context 'Parameters' {
         $TestCases = @(
             @{
-                Name = 'Organization'
+                Name      = 'Organization'
                 Mandatory = $false
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'Path'
+                Name      = 'Path'
                 Mandatory = $false
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'TaskId'
+                Name      = 'TaskId'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'TaskVersion'
+                Name      = 'TaskVersion'
                 Mandatory = $true
-                Type = 'version'
+                Type      = 'version'
             },
             @{
-                Name = 'FileName'
+                Name      = 'FileName'
                 Mandatory = $false
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'InputObject'
+                Name      = 'InputObject'
                 Mandatory = $true
-                Type = 'psobject[]'
+                Type      = 'psobject[]'
             }
         )
 
-        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+        It 'Should have parameter <_.Name>' -TestCases $TestCases {
             Get-Command Save-ADOPSPipelineTask | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
 
@@ -55,10 +55,10 @@ Describe "Save-ADOPSPipelineTask" {
         }
     }
 
-    Context "Functionality" {
+    Context 'Functionality' {
         BeforeAll {
             $InputData = @{
-                TaskId = '032b764c-18ee-4623-bce0-be59056280e8'
+                TaskId      = '032b764c-18ee-4623-bce0-be59056280e8'
                 TaskVersion = '1.234.56'
             }
             $InputObject = @'
@@ -86,35 +86,25 @@ Describe "Save-ADOPSPipelineTask" {
 ]
 '@ | ConvertFrom-Json -AsHashtable
 
-            Mock GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Organization = "myorg"
-                }
-            }
-            Mock GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'DummyOrg' } -MockWith {
-                @{
-                    Organization = "DummyOrg"
-                }
-            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
 
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
         }
 
-        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+        It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Save-ADOPSPipelineTask -Organization 'DummyOrg' @InputData
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'DummyOrg' } -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
-        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+        It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Save-ADOPSPipelineTask @InputData
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'DummyOrg' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'Should run InvokeADOPSRestMethod with the OutFile parameter set, one file' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $OutFile
-            } -ParameterFilter {$OutFile}
+            } -ParameterFilter { $OutFile }
             Save-ADOPSPipelineTask @InputData
 
             Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly
@@ -123,7 +113,7 @@ Describe "Save-ADOPSPipelineTask" {
         It 'Should run InvokeADOPSRestMethod with the OutFile parameter set, Object containing 2 files' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $OutFile
-            } -ParameterFilter {$OutFile}
+            } -ParameterFilter { $OutFile }
             Save-ADOPSPipelineTask -InputObject $InputObject
 
             Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 2 -Exactly
@@ -132,7 +122,7 @@ Describe "Save-ADOPSPipelineTask" {
         It 'InputObject should be positional' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $OutFile
-            } -ParameterFilter {$OutFile}
+            } -ParameterFilter { $OutFile }
             Save-ADOPSPipelineTask $InputObject
 
             Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 2 -Exactly
@@ -141,7 +131,7 @@ Describe "Save-ADOPSPipelineTask" {
         It 'InputObject should accept pipeline input' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $OutFile
-            } -ParameterFilter {$OutFile}
+            } -ParameterFilter { $OutFile }
             $InputObject | Save-ADOPSPipelineTask
 
             Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 2 -Exactly
