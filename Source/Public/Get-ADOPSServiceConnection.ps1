@@ -24,7 +24,6 @@ function Get-ADOPSServiceConnection {
     $InvokeSplat = @{
         Method       = 'Get'
         Uri          = $URI
-        Organization = $Organization
     }
 
     $AllPipelines = (InvokeADOPSRestMethod @InvokeSplat).value
