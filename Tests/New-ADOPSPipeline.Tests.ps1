@@ -49,30 +49,13 @@ Describe 'New-ADOPSPipeline' {
 
     Context 'Creating Pipeline' {
         BeforeAll {
-
             $OrganizationName = 'DummyOrg'
             $Project = 'DummyProject'
             $PipeName = 'DummyPipe1'
             $YamlPath = 'DummyYamlPath/file.yaml'
             $Repository = 'DummyRepo'
 
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = $OrganizationName
-                }
-            } -ParameterFilter { $OrganizationName -eq $OrganizationName }
-            
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = $OrganizationName
-                }
-            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
             
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
             
