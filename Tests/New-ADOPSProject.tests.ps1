@@ -96,10 +96,10 @@ Describe 'New-ADOPSProject' {
                     ]
                     }
 "@ | ConvertFrom-Json
-            } -ParameterFilter { $method -eq 'Get' }
+            } -ParameterFilter { $Method -eq 'Get' }
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $InvokeSplat
-            } -ParameterFilter { $method -eq 'Post' }
+            } -ParameterFilter { $Method -eq 'Post' }
 
             $OrganizationName = 'DummyOrg'
             $Project = 'DummyOrg'
@@ -134,7 +134,7 @@ Describe 'New-ADOPSProject' {
         It 'Verify body' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $body
-            } -ParameterFilter { $method -eq 'Post' }
+            } -ParameterFilter { $Method -eq 'Post' }
 
             $r = New-ADOPSProject -Organization $OrganizationName -Name $Project -Visibility 'Public' -Description 'DummyDescription'
             $r | Should -Be '{"name":"DummyOrg","visibility":"Public","capabilities":{"versioncontrol":{"sourceControlType":"Git"},"processTemplate":{"templateTypeId":"e5317e66-94c8-48cb-bed8-3f44ebdb0963"}},"description":"DummyDescription"}'
@@ -143,7 +143,7 @@ Describe 'New-ADOPSProject' {
         It 'Verify uri' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $uri
-            } -ParameterFilter { $method -eq 'Post' }
+            } -ParameterFilter { $Method -eq 'Post' }
 
             $r = New-ADOPSProject -Organization $OrganizationName -Name $Project -Visibility 'Public' -Description 'DummyDescription'
             $r.OriginalString | Should -Be 'https://dev.azure.com/DummyOrg/_apis/projects?api-version=7.1-preview.4'
@@ -156,7 +156,7 @@ Describe 'New-ADOPSProject' {
                     status = "queued"
                     url = "https://dev.azure.com/fabrikam/_apis/operations/066488b8-b14e-43d1-befc-a2e655266e2b"
                 }
-            } -ParameterFilter { $method -eq 'Post' }
+            } -ParameterFilter { $Method -eq 'Post' }
 
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 @{
@@ -164,7 +164,7 @@ Describe 'New-ADOPSProject' {
                     status = "succeeded"
                     url = "https://dev.azure.com/fabrikam/_apis/operations/066488b8-b14e-43d1-befc-a2e655266e2b"
                 }
-            } -ParameterFilter { $method -eq 'Get' -and $Uri -eq 'https://dev.azure.com/fabrikam/_apis/operations/066488b8-b14e-43d1-befc-a2e655266e2b'}
+            } -ParameterFilter { $Method -eq 'Get' -and $Uri -eq 'https://dev.azure.com/fabrikam/_apis/operations/066488b8-b14e-43d1-befc-a2e655266e2b'}
 
             Mock -CommandName Get-ADOPSProject -ModuleName ADOPS -MockWith {
                 @{

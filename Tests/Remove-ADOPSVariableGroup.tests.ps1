@@ -38,7 +38,7 @@ Describe 'Remove-ADOPSVariableGroup' {
 
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return ''
-            } -ParameterFilter { $method -eq 'Delete' }
+            } -ParameterFilter { $Method -eq 'Delete' }
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return [pscustomobject]@{
                     'count' = 1
@@ -69,7 +69,7 @@ Describe 'Remove-ADOPSVariableGroup' {
                         }
                     )
                 }
-            } -ParameterFilter { $method -eq 'Get' }
+            } -ParameterFilter { $Method -eq 'Get' }
             Mock -CommandName Get-ADOPSProject -ModuleName ADOPS -MockWith {
                 return [pscustomobject]@{
                     id = (New-Guid).Guid
