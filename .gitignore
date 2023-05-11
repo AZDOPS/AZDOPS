@@ -1,5 +1,6 @@
 # Testcoverage output from pester
 **/coverage.xml
+testResults.xml
 
 Debug/*
 Bin/*
