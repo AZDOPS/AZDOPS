@@ -35,22 +35,7 @@ Describe 'New-ADOPSRepository' {
     Context 'Running command' {
         BeforeAll {
             InModuleScope -ModuleName ADOPS {
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = $Organization
-                    }
-                } -ParameterFilter { $Organization }
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = 'DummyOrg'
-                    }
-                }
+                Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
                 
                 Mock -CommandName InvokeADOPSRestMethod  -ModuleName ADOPS -MockWith {
                     return $InvokeSplat
@@ -72,13 +57,13 @@ Describe 'New-ADOPSRepository' {
             }
         }
 
-        It 'If organization is given, in should call GetADOPSHeader with organization name' {
+        It 'If organization is not given, it should call GetADOPSDefaultOrganization with organization name' {
             $r = New-ADOPSRepository -Organization 'DummyOrg' -Project 'DummyProj' -Name 'RepoName'
-            Should -Invoke -CommandName GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization }
+            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
-        It 'If organization is not given, in should call GetADOPSHeader with no parameters' {
+        It 'If organization is given, it should call GetADOPSDefaultOrganization with no parameters' {
             $r = New-ADOPSRepository -Project 'DummyProj' -Name 'RepoName'
-            Should -Invoke -CommandName GetADOPSHeader -ModuleName ADOPS
+            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
         
         It 'Invoke should be correct, Verifying method "Post"' {
