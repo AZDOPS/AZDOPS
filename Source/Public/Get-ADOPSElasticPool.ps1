@@ -20,7 +20,7 @@ function Get-ADOPSElasticPool {
     }
     
     $Method = 'GET'
-    $ElasticPoolInfo = InvokeADOPSRestMethod -Uri $Uri -Method $Method -Organization $Organization -Body $Body
+    $ElasticPoolInfo = InvokeADOPSRestMethod -Uri $Uri -Method $Method -Body $Body
     if ($ElasticPoolInfo.psobject.properties.name -contains 'value') {
         Write-Output $ElasticPoolInfo.value
     } else {
