@@ -20,7 +20,7 @@ function InvokeADOPSRestMethod {
         [string]$OutFile
     )
         
-    $Token = NewAzToken
+    $Token = (NewAzToken).Token
 
     $InvokeSplat = @{
         'Uri' = $Uri

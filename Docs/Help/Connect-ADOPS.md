@@ -13,15 +13,24 @@ Establish a connection to Azure DevOps using a PAT.
 
 ## SYNTAX
 
-### PAT (Default)
+### Interactive (Default)
 ```
-Connect-ADOPS -Username <String> -PersonalAccessToken <String> -Organization <String> [-Default]
- [<CommonParameters>]
+Connect-ADOPS -Organization <String> [-TenantId <String>] [-Interactive] [<CommonParameters>]
 ```
 
-### PSCredential
+### OAuthToken
 ```
-Connect-ADOPS -Credential <PSCredential> -Organization <String> [-Default] [<CommonParameters>]
+Connect-ADOPS -Organization <String> -OAuthToken <String> [<CommonParameters>]
+```
+
+### Token
+```
+Connect-ADOPS -Organization <String> [-TenantId <String>] [<CommonParameters>]
+```
+
+### ManagedIdentity
+```
+Connect-ADOPS -Organization <String> [-TenantId <String>] [-ManagedIdentity] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -57,40 +66,9 @@ Connect to Azure DevOps organization using a credential object.
 Connect-ADOPS -Username 'john.doe@ADOPS.com' -PersonalAccessToken '<myPersonalAccessToken>' -Organization 'ADOPS' -Default
 ```
 
-Connect to Azure DevOps organization using a personal access token and setting it as default organization.
+Connect to an Azure DevOps organization and set it as default.
 
 ## PARAMETERS
-
-### -Credential
-Username and PAT in a PSCredential object.
-
-```yaml
-Type: PSCredential
-Parameter Sets: PSCredential
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Default
-
-Specifies if the connection should be the default connection or not.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -Organization
 
@@ -108,13 +86,29 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PersonalAccessToken
+### -Interactive
 
-Specifies the Personal Access Token to use for the connection.
+Connect to an Azure DevOps organization using an interactive browser login.
 
 ```yaml
-Type: String
-Parameter Sets: PAT
+Type: SwitchParameter
+Parameter Sets: Interactive
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ManagedIdentity
+
+Connect to an Azure DevOps organization using a managed identity.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: ManagedIdentity
 Aliases:
 
 Required: True
@@ -124,16 +118,32 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Username
+### -OAuthToken
 
-Username to use for the connection in the format of UPN.
+Connect to an Azure DevOps organization using an existing access token.
 
 ```yaml
 Type: String
-Parameter Sets: PAT
+Parameter Sets: OAuthToken
 Aliases:
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TenantId
+
+Specify a tenant to connect to, by id.
+
+```yaml
+Type: String
+Parameter Sets: Interactive, Token, ManagedIdentity
+Aliases:
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False

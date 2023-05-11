@@ -8,6 +8,7 @@ schema: 2.0.0
 # Get-ADOPSPipeline
 
 ## SYNOPSIS
+
 Get a specific pipeline or all pipelines in a specific DevOps project.
 
 ## SYNTAX
@@ -17,11 +18,13 @@ Get-ADOPSPipeline [[-Name] <String>] [-Project] <String> [[-Organization] <Strin
 ```
 
 ## DESCRIPTION
+
 Lists a specific Pipeline or all Pipelines in a Specific Project.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
 PS C:\> Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $Name
 ```
@@ -29,6 +32,7 @@ PS C:\> Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Nam
 Get pipeline with name $Name from $Project.
 
 ### Example 2
+
 ```powershell
 PS C:\> Get-ADOPSPipeline -Organization $OrganizationName -Project $Project
 ```
@@ -36,6 +40,7 @@ PS C:\> Get-ADOPSPipeline -Organization $OrganizationName -Project $Project
 List all Pipelines in $Project
 
 ### Example 3
+
 ```powershell
 PS C:\> Get-ADOPSPipeline -Project $Project
 ```
@@ -45,6 +50,7 @@ List all Pipelines in $Project and uses Default Organization.
 ## PARAMETERS
 
 ### -Name
+
 Name of the pipeline.
 
 ```yaml
@@ -60,6 +66,7 @@ Accept wildcard characters: False
 ```
 
 ### -Organization
+
 The organization to get pipeline/s from.
 
 ```yaml
@@ -75,6 +82,7 @@ Accept wildcard characters: False
 ```
 
 ### -Project
+
 The project to get pilepine/s from.
 
 ```yaml
@@ -90,6 +98,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
@@ -99,6 +108,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS

@@ -49,7 +49,13 @@ Describe 'InvokeADOPSRestMethod' {
 
     Context 'Building webrequest call' {
         BeforeAll {
-            Mock -CommandName NewAzToken -ModuleName ADOPS -MockWith { 'eyJ0eXAiOiLoremIpsum' }
+            Mock -CommandName NewAzToken -ModuleName ADOPS -MockWith {
+                @{
+                    'Token' = 'eyJ0eXAiOiLoremIpsum'
+                    'Identity' = 'DummyUser'
+                    'TenantId' = 'DummyTenant' 
+                }
+            }
             Mock -CommandName Invoke-RestMethod -MockWith { Return $InvokeSplat } -ModuleName ADOPS
         }
 

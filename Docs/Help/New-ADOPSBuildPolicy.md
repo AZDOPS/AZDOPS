@@ -42,7 +42,6 @@ PS C:\> New-ADOPSBuildPolicy -Project $ADOPSProject -RepositoryId $RepoId -Branc
 
 This command will create a policy named `MyVerificationPolicy` running the `MyPipeline` pipeline on the repository `MyRepo` in the `MyProject` project, that triggers on branch `main`.
 
-
 ## PARAMETERS
 
 ### -Branch

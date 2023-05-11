@@ -8,6 +8,7 @@ schema: 2.0.0
 # Get-ADOPSServiceConnection
 
 ## SYNOPSIS
+
 Get a specific ServiceConnection or all ServiceConnections in a DevOps project.
 
 ## SYNTAX
@@ -18,11 +19,13 @@ Get-ADOPSServiceConnection [[-Name] <String>] [-Project] <String> [[-Organizatio
 ```
 
 ## DESCRIPTION
+
 Lists a specific ServiceConnection or all ServiceConnections in a Project.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
 PS C:\> Get-ADOPSServiceConnection -Organization $OrganizationName -Project $Project -Name $Name
 ```
@@ -30,6 +33,7 @@ PS C:\> Get-ADOPSServiceConnection -Organization $OrganizationName -Project $Pro
 Get ServiceConnection with name $Name from $Project.
 
 ### Example 2
+
 ```powershell
 PS C:\> Get-ADOPSServiceConnection -Organization $OrganizationName -Project $Project
 ```
@@ -37,6 +41,7 @@ PS C:\> Get-ADOPSServiceConnection -Organization $OrganizationName -Project $Pro
 List all ServiceConnection in $Project
 
 ### Example 3
+
 ```powershell
 PS C:\> Get-ADOPSServiceConnection -Project $Project
 ```
@@ -46,7 +51,8 @@ List all ServiceConnection in $Project and uses Default Organization.
 ## PARAMETERS
 
 ### -Name
-{{ Fill Name Description }}
+
+Specify the name of a service connection to get.
 
 ```yaml
 Type: String
@@ -61,6 +67,7 @@ Accept wildcard characters: False
 ```
 
 ### -Organization
+
 The organization to get ServiceConnection/s from.
 
 ```yaml
@@ -76,6 +83,7 @@ Accept wildcard characters: False
 ```
 
 ### -Project
+
 The project to get ServiceConnection/s from.
 
 ```yaml
@@ -91,6 +99,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
@@ -100,6 +109,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS
