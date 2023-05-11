@@ -34,12 +34,9 @@ Describe 'Get-ADOPSPipeline' {
     
     Context 'Getting Pipeline' {
         BeforeAll {
-
             $OrganizationName = 'DummyOrg'
             $Project = 'DummyProject'
             $PipeName = 'DummyPipe1'
-
-            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
 
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return @'
@@ -93,7 +90,9 @@ Describe 'Get-ADOPSPipeline' {
 '@ | ConvertFrom-Json
             } -ParameterFilter { $Method -eq 'Get' -and $Uri -like '*/pipelines/*' }
 
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
         }
+        
         It 'uses InvokeADOPSRestMethod two times' {
             Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName
             Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 2

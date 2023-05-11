@@ -8,6 +8,10 @@ BeforeAll {
 }
 
 Describe "Get-ADOPSGroup" {
+    BeforeAll {
+        Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
+    }
+    
     Context "Parameters" {
         $TestCases = @(
             @{
@@ -27,7 +31,6 @@ Describe "Get-ADOPSGroup" {
         }
     }
 
-    
     Context 'Uri' {
         BeforeAll {
             Mock InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { 
@@ -38,24 +41,6 @@ Describe "Get-ADOPSGroup" {
                     Headers = @{}
                 }
                 
-            }
-
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
-            } -ParameterFilter { $Organization -eq 'Organization' }
-            
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
             }
         }
 
@@ -111,37 +96,17 @@ Describe "Get-ADOPSGroup" {
                     Headers    = @{}
                 }
             }
-
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
-            } -ParameterFilter { $Organization -eq 'Organization' }
-            
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
-            }
         }
 
-        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+        It 'Should get not organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Get-ADOPSGroup -Organization 'Organization'
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'Organization' } -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
         
-        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+        It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Get-ADOPSGroup
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'Organization' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
-        
     }
 
     Context "Function returns all users" {
@@ -250,21 +215,12 @@ Describe "Get-ADOPSGroup" {
                     Headers    = @{}
                 }
             }
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
-            }
         }
 
         It "Returns 3 groups" {
             $result = Get-ADOPSGroup -Organization 'DummyOrg'
             $result | Should -Not -BeNullOrEmpty
             $result | Should -HaveCount 3
-
         }
 
         It 'Calls InvokeADOPSRestMethod with the correct query params' {

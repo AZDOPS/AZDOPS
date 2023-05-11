@@ -21,7 +21,7 @@ function Get-ADOPSGroup {
     
     $Method = 'GET'
 
-    $Response = (InvokeADOPSRestMethod -FullResponse -Uri $Uri -Method $Method -Organization $Organization)
+    $Response = InvokeADOPSRestMethod -FullResponse -Uri $Uri -Method $Method
 
     $Groups = $Response.Content.value
     Write-Verbose "Found $($Response.Content.count) groups"
