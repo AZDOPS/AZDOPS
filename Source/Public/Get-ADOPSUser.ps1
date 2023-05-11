@@ -25,7 +25,7 @@ function Get-ADOPSUser {
         if(-not [string]::IsNullOrEmpty($ContinuationToken)) {
             $Uri += "&continuationToken=$ContinuationToken"
         }
-        $Response = (InvokeADOPSRestMethod -FullResponse -Uri $Uri -Method $Method -Organization $Organization)
+        $Response = (InvokeADOPSRestMethod -FullResponse -Uri $Uri -Method $Method)
         $Users = $Response.Content.value
         Write-Verbose "Found $($Response.Content.count) users"
 
@@ -40,13 +40,13 @@ function Get-ADOPSUser {
     elseif ($PSCmdlet.ParameterSetName -eq 'Name') {
         $Uri = "https://vsaex.dev.azure.com/$Organization/_apis/UserEntitlements?`$filter=name eq '$Name'&`$orderBy=name Ascending&api-version=6.0-preview.3"
         $Method = 'GET'
-        $Users = (InvokeADOPSRestMethod -Uri $Uri -Method $Method -Organization $Organization).members.user
+        $Users = (InvokeADOPSRestMethod -Uri $Uri -Method $Method).members.user
         Write-Output $Users
     }
     elseif ($PSCmdlet.ParameterSetName -eq 'Descriptor') {
         $Uri = "https://vssps.dev.azure.com/$Organization/_apis/graph/users/$Descriptor`?api-version=6.0-preview.1"
         $Method = 'GET'
-        $User = (InvokeADOPSRestMethod -Uri $Uri -Method $Method -Organization $Organization)
+        $User = (InvokeADOPSRestMethod -Uri $Uri -Method $Method)
         Write-Output $User
     }
 }
