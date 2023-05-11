@@ -44,29 +44,26 @@ Can replace an existing connection by specifying the same organization again.
 ### Example 1
 
 ```powershell
-Connect-ADOPS -Username 'john.doe@ADOPS.com' -PersonalAccessToken '<myPersonalAccessToken>' -Organization 'ADOPS'
+Connect-ADOPS -Organization 'ADOPS'
 ```
 
-Connect to Azure DevOps organization using a personal access token.
+Connect to an Azure DevOps organization interactively.
 
 ### Example 2
 
 ```powershell
-$Creds = Get-Credential -Username 'john.doe@ADOPS.com' 
-# Insert PAT as password
-
-Connect-ADOPS -Credential $Creds -Organization 'ADOPS'
+Connect-ADOPS -ManagedIdentity -Organization 'ADOPS' -TenantId $TenantId
 ```
 
-Connect to Azure DevOps organization using a credential object.
+Connect to an Azure DevOps organization using a managed identity, specifying the tenant.
 
 ### Example 3
 
 ```powershell
-Connect-ADOPS -Username 'john.doe@ADOPS.com' -PersonalAccessToken '<myPersonalAccessToken>' -Organization 'ADOPS' -Default
+Connect-ADOPS -OAuthToken $AccessToken -Organization 'ADOPS'
 ```
 
-Connect to an Azure DevOps organization and set it as default.
+Connect to an Azure DevOps organization using an existing access token.
 
 ## PARAMETERS
 

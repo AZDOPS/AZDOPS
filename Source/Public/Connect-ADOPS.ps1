@@ -3,13 +3,12 @@ function Connect-ADOPS {
     param (
         [Parameter(Mandatory, ParameterSetName = 'Interactive')]
         [Parameter(Mandatory, ParameterSetName = 'ManagedIdentity')]
-        [Parameter(Mandatory, ParameterSetName = 'Token')]
         [Parameter(Mandatory, ParameterSetName = 'OAuthToken')]
         [string]$Organization,
         
         [Parameter(ParameterSetName = 'Interactive')]
         [Parameter(ParameterSetName = 'ManagedIdentity')]
-        [Parameter(ParameterSetName = 'Token')]
+        [Parameter(ParameterSetName = 'OAuthToken')]
         [string]$TenantId,
 
         [Parameter(ParameterSetName = 'Interactive')]
