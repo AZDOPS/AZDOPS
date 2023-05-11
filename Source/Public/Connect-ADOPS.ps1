@@ -33,13 +33,12 @@ function Connect-ADOPS {
     }
 
     switch ($PSCmdlet.ParameterSetName) {
-        'Token' {
+        'OAuthToken' {
             $script:LoginMethod = 'OAuthToken'
             $script:ScriptToken = $OAuthToken
             $Token = $OAuthToken
-            $TokenTenantId = 'NotSet'
+            $TokenTenantId = 'NotSpecified'
             $TokenIdentity = $null
-            break
         }
         'ManagedIdentity' {
             $TokenSplat.Add('ManagedIdentity', $true)
@@ -83,6 +82,7 @@ function Connect-ADOPS {
             $TokenIdentity = $Me.id
         }
     }
+    
     $ADOPSConfig = GetADOPSConfigFile
     $ADOPSConfig['Default'] = @{
         'Identity'     = $TokenIdentity
