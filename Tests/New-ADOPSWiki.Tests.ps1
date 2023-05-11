@@ -9,16 +9,8 @@ BeforeAll {
 
 Describe "New-ADOPSWiki" {
     BeforeAll {
-        Mock GetADOPSHeader -ModuleName ADOPS -MockWith {
-            @{
-                Organization = "myorg"
-            }
-        }
-        Mock GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -MockWith {
-            @{
-                Organization = "anotherOrg"
-            }
-        }
+        Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
+
         Mock Get-ADOPSProject -ModuleName ADOPS -MockWith {
             @{
                 id = "de6a3035-0146-4ae2-81c1-68596d187cf4"
@@ -73,15 +65,14 @@ Describe "New-ADOPSWiki" {
     }
 
     Context "Functionality" {
-        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+        It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             New-ADOPSWiki -Organization 'anotherorg' -Project 'myproject' -WikiName 'MyWikiName' -WikiRepository 'MyWikiRepo'
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
-        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+        It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             New-ADOPSWiki -Project 'myproject' -WikiName 'MyWikiName' -WikiRepository 'MyWikiRepo'
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'Should call Get-ADOPSProject once to get Project id' {
