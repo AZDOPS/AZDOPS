@@ -18,7 +18,7 @@ function Remove-ADOPSRepository {
 
     $Uri = "https://dev.azure.com/$Organization/$Project/_apis/git/repositories/$RepositoryID`?api-version=7.1-preview.1"
     
-    $result = InvokeADOPSRestMethod -Uri $Uri -Method Delete -Organization $Organization
+    $result = InvokeADOPSRestMethod -Uri $Uri -Method Delete
 
     if ($result.psobject.properties.name -contains 'value') {
         Write-Output -InputObject $result.value

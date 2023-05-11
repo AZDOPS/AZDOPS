@@ -60,7 +60,6 @@ function New-ADOPSUserStory {
         ContentType  = $ContentType
         Method       = $Method
         Body         = $Body
-        Organization = $Organization
     }
 
     InvokeADOPSRestMethod @InvokeSplat

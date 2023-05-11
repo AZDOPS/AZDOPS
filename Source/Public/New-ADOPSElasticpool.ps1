@@ -43,6 +43,6 @@ function New-ADOPSElasticPool {
     }
     
     $Method = 'POST'
-    $ElasticPoolInfo = InvokeADOPSRestMethod -Uri $Uri -Method $Method -Organization $Organization -Body $Body
+    $ElasticPoolInfo = InvokeADOPSRestMethod -Uri $Uri -Method $Method -Body $Body
     Write-Output $ElasticPoolInfo
 }

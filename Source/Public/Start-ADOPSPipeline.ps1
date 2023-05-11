@@ -19,7 +19,7 @@ function Start-ADOPSPipeline {
     }
 
     $AllPipelinesURI = "https://dev.azure.com/$Organization/$Project/_apis/pipelines?api-version=7.1-preview.1"
-    $AllPipelines = InvokeADOPSRestMethod -Method Get -Uri $AllPipelinesURI -Organization $Organization
+    $AllPipelines = InvokeADOPSRestMethod -Method Get -Uri $AllPipelinesURI
     $PipelineID = ($AllPipelines.value | Where-Object -Property Name -EQ $Name).id
 
     if ([string]::IsNullOrEmpty($PipelineID)) {

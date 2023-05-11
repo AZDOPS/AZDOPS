@@ -61,7 +61,6 @@ function New-ADOPSPipeline {
     $InvokeSplat = @{
         Method       = 'Post'
         Uri          = $URI
-        Organization = $Organization
         Body         = $Body 
     }
 

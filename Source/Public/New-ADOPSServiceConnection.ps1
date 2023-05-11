@@ -104,9 +104,7 @@ function New-ADOPSServiceConnection {
         Uri          = $URI
         Method       = 'POST'
         Body         = $Body
-        Organization = $Organization
     }
 
     InvokeADOPSRestMethod @InvokeSplat
-
 }

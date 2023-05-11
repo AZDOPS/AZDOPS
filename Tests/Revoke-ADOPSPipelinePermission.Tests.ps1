@@ -96,15 +96,14 @@ Describe "Revoke-ADOPSPipelinePermission" {
             Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1
         }
 
-        It "Should get organization from GetADOPSHeader when organization parameter is used" {
+        It "Should not get organization from GetADOPSDefaultOrganization when organization parameter is used" {
             Revoke-ADOPSPipelinePermission -Organization 'anotherorg' -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
-        It "Should validate organization using GetADOPSHeader when organization parameter is not used" {
+        It "Should get organization using GetADOPSDefaultOrganization when organization parameter is not used" {
             Revoke-ADOPSPipelinePermission -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It "Should invoke with PATCH" {

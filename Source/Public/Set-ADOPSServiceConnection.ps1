@@ -120,6 +120,5 @@ function Set-ADOPSServiceConnection {
         }
     
         InvokeADOPSRestMethod @InvokeSplat
-
     }
 }

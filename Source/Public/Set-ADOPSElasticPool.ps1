@@ -31,6 +31,6 @@ function Set-ADOPSElasticPool {
     }
     
     $Method = 'PATCH'
-    $ElasticPoolInfo = InvokeADOPSRestMethod -Uri $Uri -Method $Method -Organization $Organization -Body $Body
+    $ElasticPoolInfo = InvokeADOPSRestMethod -Uri $Uri -Method $Method -Body $Body
     Write-Output $ElasticPoolInfo
 }

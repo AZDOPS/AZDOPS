@@ -27,7 +27,6 @@ function New-ADOPSRepository {
         Uri          = $URI
         Method       = 'Post'
         Body         = $Body
-        Organization = $Organization
     }
     
     InvokeADOPSRestMethod @InvokeSplat

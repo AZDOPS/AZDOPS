@@ -41,7 +41,6 @@ function New-ADOPSProject {
     $InvokeSplat = @{
         Method       = 'Get'
         Uri          = $URI
-        Organization = $Organization
     }
 
     $ProcessTemplates = (InvokeADOPSRestMethod @InvokeSplat).value
@@ -80,7 +79,6 @@ function New-ADOPSProject {
         Method       = 'Post'
         Uri          = $URI
         Body         = $Body
-        Organization = $Organization
     }
 
     $Out = InvokeADOPSRestMethod @InvokeSplat

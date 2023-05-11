@@ -88,5 +88,5 @@ function New-ADOPSVariableGroup {
         } | ConvertTo-Json -Depth 10
     }
 
-    InvokeADOPSRestMethod -Uri $Uri -Method $Method -Body $Body -Organization $Organization
+    InvokeADOPSRestMethod -Uri $Uri -Method $Method -Body $Body
 }
