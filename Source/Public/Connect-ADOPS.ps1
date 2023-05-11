@@ -62,7 +62,7 @@ function Connect-ADOPS {
     $Me = InvokeADOPSRestMethod -Method GET -Uri 'https://app.vssps.visualstudio.com/_apis/profile/profiles/me?api-version=7.1-preview.3'
 
     # Get available orgs
-    $Orgs = Get-ADOPSOrganizationAccess -AccountId $Me.publicAlias
+    $Orgs = GetADOPSOrganizationAccess -AccountId $Me.publicAlias
     
     if ($Organization -notin $Orgs) {
         throw "The connected account does not have access to the organization '$Organization'"

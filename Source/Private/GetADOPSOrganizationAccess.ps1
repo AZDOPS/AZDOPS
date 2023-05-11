@@ -1,4 +1,4 @@
-function Get-ADOPSOrganizationAccess {
+function GetADOPSOrganizationAccess {
     [CmdletBinding()]
     [SkipTest('HasOrganizationParameter')]
     param (
