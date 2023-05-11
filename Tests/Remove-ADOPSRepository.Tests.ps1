@@ -11,16 +11,7 @@ Describe 'Remove-ADOPSRepository' {
     BeforeAll {
         $RepositoryID = '72199bdd-39ff-4bea-a1ce-f0058e82c18c'
 
-        Mock GetADOPSHeader -ModuleName ADOPS -MockWith {
-            @{
-                Organization = "myorg"
-            }
-        }
-        Mock GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -MockWith {
-            @{
-                Organization = "anotherOrg"
-            }
-        }
+        Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
         
         Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
     }
@@ -51,15 +42,14 @@ Describe 'Remove-ADOPSRepository' {
 
     Context "Functionality" {
 
-        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+        It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Remove-ADOPSRepository -Organization 'anotherorg' -Project 'myproj' -RepositoryID $RepositoryID
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
-        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+        It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Remove-ADOPSRepository -Project 'myproj' -RepositoryID $RepositoryID
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'If result has a value member, it should be returned' {
