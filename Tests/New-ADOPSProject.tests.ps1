@@ -54,22 +54,7 @@ Describe 'New-ADOPSProject' {
 
     Context 'Creating project' {
         BeforeAll {
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = $OrganizationName
-                }
-            } -ParameterFilter { $OrganizationName -eq 'Organization' }
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = $OrganizationName
-                }
-            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
 
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return @"
@@ -125,7 +110,6 @@ Describe 'New-ADOPSProject' {
 
             Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 2
         }
-        
         
         It 'should not throw with mandatory parameters' {
             { New-ADOPSProject -Name $Project -Visibility 'Public' } | Should -Not -Throw
