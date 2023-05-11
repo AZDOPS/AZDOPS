@@ -116,7 +116,6 @@ function Set-ADOPSServiceConnection {
             Uri          = $URI
             Method       = "PUT"
             Body         = $Body
-            Organization = $Organization
         }
     
         InvokeADOPSRestMethod @InvokeSplat

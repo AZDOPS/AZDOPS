@@ -1,4 +1,5 @@
 function InvokeADOPSRestMethod {
+    [SkipTest('HasOrganizationParameter')]
     param (
         [Parameter(Mandatory)]
         [URI]$Uri,
