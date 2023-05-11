@@ -23,7 +23,7 @@ function Get-ADOPSRepository {
         $Uri = "https://dev.azure.com/$Organization/$Project/_apis/git/repositories?api-version=7.1-preview.1"
     }
     
-    $result = InvokeADOPSRestMethod -Uri $Uri -Method Get -Organization $Organization
+    $result = InvokeADOPSRestMethod -Uri $Uri -Method Get
 
     if ($result.psobject.properties.name -contains 'value') {
         Write-Output -InputObject $result.value
