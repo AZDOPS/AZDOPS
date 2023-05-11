@@ -60,5 +60,5 @@ function SetADOPSPipelinePermission {
     }
     $Body = $Body | ConvertTo-Json -Depth 10 -Compress
 
-    InvokeADOPSRestMethod -Uri $Uri -Method $Method -Body $Body -Organization $Organization
+    InvokeADOPSRestMethod -Uri $Uri -Method $Method -Body $Body
 }
