@@ -10,9 +10,6 @@ function InvokeADOPSRestMethod {
         [string]$Body,
 
         [Parameter()]
-        [string]$Organization,
-
-        [Parameter()]
         [string]$ContentType = 'application/json',
 
         [Parameter()]
@@ -21,7 +18,7 @@ function InvokeADOPSRestMethod {
         [Parameter()]
         [string]$OutFile
     )
-
+        
     $Token = NewAzToken
 
     $InvokeSplat = @{

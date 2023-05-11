@@ -73,22 +73,7 @@ Describe 'Import-ADOPSRepository' {
     Context 'Running command' {
         BeforeAll {
             InModuleScope -ModuleName ADOPS {
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = $Organization
-                    }
-                } -ParameterFilter { $Organization }
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = 'DummyOrg'
-                    }
-                }
+                Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
                 
                 Mock -CommandName InvokeADOPSRestMethod  -ModuleName ADOPS -MockWith {
                     return $InvokeSplat
@@ -96,13 +81,13 @@ Describe 'Import-ADOPSRepository' {
             }
         }
 
-        It 'If organization is given, in should call GetADOPSHeader with organization name' {
+        It 'If organization is given, it should not call GetADOPSDefaultOrganization' {
             $r = Import-ADOPSRepository -Organization 'Organization' -GitSource 'GitSource' -RepositoryName 'RepoName' -Project 'DummyProj'
-            Should -Invoke -CommandName GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization }
+            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
-        It 'If organization is not given, in should call GetADOPSHeader with no parameters' {
+        It 'If organization is not given, it should call GetADOPSDefaultOrganization' {
             $r = Import-ADOPSRepository -GitSource 'GitSource' -RepositoryName 'RepoName' -Project 'DummyProj'
-            Should -Invoke -CommandName GetADOPSHeader -ModuleName ADOPS
+            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
         
         It 'Invoke should be correct, Verifying method "Post"' {
@@ -117,16 +102,15 @@ Describe 'Import-ADOPSRepository' {
             $r = Import-ADOPSRepository -Organization 'Organization' -GitSource 'GitSource' -RepositoryId 'RepoId' -Project 'DummyProj'
             $r.URI | Should -Be 'https://dev.azure.com/Organization/DummyProj/_apis/git/repositories/RepoId/importRequests?api-version=7.1-preview.1'
         }
+        It 'Invoke should be correct, Verifying URI without Organization' {
+            $r = Import-ADOPSRepository -GitSource 'GitSource' -RepositoryId 'RepoId' -Project 'DummyProj'
+            $r.URI | Should -Be 'https://dev.azure.com/DummyOrg/DummyProj/_apis/git/repositories/RepoId/importRequests?api-version=7.1-preview.1'
+        }
         It 'Invoke should be correct, Verifying body' {
             $res = '{"parameters":{"gitSource":{"url":"https://gituri.git"}}}'
             $r = Import-ADOPSRepository -Organization 'Organization' -GitSource 'https://gituri.git' -RepositoryId 'RepoId' -Project 'DummyProj'
             $r.body | Should -Be $res
         }
-        It 'Invoke should be correct, Verifying Organization' {
-            $r = Import-ADOPSRepository -Organization 'Organization' -GitSource 'GitSource' -RepositoryId 'RepoId' -Project 'DummyProj'
-            $r.Organization | Should -Be 'Organization'
-        }
-
         
         It 'if wait is defined, waits until status is "completed"' {
             InModuleScope -ModuleName ADOPS {
@@ -139,7 +123,7 @@ Describe 'Import-ADOPSRepository' {
                         status = "queued"
                         url = "https://dev.azure.com/DummyOrg/_apis/git/repositories/11111111-1111-1111-1111-111111111111/importRequests/1"
                     }                  
-                } -ParameterFilter { $method -eq 'Post' }
+                } -ParameterFilter { $Method -eq 'Post' }
 
                 Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                     @{

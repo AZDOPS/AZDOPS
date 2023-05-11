@@ -62,7 +62,7 @@ Describe 'Get-ADOPSProject' {
                     ]
                 }
 '@ | ConvertFrom-Json
-            } -ParameterFilter { $method -eq 'GET' }
+            } -ParameterFilter { $Method -eq 'GET' }
 
             $OrganizationName = 'DummyOrg'
             $Project = 'DummyProject'

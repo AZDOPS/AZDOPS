@@ -34,7 +34,6 @@ function Import-ADOPSRepository {
         URI = "https://dev.azure.com/$Organization/$Project/_apis/git/repositories/$RepoIdentifier/importRequests?api-version=7.1-preview.1"
         Method = 'Post'
         Body = "{""parameters"":{""gitSource"":{""url"":""$GitSource""}}}"
-        Organization = $Organization
     }
 
     $repoImport = InvokeADOPSRestMethod @InvokeSplat

@@ -91,7 +91,7 @@ Describe 'Test-ADOPSYamlFile' {
                 $errorRecord.ErrorDetails = $errorDetails
             
                 Throw $errorRecord
-            } -ParameterFilter { $method -eq 'post' -and $Uri -like '*/22/runs?*' }
+            } -ParameterFilter { $Method -eq 'post' -and $Uri -like '*/22/runs?*' }
         }
 
         It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
@@ -138,7 +138,7 @@ Describe 'Test-ADOPSYamlFile' {
                 $errorRecord.ErrorDetails = $errorDetails
             
                 Throw $errorRecord
-            } -ParameterFilter { $method -eq 'post' }
+            } -ParameterFilter { $Method -eq 'post' }
 
             Mock -CommandName Write-Warning -ModuleName ADOPS -MockWith {
                 Write-Output @PesterBoundParameters

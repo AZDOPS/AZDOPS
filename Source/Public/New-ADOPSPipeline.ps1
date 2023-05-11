@@ -66,5 +66,4 @@ function New-ADOPSPipeline {
     }
 
     InvokeADOPSRestMethod @InvokeSplat
-
 }

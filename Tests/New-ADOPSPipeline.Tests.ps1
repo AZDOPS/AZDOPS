@@ -49,30 +49,13 @@ Describe 'New-ADOPSPipeline' {
 
     Context 'Creating Pipeline' {
         BeforeAll {
-
             $OrganizationName = 'DummyOrg'
             $Project = 'DummyProject'
             $PipeName = 'DummyPipe1'
             $YamlPath = 'DummyYamlPath/file.yaml'
             $Repository = 'DummyRepo'
 
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = $OrganizationName
-                }
-            } -ParameterFilter { $OrganizationName -eq $OrganizationName }
-            
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = $OrganizationName
-                }
-            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
             
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
             
@@ -142,7 +125,7 @@ Describe 'New-ADOPSPipeline' {
         It 'Verify body' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $body
-            } -ParameterFilter { $method -eq 'Post' }
+            } -ParameterFilter { $Method -eq 'Post' }
 
             $r = New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath $YamlPath -Repository $Repository
             $r | Should -Be '{"name":"DummyPipe1","folder":"\\","configuration":{"type":"yaml","path":"DummyYamlPath/file.yaml","repository":{"id":"39956c9b-d818-4338-8d99-f5e6004bdb72","type":"azureReposGit"}}}'
@@ -151,7 +134,7 @@ Describe 'New-ADOPSPipeline' {
         It 'Verify uri' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $uri
-            } -ParameterFilter { $method -eq 'Post' }
+            } -ParameterFilter { $Method -eq 'Post' }
 
             $r = New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath $YamlPath -Repository $Repository
             $r | Should -Be 'https://dev.azure.com/DummyOrg/DummyProject/_apis/pipelines?api-version=7.1-preview.1'
