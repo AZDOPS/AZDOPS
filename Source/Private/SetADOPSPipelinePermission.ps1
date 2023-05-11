@@ -28,12 +28,9 @@ function SetADOPSPipelinePermission {
         [string]$Organization
     )
 
+    # If user didn't specify org, get it from saved context
     if ([string]::IsNullOrEmpty($Organization)) {
-        $Org = GetADOPSHeader
-        $Organization = $Org['Organization']
-    }
-    else {
-        $Org = GetADOPSHeader -Organization $Organization
+        $Organization = GetADOPSDefaultOrganization
     }
     
     $URI = "https://dev.azure.com/${Organization}/${Project}/_apis/pipelines/pipelinepermissions/${ResourceType}/${ResourceId}?api-version=7.1-preview.1"
