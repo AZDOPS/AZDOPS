@@ -7,7 +7,13 @@ BeforeAll {
     Import-Module $PSM1 -Force
     
     InModuleScope -ModuleName 'ADOPS' {
-        Remove-Variable ADOPSCredentials -Scope 'Script' -ErrorAction SilentlyContinue
+        Mock -CommandName NewAzToken -ModuleName ADOPS -MockWith { 
+            @{
+                'Token' = 'eyJ0eXAiOiLoremIpsum'
+                'Identity' = 'DummyUser'
+                'TenantId' = 'DummyTenant' 
+            }
+        }
     }
 }
 
@@ -15,42 +21,42 @@ Describe 'Connect-ADOPS' {
     Context 'Parameters' {
         $TestCases = @(
             @{
-                Name = 'Username'
+                Name      = 'Organization'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'PersonalAccessToken'
-                Mandatory = $true
-                Type = 'string'
-            },
-            @{
-                Name = 'Organization'
-                Mandatory = $true
-                Type = 'string'
-            },
-            @{
-                Name = 'Default'
+                Name      = 'TenantId'
                 Mandatory = $false
-                Type = 'switch'
+                Type      = 'string'
             },
             @{
-                Name = 'credential'
+                Name      = 'Interactive'
                 Mandatory = $false
-                Type = 'pscredential'
+                Type      = 'System.Management.Automation.SwitchParameter'
+            },
+            @{
+                Name      = 'ManagedIdentity'
+                Mandatory = $true
+                Type      = 'System.Management.Automation.SwitchParameter'
+            },
+            @{
+                Name      = 'OAuthToken'
+                Mandatory = $true
+                Type      = 'string'
             }
         )
         
-        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+        It 'Should have parameter <_.Name>' -TestCases $TestCases {
             Get-Command Connect-ADOPS | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
-    Context 'Connect-ADOPS' {
-        it 'Should trow if InvokeADOPSRestMethod returns error.' {
-            Mock -CommandName InvokeADOPSRestMethod -MockWith {return throw} -ModuleName ADOPS
+    Context 'Error handling' {
+        It 'Should throw if InvokeADOPSRestMethod returns error.' {
+            Mock -CommandName InvokeADOPSRestMethod -MockWith { throw 'DummyError' } -ModuleName ADOPS
             
-            {Connect-ADOPS -Username 'DummyUser1' -PersonalAccessToken 'MyPatGoesHere' -Organization 'MyOrg'} | Should -Throw
+            { Connect-ADOPS -OAuthToken 'MyTokenGoesHere' -Organization 'MyOrg' } | Should -Throw
         }
     }
 
@@ -59,13 +65,14 @@ Describe 'Connect-ADOPS' {
             InModuleScope -ModuleName 'ADOPS' {
                 Remove-Variable -Name 'ADOPSCredentials' -Scope 'Script'
             }
-            
-            $DummyUser = 'DummyUserName'
-            $DummyPassword = 'DummyPassword'
-            $DummyOrg = 'DummyOrg'
 
             Mock -CommandName InvokeADOPSRestMethod -MockWith {} -ModuleName ADOPS
-            Connect-ADOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg
+            Connect-ADOPS -OAuthToken 'MyTokenGoesHere' -Organization 'MyOrg'
+        }
+
+        It 'Should not call NewAzToken when OAuthToken is provided' {
+            Connect-ADOPS -OAuthToken 'MyTokenGoesHere' -Organization 'MyOrg'
+            Should -Invoke NewAzToken -Times 0 -Exactly
         }
 
         It 'Should create a ADOPSCredentials variable' {
@@ -85,35 +92,35 @@ Describe 'Connect-ADOPS' {
         }
         It 'Should have set one default conenction' {
             InModuleScope -ModuleName 'ADOPS' {
-                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $r = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
                 $r.Count | Should -Be 1 -Because 'If this is the first connection we create we should always set it as default'
             }
         }
 
         It 'Variable should be encrypted (PSCredential)' {
             InModuleScope -ModuleName 'ADOPS' {
-                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $r = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
                 $res = $ADOPSCredentials[$r]
-                $res.Credential| Should -BeOfType [pscredential]
+                $res.Credential | Should -BeOfType [pscredential]
             }
         }
         It 'Username should be set' {
-            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyUser' = $DummyUser} {
-                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyUser' = $DummyUser } {
+                $r = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
                 $res = $ADOPSCredentials[$r]
                 $res.Credential.UserName | Should -Be $DummyUser
             }
         }
         It 'Password should be set' {
-            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyPassword' = $DummyPassword} {
-                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyPassword' = $DummyPassword } {
+                $r = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
                 $res = $ADOPSCredentials[$r]
-                $res.Credential.GetNetworkCredential().Password| Should -Be $DummyPassword
+                $res.Credential.GetNetworkCredential().Password | Should -Be $DummyPassword
             }
         }
         It 'AzDoOrganization should be set as key' {
-            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyOrg' = $DummyOrg} {
-                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyOrg' = $DummyOrg } {
+                $r = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
                 $r | Should -Be $DummyOrg
             }
         }
@@ -134,7 +141,7 @@ Describe 'Connect-ADOPS' {
         
         It 'Should have set one default connection' {
             InModuleScope -ModuleName 'ADOPS' {
-                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $r = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
                 $r.Count | Should -Be 1 -Because 'If this is the first connection we create we should always set it as default'
             }
         }
@@ -156,13 +163,13 @@ Describe 'Connect-ADOPS' {
             }
         }
         It 'Should add this connection to connection list' {
-            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyOrg' = $DummyOrg} {
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyOrg' = $DummyOrg } {
                 $script:ADOPSCredentials.Keys | Should -Contain $DummyOrg
             }
         }
         It 'Should have only have one default connection' {
             InModuleScope -ModuleName 'ADOPS' {
-                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $r = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
                 $r.Count | Should -Be 1
             }
         }
@@ -184,20 +191,20 @@ Describe 'Connect-ADOPS' {
             }
         }
         It 'Should add this connection to connection list' {
-            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyOrg' = $DummyOrg} {
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyOrg' = $DummyOrg } {
                 $script:ADOPSCredentials.Keys | Should -Contain $DummyOrg
             
             }
         }
         It 'Should have only have one default connection' {
             InModuleScope -ModuleName 'ADOPS' {
-                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $r = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
                 $r.Count | Should -Be 1
             }
         }
         It "Username of default connection should be set to $DummyUser" {
-            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyUser' = $DummyUser} {
-                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyUser' = $DummyUser } {
+                $r = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
                 $res = $ADOPSCredentials[$r]
                 $res.Credential.UserName | Should -Be $DummyUser
             }
@@ -239,35 +246,35 @@ Describe 'Adding connection using PSCredential' {
         }
         It 'Should have set one default connection' {
             InModuleScope -ModuleName 'ADOPS' {
-                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $r = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
                 $r.Count | Should -Be 1 -Because 'If this is the first connection we create we should always set it as default'
             }
         }
 
         It 'Variable should be encrypted (PSCredential)' {
             InModuleScope -ModuleName 'ADOPS' {
-                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+                $r = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
                 $res = $ADOPSCredentials[$r]
-                $res.Credential| Should -BeOfType [pscredential]
+                $res.Credential | Should -BeOfType [pscredential]
             }
         }
         It 'Username should be set' {
-            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyUser' = $DummyUser} {
-                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyUser' = $DummyUser } {
+                $r = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
                 $res = $ADOPSCredentials[$r]
                 $res.Credential.UserName | Should -Be $DummyUser
             }
         }
         It 'Password should be set' {
-            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyPassword' = $DummyPassword} {
-                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyPassword' = $DummyPassword } {
+                $r = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
                 $res = $ADOPSCredentials[$r]
-                $res.Credential.GetNetworkCredential().Password| Should -Be $DummyPassword
+                $res.Credential.GetNetworkCredential().Password | Should -Be $DummyPassword
             }
         }
         It 'AzDoOrganization should be set as key' {
-            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyOrg' = $DummyOrg} {
-                $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
+            InModuleScope -ModuleName 'ADOPS' -Parameters @{'DummyOrg' = $DummyOrg } {
+                $r = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
                 $r | Should -Be $DummyOrg
             }
         }
@@ -279,13 +286,13 @@ Describe 'Adding connection using PSCredential' {
 
 Describe 'Bugfixes' {
     Context '#47 - External variables' {
-        it 'If a console variable is set it should not throw error' {
+        It 'If a console variable is set it should not throw error' {
             # One of the variable checks lacked the script: prefix
             # If you had the same variable name set in console it errored out with "Cannot index into a null array."
             Mock -CommandName InvokeADOPSRestMethod -MockWith {} -ModuleName ADOPS
             $global:ADOPSCredentials = @{ MyOrg = 'Variable' }  
             
-            {Connect-ADOPS -Username 'DummyUser1' -PersonalAccessToken 'MyPatGoesHere' -Organization 'MyOrg'} | Should -Not -Throw
+            { Connect-ADOPS -Username 'DummyUser1' -PersonalAccessToken 'MyPatGoesHere' -Organization 'MyOrg' } | Should -Not -Throw
         }
         AfterAll {  
             Remove-Variable -Name ADOPSCredentials -Scope Global
