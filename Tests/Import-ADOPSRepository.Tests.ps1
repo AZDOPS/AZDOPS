@@ -30,11 +30,6 @@ Describe 'Import-ADOPSRepository' {
                 Type = 'string'
             },
             @{
-                Name = 'Organization'
-                Mandatory = $false
-                Type = 'string'
-            },
-            @{
                 Name = 'Project'
                 Mandatory = $true
                 Type = 'string'

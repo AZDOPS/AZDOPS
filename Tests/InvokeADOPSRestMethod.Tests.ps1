@@ -26,11 +26,6 @@ Describe 'InvokeADOPSRestMethod' {
                 Type      = 'uri'
             },
             @{
-                Name      = 'Organization'
-                Mandatory = $false
-                Type      = 'string'
-            },
-            @{
                 Name      = 'ContentType'
                 Mandatory = $false
                 Type      = 'string'
@@ -54,24 +49,8 @@ Describe 'InvokeADOPSRestMethod' {
 
     Context 'Building webrequest call' {
         BeforeAll {
-            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
-
             Mock -CommandName NewAzToken -ModuleName ADOPS -MockWith { 'eyJ0eXAiOiLoremIpsum' }
             Mock -CommandName Invoke-RestMethod -MockWith { Return $InvokeSplat } -ModuleName ADOPS
-        }
-
-        It 'Should call GetADOPSDefaultOrganization' {
-            InModuleScope -ModuleName ADOPS {
-                $PostObject = @{
-                    Uri    = 'https://dev.microsoft.com/dummyorg/dummy/api/path?Querysting=stuff'
-                    Method = 'Get'
-                    Body   = @{Dummy = 'value' } | ConvertTo-Json
-                }
-
-                $null = InvokeADOPSRestMethod @PostObject
-                Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Exactly 1
-                Should -Invoke Invoke-RestMethod -ModuleName ADOPS -Exactly 1
-            }
         }
 
         It 'Verify URI is set' {
@@ -163,21 +142,6 @@ Describe 'InvokeADOPSRestMethod' {
             }
         }
 
-        Context 'Parameters includes -Organization' {
-            It 'If organization is given, it should not call GetADOPSDefaultOrganization' {
-                InModuleScope -ModuleName ADOPS {
-                    $PostObject = @{
-                        Uri    = 'https://dev.microsoft.com/dummyorg/dummy/api/path?Querysting=stuff'
-                        Method = 'Get'
-                        Body   = @{Dummy = 'value' } | ConvertTo-Json
-                    }
-
-                    Mock -CommandName Invoke-RestMethod -MockWith { Return $CallHeaders } -ModuleName ADOPS
-                    Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Exactly 0
-                }
-            }
-        }
-
         Context 'Calling API' {
             It 'If we get a sign in window that should be treated as a failure' {
                 InModuleScope -ModuleName ADOPS {
@@ -199,7 +163,6 @@ Describe 'InvokeADOPSRestMethod' {
 
                     { InvokeADOPSRestMethod @PostObject } | Should -Throw
                     Should -Invoke Invoke-RestMethod -ModuleName ADOPS -Exactly 1
-                    Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Exactly 1
                 }
             }
         }

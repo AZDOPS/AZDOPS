@@ -55,7 +55,7 @@ Describe "Grant-ADOPSPipelinePermission" {
 
     Context "Granting access to a pipeline" {
         BeforeAll {
-            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
             
             Mock Get-ADOPSProject -ModuleName ADOPS {
                 @{

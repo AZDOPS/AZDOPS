@@ -83,9 +83,5 @@ Describe 'Start-ADOPSPipeline' {
             $r = Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject' -Branch 'branch'
             $r.Body | Should -BeLike '*branch*'
         }
-        It 'Organization should be of type string' {
-            $r = Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject' -Branch 'branch'
-            $r.Organization | Should -BeOfType [string]
-        }
     }
 }
