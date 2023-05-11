@@ -74,14 +74,14 @@ Describe 'New-ADOPSRepository' {
             $r = New-ADOPSRepository -Organization 'DummyOrg' -Project 'DummyProj' -Name 'RepoName'
             $r.URI | Should -Be 'https://dev.azure.com/DummyOrg/_apis/git/repositories?api-version=7.1-preview.1'
         }
+        It 'Invoke should be correct, Verifying URL for Organization' {
+            $r = New-ADOPSRepository -Organization 'AnotherOrg' -Project 'DummyProj' -Name 'RepoName'
+            $r.URI | Should -Be 'https://dev.azure.com/AnotherOrg/_apis/git/repositories?api-version=7.1-preview.1'
+        }
         It 'Invoke should be correct, Verifying body' {
             $res = '{"name":"MyRepoName","project":{"id":"34f7babc-b656-4d13-bf24-bba1782d88fe"}}'
             $r = New-ADOPSRepository -Project 'DummyProject' -Name 'MyRepoName'
             $r.body | Should -Be $res
-        }
-        It 'Invoke should be correct, Verifying Organization' {
-            $r = New-ADOPSRepository -Organization 'DummyOrg' -Project 'DummyProj' -Name 'RepoName'
-            $r.Organization | Should -Be 'DummyOrg'
         }
     }
 }

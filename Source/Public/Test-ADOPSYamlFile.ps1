@@ -37,7 +37,6 @@ function Test-ADOPSYamlFile {
         Uri          = $URI
         Method       = 'Post'
         Body         = $Body
-        Organization = $Organization
     }
     
     try {

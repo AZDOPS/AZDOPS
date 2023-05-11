@@ -33,7 +33,6 @@ function Start-ADOPSPipeline {
         Method       = 'Post' 
         Uri          = $URI 
         Body         = $Body
-        Organization = $Organization
     }
 
     InvokeADOPSRestMethod @InvokeSplat
