@@ -17,10 +17,15 @@ function InvokeADOPSRestMethod {
         [switch]$FullResponse,
 
         [Parameter()]
-        [string]$OutFile
+        [string]$OutFile,
+
+        [Parameter()]
+        [string]$Token
     )
-        
-    $Token = (NewAzToken).Token
+    
+    if (-not $PSBoundParameters.ContainsKey('Token')) {
+        $Token = (NewAzToken).Token
+    }
 
     $InvokeSplat = @{
         'Uri' = $Uri
