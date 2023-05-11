@@ -57,11 +57,11 @@ Describe 'New-ADOPSRepository' {
             }
         }
 
-        It 'If organization is not given, it should call GetADOPSDefaultOrganization with organization name' {
+        It 'If organization is not given, it should not call GetADOPSDefaultOrganization' {
             $r = New-ADOPSRepository -Organization 'DummyOrg' -Project 'DummyProj' -Name 'RepoName'
             Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
-        It 'If organization is given, it should call GetADOPSDefaultOrganization with no parameters' {
+        It 'If organization is given, it should call GetADOPSDefaultOrganization' {
             $r = New-ADOPSRepository -Project 'DummyProj' -Name 'RepoName'
             Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
