@@ -9,17 +9,6 @@ BeforeAll {
 
 Describe 'Invoke-ADOPSRestMethod' {
     BeforeAll {
-        Mock GetADOPSHeader -ModuleName ADOPS -MockWith {
-            @{
-                Organization = "myorg"
-            }
-        }
-        Mock GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -MockWith {
-            @{
-                Organization = "anotherOrg"
-            }
-        }
-
         Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
     }
 
