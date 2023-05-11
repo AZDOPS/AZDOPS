@@ -27,7 +27,7 @@ function Get-ADOPSPool {
     }
     
     $Method = 'GET'
-    $PoolInfo = InvokeADOPSRestMethod -Uri $Uri -Method $Method -Organization $Organization
+    $PoolInfo = InvokeADOPSRestMethod -Uri $Uri -Method $Method
 
     if ($PoolInfo.psobject.properties.name -contains 'value') {
         $PoolInfo = $PoolInfo.value
