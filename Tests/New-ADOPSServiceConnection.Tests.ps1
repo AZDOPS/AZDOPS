@@ -60,16 +60,7 @@ Describe 'New-ADOPSServiceConnection' {
     
     Context "Functionality" {
         BeforeAll {
-            Mock GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Organization = "myorg"
-                }
-            }
-            Mock GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -MockWith {
-                @{
-                    Organization = "anotherOrg"
-                }
-            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
             
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
 
@@ -90,15 +81,14 @@ Describe 'New-ADOPSServiceConnection' {
             }
         }
 
-        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+        It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             New-ADOPSServiceConnection -Organization 'anotherorg' @Splat
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
-        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+        It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             New-ADOPSServiceConnection @Splat
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'Verifying URI is correct' {
