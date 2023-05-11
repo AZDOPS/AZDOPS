@@ -57,16 +57,7 @@ Describe "Set-ADOPSElasticPool" {
                 }
             }
             
-            Mock GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Organization = "myorg"
-                }
-            }
-            Mock GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'DummyOrg' } -MockWith {
-                @{
-                    Organization = "DummyOrg"
-                }
-            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
 
             $ElasticPoolObject = '{
                 "serviceEndpointId": "44868479-e856-42bf-9a2b-74bb500d8e36",
@@ -87,15 +78,14 @@ Describe "Set-ADOPSElasticPool" {
 
         }
 
-        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+        It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg'
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'DummyOrg' } -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -ParameterFilter { $Organization -eq 'DummyOrg' } -Times 0 -Exactly
         }
 
-        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+        It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'DummyOrg' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It "Returns updated elastic pool" {
