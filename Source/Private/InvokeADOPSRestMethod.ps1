@@ -10,9 +10,6 @@ function InvokeADOPSRestMethod {
         [string]$Body,
 
         [Parameter()]
-        [string]$Organization,
-
-        [Parameter()]
         [string]$ContentType = 'application/json',
 
         [Parameter()]
@@ -21,12 +18,7 @@ function InvokeADOPSRestMethod {
         [Parameter()]
         [string]$OutFile
     )
-
-    # If user didn't specify org, get it from saved context
-    if ([string]::IsNullOrEmpty($Organization)) {
-        $Organization = GetADOPSDefaultOrganization
-    }
-    
+        
     $Token = NewAzToken
 
     $InvokeSplat = @{
