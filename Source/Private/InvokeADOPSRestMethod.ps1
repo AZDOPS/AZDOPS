@@ -22,6 +22,11 @@ function InvokeADOPSRestMethod {
         [string]$OutFile
     )
 
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
+    }
+    
     $Token = NewAzToken
 
     $InvokeSplat = @{
