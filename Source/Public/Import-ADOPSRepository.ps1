@@ -1,5 +1,5 @@
 function Import-ADOPSRepository {
-    [CmdLetBinding(DefaultParameterSetName='RepositoryName')]
+    [CmdLetBinding(DefaultParameterSetName = 'RepositoryName')]
     param (
         [Parameter(Mandatory)]
         [string]$GitSource,
@@ -26,14 +26,14 @@ function Import-ADOPSRepository {
     }
 
     switch ($PSCmdlet.ParameterSetName) {
-        'RepositoryName' { $RepoIdentifier = $RepositoryName}
-        'RepositoryId'   { $RepoIdentifier = $RepositoryId}
+        'RepositoryName' { $RepoIdentifier = $RepositoryName }
+        'RepositoryId' { $RepoIdentifier = $RepositoryId }
         Default {}
     }
     $InvokeSplat = @{
-        URI = "https://dev.azure.com/$Organization/$Project/_apis/git/repositories/$RepoIdentifier/importRequests?api-version=7.1-preview.1"
+        URI    = "https://dev.azure.com/$Organization/$Project/_apis/git/repositories/$RepoIdentifier/importRequests?api-version=7.1-preview.1"
         Method = 'Post'
-        Body = "{""parameters"":{""gitSource"":{""url"":""$GitSource""}}}"
+        Body   = "{""parameters"":{""gitSource"":{""url"":""$GitSource""}}}"
     }
 
     $repoImport = InvokeADOPSRestMethod @InvokeSplat

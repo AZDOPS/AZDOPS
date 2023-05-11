@@ -26,7 +26,7 @@ function Get-ADOPSWiki {
 
     $Method = 'Get'
 
-    $res = InvokeADOPSRestMethod -Uri $URI -Method $Method -Organization $Organization
+    $res = InvokeADOPSRestMethod -Uri $URI -Method $Method
     
     if ($res.psobject.properties.name -contains 'value') {
         Write-Output -InputObject $res.value
