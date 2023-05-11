@@ -24,7 +24,6 @@ function Get-ADOPSPipeline {
     $InvokeSplat = @{
         Method       = 'Get'
         Uri          = $URI
-        Organization = $Organization
     }
 
     $AllPipelines = (InvokeADOPSRestMethod @InvokeSplat).value
@@ -45,7 +44,6 @@ function Get-ADOPSPipeline {
         $InvokeSplat = @{
             Method       = 'Get'
             Uri          = $Pipeline.url
-            Organization = $Organization
         }
     
         $result = InvokeADOPSRestMethod @InvokeSplat
