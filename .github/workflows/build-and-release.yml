@@ -15,7 +15,7 @@ jobs:
     - name: Import required modules
       run: |
         Set-PSRepository PSGallery -InstallationPolicy Trusted
-        Install-Module -Name Pester, InvokeBuild, PlatyPS, PSScriptAnalyzer -Force
+        Install-Module -Name Pester, InvokeBuild, PlatyPS, PSScriptAnalyzer, AzAuth -Force
       shell: pwsh
 
     - name: Get version number and run build
