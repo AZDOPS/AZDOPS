@@ -132,7 +132,7 @@ Describe 'Connect-ADOPS' {
             Connect-ADOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg
         }
         
-        It 'Should have set one default conenction' {
+        It 'Should have set one default connection' {
             InModuleScope -ModuleName 'ADOPS' {
                 $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
                 $r.Count | Should -Be 1 -Because 'If this is the first connection we create we should always set it as default'
@@ -150,7 +150,7 @@ Describe 'Connect-ADOPS' {
             Connect-ADOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg
         }
 
-        It 'Variable should contain two conenctions' {
+        It 'Variable should contain two connections' {
             InModuleScope -ModuleName 'ADOPS' {
                 $script:ADOPSCredentials.Keys.Count | Should -Be 2
             }
@@ -160,7 +160,7 @@ Describe 'Connect-ADOPS' {
                 $script:ADOPSCredentials.Keys | Should -Contain $DummyOrg
             }
         }
-        It 'Should have only have one default conenction' {
+        It 'Should have only have one default connection' {
             InModuleScope -ModuleName 'ADOPS' {
                 $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
                 $r.Count | Should -Be 1
@@ -178,7 +178,7 @@ Describe 'Connect-ADOPS' {
             Connect-ADOPS -Username $DummyUser -PersonalAccessToken $DummyPassword -Organization $DummyOrg -Default
         }
 
-        It 'Variable should contain three conenctions' {
+        It 'Variable should contain three connections' {
             InModuleScope -ModuleName 'ADOPS' {
                 $script:ADOPSCredentials.Keys.Count | Should -Be 3
             }
@@ -189,7 +189,7 @@ Describe 'Connect-ADOPS' {
             
             }
         }
-        It 'Should have only have one default conenction' {
+        It 'Should have only have one default connection' {
             InModuleScope -ModuleName 'ADOPS' {
                 $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
                 $r.Count | Should -Be 1
@@ -232,12 +232,12 @@ Describe 'Adding connection using PSCredential' {
                 $script:ADOPSCredentials.GetType().Name | Should -Be 'hashtable'
             }
         }
-        It 'Variable should contain one conenction' {
+        It 'Variable should contain one connection' {
             InModuleScope -ModuleName 'ADOPS' {
                 $script:ADOPSCredentials.Keys.Count | Should -Be 1
             }
         }
-        It 'Should have set one default conenction' {
+        It 'Should have set one default connection' {
             InModuleScope -ModuleName 'ADOPS' {
                 $r = $script:ADOPSCredentials.Keys | Where-Object {$ADOPSCredentials[$_].Default -eq $true}
                 $r.Count | Should -Be 1 -Because 'If this is the first connection we create we should always set it as default'
