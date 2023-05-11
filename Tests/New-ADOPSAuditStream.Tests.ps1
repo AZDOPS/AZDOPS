@@ -55,22 +55,7 @@ Describe 'New-ADOPSAuditStream' {
     Context 'functionality' {
         BeforeAll {
             InModuleScope -ModuleName ADOPS {
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = $OrganizationName
-                    }
-                } -ParameterFilter { $OrganizationName -eq 'Organization' }
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = $OrganizationName
-                    }
-                }
+                Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
     
                 Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                     return $InvokeSplat
@@ -78,15 +63,14 @@ Describe 'New-ADOPSAuditStream' {
             }
         }
         
-        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+        It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             New-ADOPSAuditStream -Organization 'anotherorg' -WorkspaceId "11111111-1111-1111-1111-111111111111" -SharedKey "123456"
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
-        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+        It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             New-ADOPSAuditStream -WorkspaceId "11111111-1111-1111-1111-111111111111" -SharedKey "123456"
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'Should have three parameterSets' {
