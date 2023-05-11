@@ -29,7 +29,6 @@ function Get-ADOPSUsageData {
     $InvokeSplat = @{
         Method       = $Method
         Uri          = $URI
-        Organization = $Organization
     }
 
     InvokeADOPSRestMethod @InvokeSplat
