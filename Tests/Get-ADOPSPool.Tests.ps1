@@ -7,37 +7,37 @@ BeforeAll {
     Import-Module $PSM1 -Force
 }
 
-Describe "Get-ADOPSPool" {
-    Context "Parameters" {
+Describe 'Get-ADOPSPool' {
+    Context 'Parameters' {
         $TestCases = @(
             @{
-                Name = 'Organization'
+                Name      = 'Organization'
                 Mandatory = $false
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'PoolId'
+                Name      = 'PoolId'
                 Mandatory = $true
-                Type = 'int32'
+                Type      = 'int32'
             },
             @{
-                Name = 'PoolName'
+                Name      = 'PoolName'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'IncludeLegacy'
+                Name      = 'IncludeLegacy'
                 Mandatory = $false
-                Type = 'switch'
+                Type      = 'switch'
             }
         )
     
-        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+        It 'Should have parameter <_.Name>' -TestCases $TestCases {
             Get-Command Get-ADOPSPool | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
-    Context "Function returns agent pools" {
+    Context 'Function returns agent pools' {
         BeforeAll {
             Mock InvokeADOPSRestMethod -ModuleName ADOPS {
                 [PSCustomObject]@{
@@ -96,7 +96,7 @@ Describe "Get-ADOPSPool" {
             Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
         }
 
-        It "Returns nodes" {
+        It 'Returns nodes' {
             Get-ADOPSPool -Organization 'DummyOrg' -poolId 10 | Should -Not -BeNullOrEmpty
         }
 
