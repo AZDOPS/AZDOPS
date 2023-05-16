@@ -30,7 +30,7 @@ function NewAzToken {
         'ManagedIdentity' {
             Get-AzToken @TokenSplat -ManagedIdentity
         }
-        'Token' {
+        'OAuthToken' {
             return $Script:ScriptToken
         }
         Default {
