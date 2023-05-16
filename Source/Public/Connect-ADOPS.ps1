@@ -34,7 +34,9 @@ function Connect-ADOPS {
     switch ($PSCmdlet.ParameterSetName) {
         'OAuthToken' {
             $script:LoginMethod = 'OAuthToken'
-            $script:ScriptToken = $OAuthToken
+            $script:ScriptToken = @{
+                Token = $OAuthToken
+            }
             $Token = $OAuthToken
             $TokenTenantId = 'NotSpecified'
             $TokenIdentity = $null
