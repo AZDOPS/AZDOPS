@@ -99,7 +99,7 @@ function New-ADOPSServiceConnection {
     } | ConvertTo-Json -Depth 10
 
     # Run function
-    $URI = "https://dev.azure.com/$Organization/$Project/_apis/serviceendpoint/endpoints?api-version=6.0-preview.4"
+    $URI = "https://dev.azure.com/$Organization/$Project/_apis/serviceendpoint/endpoints?api-version=7.1-preview.4"
     $InvokeSplat = @{
         Uri          = $URI
         Method       = 'POST'

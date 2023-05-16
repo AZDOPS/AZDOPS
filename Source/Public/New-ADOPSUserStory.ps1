@@ -26,7 +26,7 @@ function New-ADOPSUserStory {
         $Organization = GetADOPSDefaultOrganization
     }
 
-    $URI = "https://dev.azure.com/$Organization/$ProjectName/_apis/wit/workitems/`$User Story?api-version=5.1"
+    $URI = "https://dev.azure.com/$Organization/$ProjectName/_apis/wit/workitems/`$User Story?api-version=7.1-preview.3"
     $Method = 'POST'
 
     $desc = $Description.Replace('"', "'")

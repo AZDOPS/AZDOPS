@@ -20,7 +20,7 @@ function Get-ADOPSUser {
     }
 
     if ($PSCmdlet.ParameterSetName -eq 'Default') {
-        $Uri = "https://vssps.dev.azure.com/$Organization/_apis/graph/users?api-version=6.0-preview.1"
+        $Uri = "https://vssps.dev.azure.com/$Organization/_apis/graph/users?api-version=7.1-preview.1"
         $Method = 'GET'
         if(-not [string]::IsNullOrEmpty($ContinuationToken)) {
             $Uri += "&continuationToken=$ContinuationToken"
@@ -38,13 +38,13 @@ function Get-ADOPSUser {
         Write-Output $Users
     }
     elseif ($PSCmdlet.ParameterSetName -eq 'Name') {
-        $Uri = "https://vsaex.dev.azure.com/$Organization/_apis/UserEntitlements?`$filter=name eq '$Name'&`$orderBy=name Ascending&api-version=6.0-preview.3"
+        $Uri = "https://vsaex.dev.azure.com/$Organization/_apis/UserEntitlements?`$filter=name eq '$Name'&`$orderBy=name Ascending&api-version=7.1-preview.3"
         $Method = 'GET'
         $Users = (InvokeADOPSRestMethod -Uri $Uri -Method $Method).members.user
         Write-Output $Users
     }
     elseif ($PSCmdlet.ParameterSetName -eq 'Descriptor') {
-        $Uri = "https://vssps.dev.azure.com/$Organization/_apis/graph/users/$Descriptor`?api-version=6.0-preview.1"
+        $Uri = "https://vssps.dev.azure.com/$Organization/_apis/graph/users/$Descriptor`?api-version=7.1-preview.1"
         $Method = 'GET'
         $User = (InvokeADOPSRestMethod -Uri $Uri -Method $Method)
         Write-Output $User
