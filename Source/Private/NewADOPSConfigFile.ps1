@@ -6,5 +6,5 @@ function NewADOPSConfigFile {
 
     @{
         'Default' = @{}
-    } | SetADOPSConfigFile
+    } | SetADOPSConfigFile -ConfigPath $ConfigPath
 }
