@@ -1,4 +1,4 @@
-#Requires -Modules @{ ModuleName="AzAuth"; ModuleVersion="2.2.1" }
+#Requires -Modules @{ ModuleName="AzAuth"; ModuleVersion="2.2.2" }
 
 $script:AzTokenCache = 'adops.cache'
 
