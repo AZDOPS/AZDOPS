@@ -94,7 +94,7 @@ Describe 'New-ADOPSServiceConnection' {
         It 'Verifying URI is correct' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { return $URI}
             $r = New-ADOPSServiceConnection @Splat
-            $r | Should -Be 'https://dev.azure.com/myorg/myproj/_apis/serviceendpoint/endpoints?api-version=6.0-preview.4'
+            $r | Should -Be 'https://dev.azure.com/myorg/myproj/_apis/serviceendpoint/endpoints?api-version=7.1-preview.4'
         }
 
         It 'Verifying body is correct' {

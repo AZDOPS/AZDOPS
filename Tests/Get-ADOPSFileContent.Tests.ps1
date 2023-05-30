@@ -59,7 +59,7 @@ Describe "Get-ADOPSFileContent" {
                 return $Uri
             }
 
-            Get-ADOPSFileContent -Project 'MyProj' -RepositoryId 'abc123' -FilePath 'path/noFile.yaml' | Should -Be 'https://dev.azure.com/DummyOrg/MyProj/_apis/git/repositories/abc123/items?path=%2fpath%2fnoFile.yaml&api-version=7.0'
+            Get-ADOPSFileContent -Project 'MyProj' -RepositoryId 'abc123' -FilePath 'path/noFile.yaml' | Should -Be 'https://dev.azure.com/DummyOrg/MyProj/_apis/git/repositories/abc123/items?path=%2fpath%2fnoFile.yaml&api-version=7.1-preview.1'
         }
 
         it 'Url should be correctly structured' {
@@ -67,7 +67,7 @@ Describe "Get-ADOPSFileContent" {
                 return $Uri
             }
 
-            Get-ADOPSFileContent -Project 'MyProj' -RepositoryId 'abc123' -FilePath '/path/noFile.yaml' | Should -Be 'https://dev.azure.com/DummyOrg/MyProj/_apis/git/repositories/abc123/items?path=%2fpath%2fnoFile.yaml&api-version=7.0'
+            Get-ADOPSFileContent -Project 'MyProj' -RepositoryId 'abc123' -FilePath '/path/noFile.yaml' | Should -Be 'https://dev.azure.com/DummyOrg/MyProj/_apis/git/repositories/abc123/items?path=%2fpath%2fnoFile.yaml&api-version=7.1-preview.1'
         }
     }
 }
