@@ -13,7 +13,8 @@ Gets the usage data of your organization.
 ## SYNTAX
 
 ```
-Get-ADOPSUsageData [[-ProjectVisibility] <String>] [-SelfHosted] [-Organization <String>] [<CommonParameters>]
+Get-ADOPSUsageData [[-ProjectVisibility] <String>] [-SelfHosted] [[-Organization] <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -51,6 +52,22 @@ This command will return usage statistics and data for your public projects (def
 
 ## PARAMETERS
 
+### -Organization
+
+The organization to get usage data from.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ProjectVisibility
 List usage data for private or public projects
 
@@ -73,22 +90,6 @@ If not set, returns usage data for Microsoft hosted agents.
 
 ```yaml
 Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Organization
-
-The organization to get usage data from.
-
-```yaml
-Type: String
 Parameter Sets: (All)
 Aliases:
 

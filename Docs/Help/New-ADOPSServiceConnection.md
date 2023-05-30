@@ -14,16 +14,15 @@ Create an Azure DevOps Service Connection to Azure.
 
 ### ServicePrincipal (Default)
 ```
-New-ADOPSServiceConnection [[-Organization] <String>] [-TenantId] <String> [-SubscriptionName] <String>
- [-SubscriptionId] <String> [-Project] <String> [[-ConnectionName] <String>] [-ServicePrincipal] <PSCredential>
+New-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
+ -SubscriptionId <String> -Project <String> [-ConnectionName <String>] -ServicePrincipal <PSCredential>
  [<CommonParameters>]
 ```
 
 ### ManagedServiceIdentity
 ```
-New-ADOPSServiceConnection [[-Organization] <String>] [-TenantId] <String> [-SubscriptionName] <String>
- [-SubscriptionId] <String> [-Project] <String> [[-ConnectionName] <String>] [-ManagedIdentity]
- [<CommonParameters>]
+New-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
+ -SubscriptionId <String> -Project <String> [-ConnectionName <String>] [-ManagedIdentity] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -57,7 +56,22 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ManagedIdentity
+If a managed identity will be used for the connection.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: ManagedServiceIdentity
+Aliases:
+
+Required: True
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -72,7 +86,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -87,7 +101,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 3
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -102,7 +116,7 @@ Parameter Sets: ServicePrincipal
 Aliases:
 
 Required: True
-Position: 5
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -117,7 +131,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 2
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -132,7 +146,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 1
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -144,21 +158,6 @@ The tenant id connected to your Azure AD and subscriptions.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ManagedIdentity
-If a managed identity will be used for the connection.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: ManagedServiceIdentity
 Aliases:
 
 Required: True
