@@ -5,4 +5,6 @@ function Disconnect-ADOPS {
 
     # Reset context
     NewADOPSConfigFile
+
+    Clear-AzTokenCache -TokenCache $script:AzTokenCache
 }
