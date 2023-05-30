@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Establish a connection to Azure DevOps using a PAT.
+Establish a connection to Azure DevOps.
 
 ## SYNTAX
 
@@ -20,12 +20,7 @@ Connect-ADOPS -Organization <String> [-TenantId <String>] [-Interactive] [<Commo
 
 ### OAuthToken
 ```
-Connect-ADOPS -Organization <String> -OAuthToken <String> [<CommonParameters>]
-```
-
-### Token
-```
-Connect-ADOPS -Organization <String> [-TenantId <String>] [<CommonParameters>]
+Connect-ADOPS -Organization <String> [-TenantId <String>] -OAuthToken <String> [<CommonParameters>]
 ```
 
 ### ManagedIdentity
@@ -35,9 +30,8 @@ Connect-ADOPS -Organization <String> [-TenantId <String>] [-ManagedIdentity] [<C
 
 ## DESCRIPTION
 
-Establish a connection to Azure DevOps using a PAT.
-
-Can replace an existing connection by specifying the same organization again.
+Establish a OAuth connection to one or more Azure DevOps organizations.
+If the logged on user does not have access to the given organization you may need to specify TenantID.
 
 ## EXAMPLES
 
@@ -66,22 +60,6 @@ Connect-ADOPS -OAuthToken $AccessToken -Organization 'ADOPS'
 Connect to an Azure DevOps organization using an existing access token.
 
 ## PARAMETERS
-
-### -Organization
-
-Name of the Azure DevOps organization.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -Interactive
 
@@ -131,13 +109,29 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Organization
+
+Name of the Azure DevOps organization.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -TenantId
 
 Specify a tenant to connect to, by id.
 
 ```yaml
 Type: String
-Parameter Sets: Interactive, Token, ManagedIdentity
+Parameter Sets: (All)
 Aliases:
 
 Required: False
