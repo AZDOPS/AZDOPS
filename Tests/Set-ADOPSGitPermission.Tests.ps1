@@ -60,22 +60,7 @@ Describe 'Set-ADOPSGitPermission' {
     Context "Functionality" {
         BeforeAll {
             InModuleScope -ModuleName ADOPS {
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = $Organization
-                    }
-                } -ParameterFilter { $Organization }
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = 'DummyOrg'
-                    }
-                }
+                Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
                 
                 Mock -CommandName InvokeADOPSRestMethod  -ModuleName ADOPS -MockWith {
                     return $InvokeSplat
@@ -83,7 +68,7 @@ Describe 'Set-ADOPSGitPermission' {
             }
         }
 
-        It 'If organization is given, in should call GetADOPSHeader with organization name' {
+        It 'If organization is given, it should not call GetADOPSDefaultOrganization' {
             $s = @{
                 ProjectId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
                 RepositoryId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
@@ -92,10 +77,10 @@ Describe 'Set-ADOPSGitPermission' {
                 Allow = 'Administer'
             }
             $r = Set-ADOPSGitPermission @s
-            Should -Invoke -CommandName GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization }
+            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0
         }
 
-        It 'If organization is not given, in should call GetADOPSHeader with no parameters' {
+        It 'If organization is not given, it should call GetADOPSDefaultOrganization' {
             $s = @{
                 ProjectId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
                 RepositoryId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
@@ -103,7 +88,7 @@ Describe 'Set-ADOPSGitPermission' {
                 Allow = 'Administer'
             }
             $r = Set-ADOPSGitPermission @s
-            Should -Invoke -CommandName GetADOPSHeader -ModuleName ADOPS
+            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1
         }
 
         It 'If neither allow or deny is set, it should not do anything' {
@@ -115,11 +100,11 @@ Describe 'Set-ADOPSGitPermission' {
             Set-ADOPSGitPermission @s | Should -BeNullOrEmpty
         }
 
-        It 'Should throw if user descriptor is not formated like a descriptor, to short' {
+        It 'Should throw if user descriptor is not formated like a descriptor, too short' {
             {Set-ADOPSGitPermission -Allow Administer -Descriptor 'aad.NotADescriptorLength' -ProjectId 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' -RepositoryId '11111111-1111-1111-1111-111111111111'} | Should -Throw
         }
 
-        It 'Should throw if Group descriptor is not formated like a descriptor, to short' {
+        It 'Should throw if Group descriptor is not formated like a descriptor, too short' {
             {Set-ADOPSGitPermission -Allow Administer -Descriptor 'aadgp.NotADescriptorLength' -ProjectId 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' -RepositoryId '11111111-1111-1111-1111-111111111111'} | Should -Throw
         }
 

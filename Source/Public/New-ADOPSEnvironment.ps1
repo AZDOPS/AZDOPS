@@ -21,15 +21,11 @@ function New-ADOPSEnvironment {
         [Parameter()]
         [switch]$SkipAdmin
     )
-     
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $OrgInfo = GetADOPSHeader -Organization $Organization
-    }
-    else {
-        $OrgInfo = GetADOPSHeader
-        $Organization = $OrgInfo['Organization']
-    }
 
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
+    }
 
     $Uri = "https://dev.azure.com/$organization/$project/_apis/distributedtask/environments?api-version=7.1-preview.1"
 

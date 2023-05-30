@@ -55,16 +55,8 @@ Describe "Revoke-ADOPSPipelinePermission" {
 
     Context "Revoking access to a pipeline" {
         BeforeAll {
-            Mock GetADOPSHeader -ModuleName ADOPS {
-                @{
-                    Organization = "myorg"
-                }
-            }
-            Mock GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' }{
-                @{
-                    Organization = "myorg"
-                }
-            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
+            
             Mock Get-ADOPSProject -ModuleName ADOPS {
                 @{
                     id = "de6a3035-0146-4ae2-81c1-68596d187cf4"
@@ -81,15 +73,37 @@ Describe "Revoke-ADOPSPipelinePermission" {
             }
         }
 
-        It "Should get organization from GetADOPSHeader when organization parameter is used" {
-            Revoke-ADOPSPipelinePermission -Organization 'anotherorg' -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 1 -Exactly
+        It 'If organization is given, it should not call GetADOPSDefaultOrganization' {
+            $s =@{
+                Project = 'MyProj'
+                PipelineId = 1
+                ResourceType ='VariableGroup'
+                ResourceId ='ResId'
+                Organization = 'MyOrg'
+            }
+            $r = Revoke-ADOPSPipelinePermission @s
+            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0
         }
 
-        It "Should validate organization using GetADOPSHeader when organization parameter is not used" {
+        It 'If organization is not given, it should call GetADOPSDefaultOrganization' {
+            $s =@{
+                Project = 'MyProj'
+                PipelineId = 1
+                ResourceType ='VariableGroup'
+                ResourceId ='ResId'
+            }
+            $r = Revoke-ADOPSPipelinePermission @s
+            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1
+        }
+
+        It "Should not get organization from GetADOPSDefaultOrganization when organization parameter is used" {
+            Revoke-ADOPSPipelinePermission -Organization 'anotherorg' -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+        }
+
+        It "Should get organization using GetADOPSDefaultOrganization when organization parameter is not used" {
             Revoke-ADOPSPipelinePermission -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It "Should invoke with PATCH" {

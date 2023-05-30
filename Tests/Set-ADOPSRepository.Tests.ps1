@@ -46,27 +46,11 @@ Describe 'Set-ADOPSRepository' {
             Get-Command Set-ADOPSRepository | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
-
     
     Context "Functionality" {
         BeforeAll {
             InModuleScope -ModuleName ADOPS {
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = $Organization
-                    }
-                } -ParameterFilter { $Organization }
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = 'DummyOrg'
-                    }
-                }
+                Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
                 
                 Mock -CommandName InvokeADOPSRestMethod  -ModuleName ADOPS -MockWith {
                     return $InvokeSplat
@@ -74,13 +58,13 @@ Describe 'Set-ADOPSRepository' {
             }
         }
 
-        It 'If organization is given, in should call GetADOPSHeader with organization name' {
+        It 'If organization is given, should not call GetADOPSDefaultOrganization' {
             $r = Set-ADOPSRepository -NewName 'NewName' -Organization 'DummyOrg' -Project 'DummyProj' -RepositoryId 'd5f24968-f2ab-4048-bd65-58711420f6fa'
-            Should -Invoke -CommandName GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization }
+            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0
         }
-        It 'If organization is not given, in should call GetADOPSHeader with no parameters' {
+        It 'If organization is not given, should call GetADOPSDefaultOrganization' {
             $r = Set-ADOPSRepository -NewName 'NewName' -Project 'DummyProj' -RepositoryId 'd5f24968-f2ab-4048-bd65-58711420f6fa'
-            Should -Invoke -CommandName GetADOPSHeader -ModuleName ADOPS
+            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1
         }
 
         It 'Creates correct URI' {
@@ -97,7 +81,7 @@ Describe 'Set-ADOPSRepository' {
 
         It 'If no changes are input, dont do anything' {
             $actual = Set-ADOPSRepository -Project 'DummyProj' -RepositoryId 'd5f24968-f2ab-4048-bd65-58711420f6fa'
-            Should -Not -Invoke -CommandName GetADOPSHeader -ModuleName ADOPS
+            Should -Not -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS
             Should -Not -Invoke -CommandName InvokeADOPSRestMethod -ModuleName ADOPS
             $actual | Should -BeNullOrEmpty
         }

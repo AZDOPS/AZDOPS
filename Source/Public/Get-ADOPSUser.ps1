@@ -14,21 +14,18 @@ function Get-ADOPSUser {
         [string]$ContinuationToken
     )
 
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $Org = GetADOPSHeader -Organization $Organization
-    }
-    else {
-        $Org = GetADOPSHeader
-        $Organization = $Org['Organization']
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
     }
 
     if ($PSCmdlet.ParameterSetName -eq 'Default') {
-        $Uri = "https://vssps.dev.azure.com/$Organization/_apis/graph/users?api-version=6.0-preview.1"
+        $Uri = "https://vssps.dev.azure.com/$Organization/_apis/graph/users?api-version=7.1-preview.1"
         $Method = 'GET'
         if(-not [string]::IsNullOrEmpty($ContinuationToken)) {
             $Uri += "&continuationToken=$ContinuationToken"
         }
-        $Response = (InvokeADOPSRestMethod -FullResponse -Uri $Uri -Method $Method -Organization $Organization)
+        $Response = (InvokeADOPSRestMethod -FullResponse -Uri $Uri -Method $Method)
         $Users = $Response.Content.value
         Write-Verbose "Found $($Response.Content.count) users"
 
@@ -41,15 +38,15 @@ function Get-ADOPSUser {
         Write-Output $Users
     }
     elseif ($PSCmdlet.ParameterSetName -eq 'Name') {
-        $Uri = "https://vsaex.dev.azure.com/$Organization/_apis/UserEntitlements?`$filter=name eq '$Name'&`$orderBy=name Ascending&api-version=6.0-preview.3"
+        $Uri = "https://vsaex.dev.azure.com/$Organization/_apis/UserEntitlements?`$filter=name eq '$Name'&`$orderBy=name Ascending&api-version=7.1-preview.3"
         $Method = 'GET'
-        $Users = (InvokeADOPSRestMethod -Uri $Uri -Method $Method -Organization $Organization).members.user
+        $Users = (InvokeADOPSRestMethod -Uri $Uri -Method $Method).members.user
         Write-Output $Users
     }
     elseif ($PSCmdlet.ParameterSetName -eq 'Descriptor') {
-        $Uri = "https://vssps.dev.azure.com/$Organization/_apis/graph/users/$Descriptor`?api-version=6.0-preview.1"
+        $Uri = "https://vssps.dev.azure.com/$Organization/_apis/graph/users/$Descriptor`?api-version=7.1-preview.1"
         $Method = 'GET'
-        $User = (InvokeADOPSRestMethod -Uri $Uri -Method $Method -Organization $Organization)
+        $User = (InvokeADOPSRestMethod -Uri $Uri -Method $Method)
         Write-Output $User
     }
 }

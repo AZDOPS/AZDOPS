@@ -35,33 +35,17 @@ Describe 'Get-ADOPSUsageData' {
     Context "Verifying request data" {
         BeforeAll {
             Mock InvokeADOPSRestMethod -ModuleName ADOPS {}
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
-            } -ParameterFilter { $Organization -eq 'Organization' }
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
-            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
         }
 
-        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+        It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Get-ADOPSUsageData -Organization 'Organization'
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'Organization' } -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
         
-        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+        It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Get-ADOPSUsageData
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'Organization' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'Verifying request uri, ProjectVisibility:Private, SelfHosted:true' {

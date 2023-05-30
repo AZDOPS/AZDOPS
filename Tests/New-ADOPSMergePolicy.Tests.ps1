@@ -61,22 +61,7 @@ Describe 'New-ADOPSMergePolicy' {
     Context "Functionality" {
         BeforeAll {
             InModuleScope -ModuleName ADOPS {
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = $Organization
-                    }
-                } -ParameterFilter { $Organization }
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = 'DummyOrg'
-                    }
-                }
+                Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
                 
                 Mock -CommandName InvokeADOPSRestMethod  -ModuleName ADOPS -MockWith {
                     return $InvokeSplat
@@ -84,15 +69,14 @@ Describe 'New-ADOPSMergePolicy' {
             }
         }
 
-        It 'If organization is given, in should call GetADOPSHeader with organization name' {
+        It 'If organization is given, it should not call GetADOPSDefaultOrganization' {
             $r = New-ADOPSMergePolicy -Organization 'DummyOrg' -Project 'DummyProj' -RepositoryId 1 -Branch 'main'
-            Should -Invoke -CommandName GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization }
+            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
-        It 'If organization is not given, in should call GetADOPSHeader with no parameters' {
+        It 'If organization is not given, it should call GetADOPSDefaultOrganization' {
             $r = New-ADOPSMergePolicy -Project 'DummyProj' -RepositoryId 1 -Branch 'main'
-            Should -Invoke -CommandName GetADOPSHeader -ModuleName ADOPS
+            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
-
         
         It 'Creates correct URI' {
             $required = 'https://dev.azure.com/DummyOrg/DummyProj/_apis/policy/configurations?api-version=7.1-preview.1'

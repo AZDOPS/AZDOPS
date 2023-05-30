@@ -8,11 +8,9 @@ function Get-ADOPSElasticPool {
         [string]$Organization
     )
 
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $Org = GetADOPSHeader -Organization $Organization
-    } else {
-        $Org = GetADOPSHeader
-        $Organization = $Org['Organization']
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
     }
 
     if ($PSBoundParameters.ContainsKey('PoolId')) {
@@ -22,7 +20,7 @@ function Get-ADOPSElasticPool {
     }
     
     $Method = 'GET'
-    $ElasticPoolInfo = InvokeADOPSRestMethod -Uri $Uri -Method $Method -Organization $Organization -Body $Body
+    $ElasticPoolInfo = InvokeADOPSRestMethod -Uri $Uri -Method $Method -Body $Body
     if ($ElasticPoolInfo.psobject.properties.name -contains 'value') {
         Write-Output $ElasticPoolInfo.value
     } else {

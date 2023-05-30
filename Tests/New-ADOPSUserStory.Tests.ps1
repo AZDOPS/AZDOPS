@@ -55,26 +55,10 @@ Describe 'New-ADOPSUserStory' {
 Describe 'New-ADOPSUserStory' {
     Context 'Creating new user story' {
         BeforeAll {
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = $OrganizationName
-                }
-            } -ParameterFilter { $OrganizationName -eq 'Organization' }
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
-            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'Organization' }
 
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
         
-
             $TestRunSplat = @{
                 Organization = 'DummyOrg' 
                 ProjectName = 'DummyProj'
@@ -85,24 +69,19 @@ Describe 'New-ADOPSUserStory' {
             }
         }
 
-        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+        It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             New-ADOPSUserStory -Organization 'Organization' -ProjectName 'DummyProj' -Title 'USTitle' -Description 'USDescription' -Tags 'USTags' -Priority 'USPrio'
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'Organization' } -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
-        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+        It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             New-ADOPSUserStory -ProjectName 'DummyProj' -Title 'USTitle' -Description 'USDescription' -Tags 'USTags' -Priority 'USPrio'
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'Organization' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
         
         It 'Should have called mock InvokeADOPSRestMethod' {
             $TesRes = New-ADOPSUserStory @TestRunSplat
             Should -Invoke -CommandName 'InvokeADOPSRestMethod' -Exactly 1 -ModuleName ADOPS
-        }
-        It 'Should have called mock GetADOPSHeader' {
-            $TesRes = New-ADOPSUserStory @TestRunSplat
-            Should -Invoke -CommandName 'GetADOPSHeader' -Exactly 1 -ModuleName ADOPS
         }
         
         It 'Verifying post object, ContentType' {

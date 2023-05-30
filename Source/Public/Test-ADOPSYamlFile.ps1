@@ -6,8 +6,8 @@ function Test-ADOPSYamlFile {
 
         [Parameter(Mandatory)]
         [ValidateScript({
-            $_ -match '.*\.y[aA]{0,1}ml$'
-        }, ErrorMessage = 'Fileextension must be ".yaml" or ".yml"')]
+                $_ -match '.*\.y[aA]{0,1}ml$'
+            }, ErrorMessage = 'Fileextension must be ".yaml" or ".yml"')]
         [string]$File,
 
         [Parameter(Mandatory)]
@@ -17,12 +17,9 @@ function Test-ADOPSYamlFile {
         [string]$Organization
     )
 
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $Org = GetADOPSHeader -Organization $Organization
-    }
-    else {
-        $Org = GetADOPSHeader
-        $Organization = $Org['Organization']
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
     }
 
     $Uri = "https://dev.azure.com/$Organization/$Project/_apis/pipelines/$PipelineId/runs?api-version=7.1-preview.1"
@@ -30,18 +27,17 @@ function Test-ADOPSYamlFile {
     $FileData = Get-Content $File -Raw
 
     $Body = @{
-        previewRun = $true
+        previewRun         = $true
         templateParameters = @{}
-        resources = @{}
-        yamlOverride = $FileData
+        resources          = @{}
+        yamlOverride       = $FileData
     } | ConvertTo-Json -Depth 10 -Compress
     
     $InvokeSplat = @{
-        Uri           = $URI
-        Method        = 'Post'
-        Body          = $Body
-        Organization  = $Organization
-      }
+        Uri          = $URI
+        Method       = 'Post'
+        Body         = $Body
+    }
     
     try {
         $Result = InvokeADOPSRestMethod @InvokeSplat

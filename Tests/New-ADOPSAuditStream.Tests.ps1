@@ -11,43 +11,43 @@ Describe 'New-ADOPSAuditStream' {
     Context 'Parameters' {
         $TestCases = @(
             @{
-                Name = 'Organization'
+                Name      = 'Organization'
                 Mandatory = $false
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'SplunkUrl'
+                Name      = 'SplunkUrl'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'SplunkEventCollectorToken'
+                Name      = 'SplunkEventCollectorToken'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'WorkspaceId'
+                Name      = 'WorkspaceId'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'SharedKey'
+                Name      = 'SharedKey'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'EventGridTopicHostname'
+                Name      = 'EventGridTopicHostname'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'EventGridTopicAccessKey'
+                Name      = 'EventGridTopicAccessKey'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'string'
             }
         )
     
-        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+        It 'Should have parameter <_.Name>' -TestCases $TestCases {
             Get-Command New-ADOPSAuditStream | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
@@ -55,22 +55,7 @@ Describe 'New-ADOPSAuditStream' {
     Context 'functionality' {
         BeforeAll {
             InModuleScope -ModuleName ADOPS {
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = $OrganizationName
-                    }
-                } -ParameterFilter { $OrganizationName -eq 'Organization' }
-                Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                    @{
-                        Header       = @{
-                            'Authorization' = 'Basic Base64=='
-                        }
-                        Organization = $OrganizationName
-                    }
-                }
+                Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
     
                 Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                     return $InvokeSplat
@@ -78,15 +63,14 @@ Describe 'New-ADOPSAuditStream' {
             }
         }
         
-        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
-            New-ADOPSAuditStream -Organization 'anotherorg' -WorkspaceId "11111111-1111-1111-1111-111111111111" -SharedKey "123456"
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 1 -Exactly
+        It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
+            New-ADOPSAuditStream -Organization 'anotherorg' -WorkspaceId '11111111-1111-1111-1111-111111111111' -SharedKey '123456'
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
-        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
-            New-ADOPSAuditStream -WorkspaceId "11111111-1111-1111-1111-111111111111" -SharedKey "123456"
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+        It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
+            New-ADOPSAuditStream -WorkspaceId '11111111-1111-1111-1111-111111111111' -SharedKey '123456'
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'Should have three parameterSets' {
@@ -107,17 +91,17 @@ Describe 'New-ADOPSAuditStream' {
         }
 
         It 'Verifying Uri' {
-            $c = New-ADOPSAuditStream -WorkspaceId "11111111-1111-1111-1111-111111111111" -SharedKey "123456" -Organization 'Organization'
+            $c = New-ADOPSAuditStream -WorkspaceId '11111111-1111-1111-1111-111111111111' -SharedKey '123456' -Organization 'Organization'
             $c.Uri | Should -Be 'https://auditservice.dev.azure.com/Organization/_apis/audit/streams?api-version=7.1-preview.1'
         }
 
         It 'Method should be Post' {
-            $c = New-ADOPSAuditStream -WorkspaceId "11111111-1111-1111-1111-111111111111" -SharedKey "123456" -Organization 'Organization'
+            $c = New-ADOPSAuditStream -WorkspaceId '11111111-1111-1111-1111-111111111111' -SharedKey '123456' -Organization 'Organization'
             $c.Method | Should -Be 'Post'
         }
 
         It 'Verify body, AzureMonitorLogs' {
-            $c = New-ADOPSAuditStream -WorkspaceId "11111111-1111-1111-1111-111111111111" -SharedKey "123456" -Organization 'Organization'
+            $c = New-ADOPSAuditStream -WorkspaceId '11111111-1111-1111-1111-111111111111' -SharedKey '123456' -Organization 'Organization'
             $c.Body | Should -Be '{"consumerType":"AzureMonitorLogs","consumerInputs":{"WorkspaceId":"11111111-1111-1111-1111-111111111111","SharedKey":"123456"}}'
         }
 
@@ -128,31 +112,31 @@ Describe 'New-ADOPSAuditStream' {
 
         It 'Verify body, AzureEventGrid' {
             $Bytes = [System.Text.Encoding]::Unicode.GetBytes('TopicAccessKey')
-            $Base64 =[Convert]::ToBase64String($Bytes)
+            $Base64 = [Convert]::ToBase64String($Bytes)
             $c = New-ADOPSAuditStream -EventGridTopicHostname 'http://eventgridUri' -EventGridTopicAccessKey $Base64 -Organization 'Organization'
-            $c.Body | Should -Be ('{"consumerType":"AzureEventGrid","consumerInputs":{"EventGridTopicHostname":"http://eventgridUri","EventGridTopicAccessKey":"'+$Base64+'"}}')
+            $c.Body | Should -Be ('{"consumerType":"AzureEventGrid","consumerInputs":{"EventGridTopicHostname":"http://eventgridUri","EventGridTopicAccessKey":"' + $Base64 + '"}}')
         }
 
         It 'Should throw if SplunkEventCollectorToken is not a GUID' {
-            {New-ADOPSAuditStream -SplunkUrl 'http://Splunkurl' -SplunkEventCollectorToken 'NotAGuid' -Organization 'Organization'} | Should -Throw
+            { New-ADOPSAuditStream -SplunkUrl 'http://Splunkurl' -SplunkEventCollectorToken 'NotAGuid' -Organization 'Organization' } | Should -Throw
         }
 
         It 'Should throw if WorkspaceId is not a GUID' {
-            {New-ADOPSAuditStream -WorkspaceId "NotAGuid" -SharedKey "123456" -Organization 'Organization'} | Should -Throw
+            { New-ADOPSAuditStream -WorkspaceId 'NotAGuid' -SharedKey '123456' -Organization 'Organization' } | Should -Throw
         }
 
         It 'Should throw if SplunkUrl does not start with http(s)://' {
-            {New-ADOPSAuditStream -SplunkUrl 'notcorrect.com' -SplunkEventCollectorToken '11111111-1111-1111-1111-111111111111' -Organization 'Organization'} | Should -Throw
+            { New-ADOPSAuditStream -SplunkUrl 'notcorrect.com' -SplunkEventCollectorToken '11111111-1111-1111-1111-111111111111' -Organization 'Organization' } | Should -Throw
         }
 
         It 'Should throw if EventGridTopicHostname does not start with http(s)://' {
             $Bytes = [System.Text.Encoding]::Unicode.GetBytes('TopicAccessKey')
-            $Base64 =[Convert]::ToBase64String($Bytes)
-            {New-ADOPSAuditStream -EventGridTopicHostname 'eventgridUri' -EventGridTopicAccessKey $Base64 -Organization 'Organization'} | Should -Throw
+            $Base64 = [Convert]::ToBase64String($Bytes)
+            { New-ADOPSAuditStream -EventGridTopicHostname 'eventgridUri' -EventGridTopicAccessKey $Base64 -Organization 'Organization' } | Should -Throw
         }
 
         It 'Should throw if EventGridTopicAccessKey contains non base64 characters' {
-            {New-ADOPSAuditStream -EventGridTopicHostname 'http://eventgridUri' -EventGridTopicAccessKey 'spaces notallowed' -Organization 'Organization'} | Should -Throw
+            { New-ADOPSAuditStream -EventGridTopicHostname 'http://eventgridUri' -EventGridTopicAccessKey 'spaces notallowed' -Organization 'Organization' } | Should -Throw
         }
     }
 }

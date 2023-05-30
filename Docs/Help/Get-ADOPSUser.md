@@ -60,6 +60,21 @@ Search for a single user that has the corresponding descriptor.
 
 ## PARAMETERS
 
+### -ContinuationToken
+Used to fetch the new page from the API.
+
+```yaml
+Type: String
+Parameter Sets: Default
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Descriptor
 
 A unique _descriptor_ ID for the user.
@@ -99,21 +114,6 @@ The organization to get users from.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ContinuationToken
-Used to fetch the new page from the API.
-
-```yaml
-Type: String
-Parameter Sets: Default
 Aliases:
 
 Required: False

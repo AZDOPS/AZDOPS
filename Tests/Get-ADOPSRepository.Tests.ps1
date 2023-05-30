@@ -46,22 +46,7 @@ Describe "Get-ADOPSRepository" {
                     )
                 }
             }
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
-            } -ParameterFilter { $Organization -eq 'Organization' }
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
-            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
         }
 
         It "Returns repositories" {

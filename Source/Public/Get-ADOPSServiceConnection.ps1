@@ -14,12 +14,9 @@ function Get-ADOPSServiceConnection {
         [string]$Organization
     )
     
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $OrgInfo = GetADOPSHeader -Organization $Organization
-    }
-    else {
-        $OrgInfo = GetADOPSHeader
-        $Organization = $OrgInfo['Organization']
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
     }
 
     $Uri = "https://dev.azure.com/$Organization/$Project/_apis/serviceendpoint/endpoints?api-version=7.1-preview.4"
@@ -27,7 +24,6 @@ function Get-ADOPSServiceConnection {
     $InvokeSplat = @{
         Method       = 'Get'
         Uri          = $URI
-        Organization = $Organization
     }
 
     $AllPipelines = (InvokeADOPSRestMethod @InvokeSplat).value

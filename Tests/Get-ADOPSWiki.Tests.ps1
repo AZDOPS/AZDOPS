@@ -9,16 +9,7 @@ BeforeAll {
 
 Describe 'Get-ADOPSWiki' {
     BeforeAll {
-        Mock GetADOPSHeader -ModuleName ADOPS -MockWith {
-            @{
-                Organization = "myorg"
-            }
-        }
-        Mock GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -MockWith {
-            @{
-                Organization = "anotherOrg"
-            }
-        }
+        Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
         
         Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
     }
@@ -49,15 +40,14 @@ Describe 'Get-ADOPSWiki' {
 
     Context "Functionality" {
 
-        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+        It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Get-ADOPSWiki -Organization 'anotherorg' -Project 'myproj' 
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
-        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+        It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Get-ADOPSWiki -Project 'myproj'
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'If result has a value member, it should be returned' {

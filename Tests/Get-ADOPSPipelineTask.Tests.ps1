@@ -9,16 +9,7 @@ BeforeAll {
 
 Describe "Get-ADOPSPipelineTask" {
     BeforeAll {
-        Mock GetADOPSHeader -ModuleName ADOPS -MockWith {
-            @{
-                Organization = "myorg"
-            }
-        }
-        Mock GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -MockWith {
-            @{
-                Organization = "anotherOrg"
-            }
-        }
+        Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
 
         Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
     }
@@ -48,15 +39,14 @@ Describe "Get-ADOPSPipelineTask" {
     }
 
     Context 'Functionality' {
-        it 'Should get organization from GetADOPSHeader when organization parameter is used' {
+        it 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Get-ADOPSPipelineTask -Organization 'anotherorg'
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
-        it 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+        it 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Get-ADOPSPipelineTask
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         it 'It should call the API using no extra parameters' {

@@ -31,18 +31,15 @@ function New-ADOPSVariableGroup {
         [string]$Organization
     )
 
+    # If user didn't specify org, get it from saved context
     if ([string]::IsNullOrEmpty($Organization)) {
-        $Org = GetADOPSHeader
-        $Organization = $Org['Organization']
-    }
-    else {
-        $Org = GetADOPSHeader -Organization $Organization
+        $Organization = GetADOPSDefaultOrganization
     }
 
     $ProjectInfo = Get-ADOPSProject -Organization $Organization -Project $Project
 
     $URI = "https://dev.azure.com/${Organization}/_apis/distributedtask/variablegroups?api-version=7.1-preview.2"
-    $method = 'POST'
+    $Method = 'POST'
 
     if ($VariableName) {
         $Body = @{
@@ -91,5 +88,5 @@ function New-ADOPSVariableGroup {
         } | ConvertTo-Json -Depth 10
     }
 
-    InvokeADOPSRestMethod -Uri $Uri -Method $Method -Body $Body -Organization $Organization
+    InvokeADOPSRestMethod -Uri $Uri -Method $Method -Body $Body
 }

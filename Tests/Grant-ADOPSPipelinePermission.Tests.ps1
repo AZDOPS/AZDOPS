@@ -55,16 +55,8 @@ Describe "Grant-ADOPSPipelinePermission" {
 
     Context "Granting access to a pipeline" {
         BeforeAll {
-            Mock GetADOPSHeader -ModuleName ADOPS {
-                @{
-                    Organization = "myorg"
-                }
-            }
-            Mock GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' }{
-                @{
-                    Organization = "myorg"
-                }
-            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
+            
             Mock Get-ADOPSProject -ModuleName ADOPS {
                 @{
                     id = "de6a3035-0146-4ae2-81c1-68596d187cf4"
@@ -81,16 +73,29 @@ Describe "Grant-ADOPSPipelinePermission" {
             }
         }
 
-        It "Should get organization from GetADOPSHeader when organization parameter is used" {
-            Grant-ADOPSPipelinePermission -Organization 'anotherorg' -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 1 -Exactly
+        It 'If organization is given, it should not call GetADOPSDefaultOrganization' {
+            $s =@{
+                Project = 'MyProj'
+                PipelineId = 1
+                ResourceType ='VariableGroup'
+                ResourceId ='ResId'
+                Organization = 'MyOrg'
+            }
+            $r = Grant-ADOPSPipelinePermission @s
+            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0
         }
 
-        It "Should validate organization using GetADOPSHeader when organization parameter is not used" {
-            Grant-ADOPSPipelinePermission -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+        It 'If organization is not given, it should call GetADOPSDefaultOrganization' {
+            $s =@{
+                Project = 'MyProj'
+                PipelineId = 1
+                ResourceType ='VariableGroup'
+                ResourceId ='ResId'
+            }
+            $r = Grant-ADOPSPipelinePermission @s
+            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1
         }
+
 
         It "Should invoke with PATCH" {
             (Grant-ADOPSPipelinePermission -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1).Method | Should -Be "Patch"

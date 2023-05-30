@@ -1,60 +1,93 @@
 function Connect-ADOPS {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
-    [CmdletBinding(DefaultParameterSetName = 'PAT')]
+    [CmdletBinding(DefaultParameterSetName = 'Interactive')]
     param (
-        [Parameter(ParameterSetName = 'PAT', Mandatory)]
-        [string]$Username,
-        
-        [Parameter(ParameterSetName = 'PAT', Mandatory)]
-        [string]$PersonalAccessToken,
-
-        [Parameter(ParameterSetName = 'PSCredential', Mandatory)]
-        [pscredential]$Credential,
-
-        [Parameter(ParameterSetName = 'PSCredential', Mandatory)]
-        [Parameter(ParameterSetName = 'PAT', Mandatory)]
+        [Parameter(Mandatory, ParameterSetName = 'Interactive')]
+        [Parameter(Mandatory, ParameterSetName = 'ManagedIdentity')]
+        [Parameter(Mandatory, ParameterSetName = 'OAuthToken')]
         [string]$Organization,
+        
+        [Parameter(ParameterSetName = 'Interactive')]
+        [Parameter(ParameterSetName = 'ManagedIdentity')]
+        [Parameter(ParameterSetName = 'OAuthToken')]
+        [string]$TenantId,
 
-        [Parameter(ParameterSetName = 'PSCredential')]
-        [Parameter(ParameterSetName = 'PAT')]
-        [switch]$Default
+        [Parameter(ParameterSetName = 'Interactive')]
+        [switch]$Interactive,
+
+        [Parameter(Mandatory, ParameterSetName = 'ManagedIdentity')]
+        [switch]$ManagedIdentity,
+
+        [Parameter(Mandatory, ParameterSetName = 'OAuthToken')]
+        [String]$OAuthToken
     )
     
-    if ($PSCmdlet.ParameterSetName -eq 'PAT') {
-        $Credential = [pscredential]::new($Username, (ConvertTo-SecureString -String $PersonalAccessToken -AsPlainText -Force))
-    }
-    $ShouldBeDefault = $Default.IsPresent
-
-    if ($script:ADOPSCredentials.Count -eq 0) {
-        $ShouldBeDefault = $true
-        $Script:ADOPSCredentials = @{}
-    }
-    else {
-        $CurrentDefault = $script:ADOPSCredentials.Keys | Where-Object { $ADOPSCredentials[$_].Default -eq $true }
-        if ($CurrentDefault -eq $Organization) {
-            # If we are overwriting current default it should stay default regardless of -Default parameter.
-            $ShouldBeDefault = $true
-        }
-        elseif ($Default.IsPresent) {
-            # We are adding a new default, remove the current.  
-            $ADOPSCredentials[$CurrentDefault].Default = $false
-        }
+    $TokenSplat = @{
+        Resource = '499b84ac-1321-427f-aa17-267ca6975798'
+        Scope    = '.default'
     }
 
-    $OrgData = @{
-        Credential = $Credential
-        Default    = $ShouldBeDefault
+    # Add TenantId if provided
+    if ($PSBoundParameters.ContainsKey('TenantId')) {
+        $TokenSplat.Add('TenantId', $TenantId)
+    }
+
+    switch ($PSCmdlet.ParameterSetName) {
+        'OAuthToken' {
+            $script:LoginMethod = 'OAuthToken'
+            $script:ScriptToken = @{
+                Token = $OAuthToken
+            }
+            $Token = $OAuthToken
+            $TokenTenantId = 'NotSpecified'
+            $TokenIdentity = $null
+        }
+        'ManagedIdentity' {
+            $TokenSplat.Add('ManagedIdentity', $true)
+            $script:LoginMethod = 'ManagedIdentity'
+
+            $Token = Get-AzToken @TokenSplat
+            $TokenTenantId = $Token.TenantId
+            $TokenIdentity = $Token.Identity
+        }
+        'Interactive' {
+            $TokenSplat.Add('TokenCache', $script:AzTokenCache)
+            $TokenSplat.Add('Interactive', $true)
+
+            $Token = Get-AzToken @TokenSplat
+            $TokenTenantId = $Token.TenantId
+            $TokenIdentity = $Token.Identity
+        }
+    }
+
+    # Get User context
+    $Me = InvokeADOPSRestMethod -Method GET -Token $Token -Uri 'https://app.vssps.visualstudio.com/_apis/profile/profiles/me?api-version=7.1-preview.3'
+
+    # Get available orgs
+    $Orgs = GetADOPSOrganizationAccess -AccountId $Me.publicAlias -Token $Token
+    
+    if ($Organization -notin $Orgs) {
+        throw "The connected account does not have access to the organization '$Organization'. Organizations available: $($Orgs -join ",")`nAre you connected to the correct tennant? $TokenTenantId"
+    }
+
+    # If user provided a token, we have not parsed the JWT for the email/id
+    if ($null -eq $TokenIdentity) {
+        # Instead take info from the DevOps response
+        if (-not [string]::IsNullOrWhiteSpace($Me.emailAddress)) {
+            $TokenIdentity = $Me.emailAddress 
+        }
+        else {
+            $TokenIdentity = $Me.id
+        }
     }
     
-    $Script:ADOPSCredentials[$Organization] = $OrgData
-    
-    $URI = "https://vssps.dev.azure.com/$Organization/_apis/profile/profiles/me?api-version=7.1-preview.3"
+    $ADOPSConfig = GetADOPSConfigFile
+    $ADOPSConfig['Default'] = @{
+        'Identity'     = $TokenIdentity
+        'TenantId'     = $TokenTenantId
+        'Organization' = $Organization
+    }
 
-    try {
-        InvokeADOPSRestMethod -Method Get -Uri $URI
-    }
-    catch {
-        $Script:ADOPSCredentials.Remove($Organization)
-        throw $_
-    }
+    SetADOPSConfigFile -ConfigObject $ADOPSConfig
+    
+    Write-Output $ADOPSConfig['Default']
 }

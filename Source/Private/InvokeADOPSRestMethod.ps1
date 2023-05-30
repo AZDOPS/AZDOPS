@@ -1,4 +1,5 @@
 function InvokeADOPSRestMethod {
+    [SkipTest('HasOrganizationParameter')]
     param (
         [Parameter(Mandatory)]
         [URI]$Uri,
@@ -10,29 +11,28 @@ function InvokeADOPSRestMethod {
         [string]$Body,
 
         [Parameter()]
-        [string]$Organization,
-
-        [Parameter()]
         [string]$ContentType = 'application/json',
 
         [Parameter()]
         [switch]$FullResponse,
 
         [Parameter()]
-        [string]$OutFile
-    )
+        [string]$OutFile,
 
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $CallHeaders = GetADOPSHeader -Organization $Organization
-    }
-    else {
-        $CallHeaders = GetADOPSHeader
+        [Parameter()]
+        [string]$Token
+    )
+    
+    if (-not $PSBoundParameters.ContainsKey('Token')) {
+        $Token = (NewAzToken).Token
     }
 
     $InvokeSplat = @{
         'Uri' = $Uri
         'Method' = $Method
-        'Headers' = $CallHeaders.Header
+        'Headers' = @{
+            'Authorization' = "Bearer $Token"
+        }
         'ContentType' = $ContentType
     }
 
@@ -52,7 +52,7 @@ function InvokeADOPSRestMethod {
         $Result = Invoke-RestMethod @InvokeSplat
 
         if ($Result -like "*Azure DevOps Services | Sign In*") {
-            throw 'Failed to call Azure DevOps API. Please login before using.'
+            throw 'Failed to call Azure DevOps API. Please login using Connect-ADOPS before running commands.'
         }
         elseif ($FullResponse) {
             @{ Content = $Result; Headers = $ResponseHeaders; StatusCode = $ResponseStatusCode }

@@ -13,25 +13,21 @@ function New-ADOPSRepository {
         [string]$Organization
     )
 
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $Org = GetADOPSHeader -Organization $Organization
-    }
-    else {
-        $Org = GetADOPSHeader
-        $Organization = $Org['Organization']
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
     }
 
-    $ProjectID = (Get-ADOPSProject -Project $Project).id
+    $ProjectID = (Get-ADOPSProject -Project $Project -Organization $Organization).id
 
     $URI = "https://dev.azure.com/$Organization/_apis/git/repositories?api-version=7.1-preview.1"
     $Body = "{""name"":""$Name"",""project"":{""id"":""$ProjectID""}}"
 
     $InvokeSplat = @{
-        Uri           = $URI
-        Method        = 'Post'
-        Body          = $Body
-        Organization  = $Organization
-      }
+        Uri          = $URI
+        Method       = 'Post'
+        Body         = $Body
+    }
     
-      InvokeADOPSRestMethod @InvokeSplat
+    InvokeADOPSRestMethod @InvokeSplat
 }

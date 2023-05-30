@@ -122,23 +122,26 @@ Describe "Module $ModuleName" {
         if (-not $CompiledModule) {
             It "Public function '<Function>' should have a CmdLet file in correct place." -TestCases $PublicTestCases {
                 param ( $Function )
-                $FunctionName = $Function
                 
-                Test-Path -Path "$ScriptDirectory\Public\$FunctionName.ps1" -PathType Leaf | Should -Be $true
+                Test-Path -Path "$ScriptDirectory\Public\$Function.ps1" -PathType Leaf | Should -Be $true
             }
 
             It "Public function '<Function>' should have a test file." -TestCases $PublicTestCases {
                 param ( $Function )
-                $FunctionName = $Function
                 
-                Test-Path -Path "$ScriptDirectory\..\Tests\$FunctionName.Tests.ps1" -PathType Leaf | Should -Be $true
+                Test-Path -Path "$ScriptDirectory\..\Tests\$Function.Tests.ps1" -PathType Leaf | Should -Be $true
             }
             
             It "Public function '<Function>' should have a Docs/Help file." -TestCases $PublicTestCases {
                 param ( $Function )
-                $FunctionName = $Function
                 
                 Test-Path -Path "$ScriptDirectory\..\Docs\Help\$Function.md" -PathType Leaf | Should -Be $true
+            }
+            
+            It "Public function '<Function>' should not have empty descriptions in help file" -TestCases $PublicTestCases {
+                param ( $Function )
+                
+                Get-ChildItem "$ScriptDirectory\..\Docs\Help\$Function.md" | Select-String '{{ Fill \w+ Description }}' | Should -BeNullOrEmpty
             }
 
             It "Docs/Help file for '<Function>' contains parameter '<Parameter>'." -TestCases $ParametersTestCases {

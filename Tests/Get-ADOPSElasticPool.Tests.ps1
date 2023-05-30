@@ -69,22 +69,7 @@ Describe "Get-ADOPSElasticPool" {
                     )
                 }
             }
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'MySecondOrg'
-                }
-            } -ParameterFilter { $Organization -eq 'MySecondOrg' }
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
-            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
         }
 
         It "Returns elastic pool" {

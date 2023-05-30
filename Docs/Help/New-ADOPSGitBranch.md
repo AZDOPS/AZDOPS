@@ -39,7 +39,6 @@ PS C:\> $repo = Get-ADOPSRepository -Project $Project -Repository $RepoName
 PS C:\> $AllCommits = Invoke-ADOPSRestMethod -Uri $repo._links.commits.href -Method Get | Select-Object -ExpandProperty value 
 PS C:\> $LatestCommit = ($AllCommits | Sort-Object -Property @{Expression = {$_.author.date}} -Descending | Select-Object -First 1).commitId
 PS C:\> New-ADOPSGitBranch -RepositoryId $repo.id -Project $Project -BranchName $BranchName -CommitId $CommitId
-
 ```
 
 This command shows how to get all git history directly from a repository using the `Invoke-ADOPSRestMethod` command and use this to create a new branch from the latest commit. 

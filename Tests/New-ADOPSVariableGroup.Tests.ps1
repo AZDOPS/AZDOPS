@@ -97,16 +97,8 @@ Describe "New-ADOPSVariableGroup" {
 
     Context "Adding variable group" {
         BeforeAll {
-            Mock GetADOPSHeader -ModuleName ADOPS {
-                @{
-                    Organization = "myorg"
-                }
-            }
-            Mock GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' }{
-                @{
-                    Organization = "myorg"
-                }
-            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
+            
             Mock Get-ADOPSProject -ModuleName ADOPS {
                 @{
                     id = "de6a3035-0146-4ae2-81c1-68596d187cf4"
@@ -123,15 +115,14 @@ Describe "New-ADOPSVariableGroup" {
             }
         }
 
-        It "Should get organization from GetADOPSHeader when organization parameter is not used" {
+        It "Should not get organization from GetADOPSDefaultOrganization when organization parameter is not used" {
             New-ADOPSVariableGroup -Organization 'anotherorg' -Project "myproject" -VariableGroupName "mygroup" -VariableName "myvar" -VariableValue "myvalue"
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
-        It "Should validate organization using GetADOPSHeader when organization parameter is used" {
+        It "Should get organization using GetADOPSDefaultOrganization when organization parameter is used" {
             New-ADOPSVariableGroup -Project "myproject" -VariableGroupName "mygroup" -VariableName "myvar" -VariableValue "myvalue"
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It "Should invoke with POST" {

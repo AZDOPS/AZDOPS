@@ -43,12 +43,9 @@ function Set-ADOPSGitPermission {
             $denyRules = ([accesslevels]$Deny).value__
         }
     
-        if (-not [string]::IsNullOrEmpty($Organization)) {
-            $Org = GetADOPSHeader -Organization $Organization
-        }
-        else {
-            $Org = GetADOPSHeader
-            $Organization = $Org['Organization']
+        # If user didn't specify org, get it from saved context
+        if ([string]::IsNullOrEmpty($Organization)) {
+            $Organization = GetADOPSDefaultOrganization
         }
         
         $SubjectDescriptor = (InvokeADOPSRestMethod -Uri "https://vssps.dev.azure.com/$Organization/_apis/identities?subjectDescriptors=$Descriptor&queryMembership=None&api-version=7.1-preview.1" -Method Get).value.descriptor
@@ -68,9 +65,9 @@ function Set-ADOPSGitPermission {
         $Uri = "https://dev.azure.com/$Organization/_apis/accesscontrolentries/2e9eb7ed-3c0a-47d4-87c1-0ffdd275fd87?api-version=7.1-preview.1"
         
         $InvokeSplat = @{
-            Uri = $Uri 
+            Uri    = $Uri 
             Method = 'Post' 
-            Body = $Body
+            Body   = $Body
         }
         
         InvokeADOPSRestMethod @InvokeSplat

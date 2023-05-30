@@ -41,33 +41,17 @@ Describe "Get-ADOPSFileContent" {
         BeforeAll {
             Mock InvokeADOPSRestMethod -ModuleName ADOPS { }
 
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
-            } -ParameterFilter { $Organization -eq 'Organization' }
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
-            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
         }
 
-        it 'Should get organization from GetADOPSHeader when organization parameter is used' {
+        it 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Get-ADOPSFileContent -Organization 'Organization' -Project 'MyProj' -RepositoryId 'abc123' -FilePath '/noFile.yaml'
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'Organization' } -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
-        it 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+        it 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Get-ADOPSFileContent -Project 'MyProj' -RepositoryId 'abc123' -FilePath '/noFile.yaml'
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'Organization' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         it 'If file path does not start with a /, prepend it' {
@@ -75,7 +59,7 @@ Describe "Get-ADOPSFileContent" {
                 return $Uri
             }
 
-            Get-ADOPSFileContent -Project 'MyProj' -RepositoryId 'abc123' -FilePath 'path/noFile.yaml' | Should -Be 'https://dev.azure.com/DummyOrg/MyProj/_apis/git/repositories/abc123/items?path=%2fpath%2fnoFile.yaml&api-version=7.0'
+            Get-ADOPSFileContent -Project 'MyProj' -RepositoryId 'abc123' -FilePath 'path/noFile.yaml' | Should -Be 'https://dev.azure.com/DummyOrg/MyProj/_apis/git/repositories/abc123/items?path=%2fpath%2fnoFile.yaml&api-version=7.1-preview.1'
         }
 
         it 'Url should be correctly structured' {
@@ -83,7 +67,7 @@ Describe "Get-ADOPSFileContent" {
                 return $Uri
             }
 
-            Get-ADOPSFileContent -Project 'MyProj' -RepositoryId 'abc123' -FilePath '/path/noFile.yaml' | Should -Be 'https://dev.azure.com/DummyOrg/MyProj/_apis/git/repositories/abc123/items?path=%2fpath%2fnoFile.yaml&api-version=7.0'
+            Get-ADOPSFileContent -Project 'MyProj' -RepositoryId 'abc123' -FilePath '/path/noFile.yaml' | Should -Be 'https://dev.azure.com/DummyOrg/MyProj/_apis/git/repositories/abc123/items?path=%2fpath%2fnoFile.yaml&api-version=7.1-preview.1'
         }
     }
 }

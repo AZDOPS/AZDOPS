@@ -9,64 +9,81 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Establish a connection to Azure DevOps using a PAT.
+Establish a connection to Azure DevOps.
 
 ## SYNTAX
 
-### PAT (Default)
+### Interactive (Default)
 ```
-Connect-ADOPS -Username <String> -PersonalAccessToken <String> -Organization <String> [-Default]
- [<CommonParameters>]
+Connect-ADOPS -Organization <String> [-TenantId <String>] [-Interactive] [<CommonParameters>]
 ```
 
-### PSCredential
+### OAuthToken
 ```
-Connect-ADOPS -Credential <PSCredential> -Organization <String> [-Default] [<CommonParameters>]
+Connect-ADOPS -Organization <String> [-TenantId <String>] -OAuthToken <String> [<CommonParameters>]
+```
+
+### ManagedIdentity
+```
+Connect-ADOPS -Organization <String> [-TenantId <String>] [-ManagedIdentity] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Establish a connection to Azure DevOps using a PAT.
-
-Can replace an existing connection by specifying the same organization again.
+Establish a OAuth connection to one or more Azure DevOps organizations.
+If the logged on user does not have access to the given organization you may need to specify TenantID.
 
 ## EXAMPLES
 
 ### Example 1
 
 ```powershell
-Connect-ADOPS -Username 'john.doe@ADOPS.com' -PersonalAccessToken '<myPersonalAccessToken>' -Organization 'ADOPS'
+Connect-ADOPS -Organization 'ADOPS'
 ```
 
-Connect to Azure DevOps organization using a personal access token.
+Connect to an Azure DevOps organization interactively.
 
 ### Example 2
 
 ```powershell
-$Creds = Get-Credential -Username 'john.doe@ADOPS.com' 
-# Insert PAT as password
-
-Connect-ADOPS -Credential $Creds -Organization 'ADOPS'
+Connect-ADOPS -ManagedIdentity -Organization 'ADOPS' -TenantId $TenantId
 ```
 
-Connect to Azure DevOps organization using a credential object.
+Connect to an Azure DevOps organization using a managed identity, specifying the tenant.
 
 ### Example 3
 
 ```powershell
-Connect-ADOPS -Username 'john.doe@ADOPS.com' -PersonalAccessToken '<myPersonalAccessToken>' -Organization 'ADOPS' -Default
+Connect-ADOPS -OAuthToken $AccessToken -Organization 'ADOPS'
 ```
 
-Connect to Azure DevOps organization using a personal access token and setting it as default organization.
+Connect to an Azure DevOps organization using an existing access token.
 
 ## PARAMETERS
 
-### -Credential
-Username and PAT in a PSCredential object.
+### -Interactive
+
+Connect to an Azure DevOps organization using an interactive browser login.
 
 ```yaml
-Type: PSCredential
-Parameter Sets: PSCredential
+Type: SwitchParameter
+Parameter Sets: Interactive
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ManagedIdentity
+
+Connect to an Azure DevOps organization using a managed identity.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: ManagedIdentity
 Aliases:
 
 Required: True
@@ -76,16 +93,16 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Default
+### -OAuthToken
 
-Specifies if the connection should be the default connection or not.
+Connect to an Azure DevOps organization using an existing access token.
 
 ```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
+Type: String
+Parameter Sets: OAuthToken
 Aliases:
 
-Required: False
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -108,32 +125,16 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PersonalAccessToken
+### -TenantId
 
-Specifies the Personal Access Token to use for the connection.
-
-```yaml
-Type: String
-Parameter Sets: PAT
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Username
-
-Username to use for the connection in the format of UPN.
+Specify a tenant to connect to, by id.
 
 ```yaml
 Type: String
-Parameter Sets: PAT
+Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False

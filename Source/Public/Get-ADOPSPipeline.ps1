@@ -14,12 +14,9 @@ function Get-ADOPSPipeline {
         [string]$Organization
     )
 
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $OrgInfo = GetADOPSHeader -Organization $Organization
-    }
-    else {
-        $OrgInfo = GetADOPSHeader
-        $Organization = $OrgInfo['Organization']
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
     }
 
     $Uri = "https://dev.azure.com/$Organization/$Project/_apis/pipelines?api-version=7.1-preview.1"
@@ -27,7 +24,6 @@ function Get-ADOPSPipeline {
     $InvokeSplat = @{
         Method       = 'Get'
         Uri          = $URI
-        Organization = $Organization
     }
 
     $AllPipelines = (InvokeADOPSRestMethod @InvokeSplat).value
@@ -48,7 +44,6 @@ function Get-ADOPSPipeline {
         $InvokeSplat = @{
             Method       = 'Get'
             Uri          = $Pipeline.url
-            Organization = $Organization
         }
     
         $result = InvokeADOPSRestMethod @InvokeSplat

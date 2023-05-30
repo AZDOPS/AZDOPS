@@ -20,11 +20,9 @@ function New-ADOPSElasticPool {
         [string]$Organization
     )
 
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $Org = GetADOPSHeader -Organization $Organization
-    } else {
-        $Org = GetADOPSHeader
-        $Organization = $Org['Organization']
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
     }
 
     if ($PSBoundParameters.ContainsKey('ProjectId')) {
@@ -45,6 +43,6 @@ function New-ADOPSElasticPool {
     }
     
     $Method = 'POST'
-    $ElasticPoolInfo = InvokeADOPSRestMethod -Uri $Uri -Method $Method -Organization $Organization -Body $Body
+    $ElasticPoolInfo = InvokeADOPSRestMethod -Uri $Uri -Method $Method -Body $Body
     Write-Output $ElasticPoolInfo
 }

@@ -15,12 +15,9 @@ function Get-ADOPSPool {
         [string]$Organization
     )
 
-    if (-not [string]::IsNullOrEmpty($Organization)) {
-        $Org = GetADOPSHeader -Organization $Organization
-    }
-    else {
-        $Org = GetADOPSHeader
-        $Organization = $Org['Organization']
+    # If user didn't specify org, get it from saved context
+    if ([string]::IsNullOrEmpty($Organization)) {
+        $Organization = GetADOPSDefaultOrganization
     }
 
     switch ($PSCmdlet.ParameterSetName) {
@@ -30,7 +27,7 @@ function Get-ADOPSPool {
     }
     
     $Method = 'GET'
-    $PoolInfo = InvokeADOPSRestMethod -Uri $Uri -Method $Method -Organization $Organization
+    $PoolInfo = InvokeADOPSRestMethod -Uri $Uri -Method $Method
 
     if ($PoolInfo.psobject.properties.name -contains 'value') {
         $PoolInfo = $PoolInfo.value

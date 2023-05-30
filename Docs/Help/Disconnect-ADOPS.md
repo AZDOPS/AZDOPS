@@ -14,7 +14,7 @@ Remove an established connection to Azure DevOps.
 ## SYNTAX
 
 ```
-Disconnect-ADOPS [[-Organization] <String>] [<CommonParameters>]
+Disconnect-ADOPS [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -40,24 +40,6 @@ PS C:\> Disconnect-ADOPS
 Removes the established connection without specifying organization, if there is only one.
 
 ## PARAMETERS
-
-### -Organization
-
-The organization to remove the connection for.
-
-This parameter is required if multiple connections are made.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).

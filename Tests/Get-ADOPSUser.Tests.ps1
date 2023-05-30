@@ -7,32 +7,35 @@ BeforeAll {
     Import-Module $PSM1 -Force
 }
 
-Describe "Get-ADOPSUser" {
-    Context "Parameters" {
+Describe 'Get-ADOPSUser' {
+    BeforeAll {
+        Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
+    }
+    Context 'Parameters' {
         $TestCases = @(
             @{
-                Name = 'Organization'
+                Name      = 'Organization'
                 Mandatory = $false
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'Name'
+                Name      = 'Name'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'Descriptor'
+                Name      = 'Descriptor'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'ContinuationToken'
+                Name      = 'ContinuationToken'
                 Mandatory = $false
-                Type = 'string'
+                Type      = 'string'
             }
         )
     
-        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+        It 'Should have parameter <_.Name>' -TestCases $TestCases {
             Get-Command Get-ADOPSUser | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
@@ -80,40 +83,20 @@ Describe "Get-ADOPSUser" {
                     }
                 }
             }
-
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
-            } -ParameterFilter { $Organization -eq 'Organization' }
-            
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
-            }
         }
 
-        It 'Should get organization from GetADOPSHeader when organization parameter is used' {
+        It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Get-ADOPSUser -Organization 'Organization'
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'Organization' } -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
         
-        It 'Should validate organization using GetADOPSHeader when organization parameter is not used' {
+        It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Get-ADOPSUser
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -ParameterFilter { $Organization -eq 'Organization' } -Times 0 -Exactly
-            Should -Invoke GetADOPSHeader -ModuleName ADOPS -Times 1 -Exactly
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
-        
     }
 
-    Context "Function returns all users" {
+    Context 'Function returns all users' {
         BeforeAll {
             Mock InvokeADOPSRestMethod -ModuleName ADOPS -ParameterFilter {
                 $Uri -notlike '*continuationToken*'
@@ -181,31 +164,22 @@ Describe "Get-ADOPSUser" {
                     Headers    = @{}
                 }
             }
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
-            }
         }
 
-        It "Returns 3 users" {
+        It 'Returns 3 users' {
             $result = Get-ADOPSUser -Organization 'DummyOrg'
             $result | Should -Not -BeNullOrEmpty
             $result | Should -HaveCount 3
-
         }
 
         It 'Calls InvokeADOPSRestMethod with the correct query params' {
             Get-ADOPSUser -Organization 'DummyOrg'
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq "https://vssps.dev.azure.com/DummyOrg/_apis/graph/users?api-version=6.0-preview.1" }
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq "https://vssps.dev.azure.com/DummyOrg/_apis/graph/users?api-version=6.0-preview.1&continuationToken=page2Token" }
+            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://vssps.dev.azure.com/DummyOrg/_apis/graph/users?api-version=7.1-preview.1' }
+            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://vssps.dev.azure.com/DummyOrg/_apis/graph/users?api-version=7.1-preview.1&continuationToken=page2Token' }
         }
     }
 
-    Context "Function returns single user by descriptor" {
+    Context 'Function returns single user by descriptor' {
         BeforeAll {
             Mock InvokeADOPSRestMethod -ModuleName ADOPS {
                 [PSCustomObject]@{
@@ -222,149 +196,133 @@ Describe "Get-ADOPSUser" {
                     descriptor     = 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
                 }
             }
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
-                }
-            }
         }
 
-        It "Returns user by descriptor" {
-            Get-ADOPSUser -Organization 'DummyOrg' -Descriptor 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U' | Should -Not -BeNullOrEmpty
+        It 'Returns user by descriptor' {
+            Get-ADOPSUser -Descriptor 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U' | Should -Not -BeNullOrEmpty
         }
 
         It 'Calls InvokeADOPSRestMethod with the correct query params' {
-            Get-ADOPSUser -Organization 'DummyOrg' -Descriptor 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq "https://vssps.dev.azure.com/DummyOrg/_apis/graph/users/aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U?api-version=6.0-preview.1" }
+            Get-ADOPSUser -Descriptor 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
+            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://vssps.dev.azure.com/DummyOrg/_apis/graph/users/aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U?api-version=7.1-preview.1' }
         }
     }
 
-    Context "Function returns users by query" {
+    Context 'Function returns users by query' {
         BeforeAll {
             Mock InvokeADOPSRestMethod -ModuleName ADOPS {
                 @{
-                    members = @(
-                      @{
-                        user = @{
-                          subjectKind = "user"
-                          metaType = "member"
-                          directoryAlias = "nomail@no"
-                          domain = "11111111-1111-1111-1111-111111111111"
-                          principalName = "nomail@no"
-                          mailAddress = "nomail@no"
-                          origin = "aad"
-                          originId = "11111111-1111-1111-1111-111111111111"
-                          displayName = "dummy.user"
-                          _links = @{
-                            self = @{
-                              href = "https://vssps.dev.azure.com/organization/_apis/Graph/Users/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                    members           = @(
+                        @{
+                            user                = @{
+                                subjectKind    = 'user'
+                                metaType       = 'member'
+                                directoryAlias = 'nomail@no'
+                                domain         = '11111111-1111-1111-1111-111111111111'
+                                principalName  = 'nomail@no'
+                                mailAddress    = 'nomail@no'
+                                origin         = 'aad'
+                                originId       = '11111111-1111-1111-1111-111111111111'
+                                displayName    = 'dummy.user'
+                                _links         = @{
+                                    self            = @{
+                                        href = 'https://vssps.dev.azure.com/organization/_apis/Graph/Users/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg'
+                                    }
+                                    memberships     = @{
+                                        href = 'https://vssps.dev.azure.com/organization/_apis/Graph/Memberships/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg'
+                                    }
+                                    membershipState = @{
+                                        href = 'https://vssps.dev.azure.com/organization/_apis/Graph/MembershipStates/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg'
+                                    }
+                                    storageKey      = @{
+                                        href = 'https://vssps.dev.azure.com/organization/_apis/Graph/StorageKeys/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg'
+                                    }
+                                    avatar          = @{
+                                        href = 'https://dev.azure.com/organization/_apis/GraphProfile/MemberAvatars/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg'
+                                    }
+                                }
+                                url            = 'https://vssps.dev.azure.com/organization/_apis/Graph/Users/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg'
+                                descriptor     = '2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg'
                             }
-                            memberships = @{
-                              href = "https://vssps.dev.azure.com/organization/_apis/Graph/Memberships/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                            extensions          = @()
+                            id                  = '11111111-1111-1111-1111-111111111111'
+                            accessLevel         = @{
+                                licensingSource    = 'account'
+                                accountLicenseType = 'express'
+                                msdnLicenseType    = 'none'
+                                licenseDisplayName = 'Basic'
+                                status             = 'active'
+                                statusMessage      = ''
+                                assignmentSource   = 'unknown'
                             }
-                            membershipState = @{
-                              href = "https://vssps.dev.azure.com/organization/_apis/Graph/MembershipStates/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
-                            }
-                            storageKey = @{
-                              href = "https://vssps.dev.azure.com/organization/_apis/Graph/StorageKeys/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
-                            }
-                            avatar = @{
-                              href = "https://dev.azure.com/organization/_apis/GraphProfile/MemberAvatars/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
-                            }
-                          }
-                          url = "https://vssps.dev.azure.com/organization/_apis/Graph/Users/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
-                          descriptor = "2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                            lastAccessedDate    = '1901-01-01T00:00:00.0000000Z'
+                            dateCreated         = '1901-01-01T00:00:00.0000000Z'
+                            projectEntitlements = @()
+                            groupAssignments    = @()
                         }
-                        extensions = @()
-                        id = "11111111-1111-1111-1111-111111111111"
-                        accessLevel = @{
-                          licensingSource = "account"
-                          accountLicenseType = "express"
-                          msdnLicenseType = "none"
-                          licenseDisplayName = "Basic"
-                          status = "active"
-                          statusMessage = ""
-                          assignmentSource = "unknown"
-                        }
-                        lastAccessedDate = "1901-01-01T00:00:00.0000000Z"
-                        dateCreated = "1901-01-01T00:00:00.0000000Z"
-                        projectEntitlements = @()
-                        groupAssignments = @()
-                      }
                     )
                     continuationToken = $null
-                    totalCount = 1
-                    items = @(
-                      @{
-                        user = @{
-                          subjectKind = "user"
-                          metaType = "member"
-                          directoryAlias = "nomail@no"
-                          domain = "11111111-1111-1111-1111-111111111111"
-                          principalName = "nomail@no"
-                          mailAddress = "nomail@no"
-                          origin = "aad"
-                          originId = "11111111-1111-1111-1111-111111111111"
-                          displayName = "dummy.user"
-                          _links = @{
-                            self = @{
-                              href = "https://vssps.dev.azure.com/organization/_apis/Graph/Users/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                    totalCount        = 1
+                    items             = @(
+                        @{
+                            user                = @{
+                                subjectKind    = 'user'
+                                metaType       = 'member'
+                                directoryAlias = 'nomail@no'
+                                domain         = '11111111-1111-1111-1111-111111111111'
+                                principalName  = 'nomail@no'
+                                mailAddress    = 'nomail@no'
+                                origin         = 'aad'
+                                originId       = '11111111-1111-1111-1111-111111111111'
+                                displayName    = 'dummy.user'
+                                _links         = @{
+                                    self            = @{
+                                        href = 'https://vssps.dev.azure.com/organization/_apis/Graph/Users/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg'
+                                    }
+                                    memberships     = @{
+                                        href = 'https://vssps.dev.azure.com/organization/_apis/Graph/Memberships/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg'
+                                    }
+                                    membershipState = @{
+                                        href = 'https://vssps.dev.azure.com/organization/_apis/Graph/MembershipStates/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg'
+                                    }
+                                    storageKey      = @{
+                                        href = 'https://vssps.dev.azure.com/organization/_apis/Graph/StorageKeys/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg'
+                                    }
+                                    avatar          = @{
+                                        href = 'https://dev.azure.com/organization/_apis/GraphProfile/MemberAvatars/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg'
+                                    }
+                                }
+                                url            = 'https://vssps.dev.azure.com/organization/_apis/Graph/Users/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg'
+                                descriptor     = '2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg'
                             }
-                            memberships = @{
-                              href = "https://vssps.dev.azure.com/organization/_apis/Graph/Memberships/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                            extensions          = @()
+                            id                  = '11111111-1111-1111-1111-111111111111'
+                            accessLevel         = @{
+                                licensingSource    = 'account'
+                                accountLicenseType = 'express'
+                                msdnLicenseType    = 'none'
+                                licenseDisplayName = 'Basic'
+                                status             = 'active'
+                                statusMessage      = ''
+                                assignmentSource   = 'unknown'
                             }
-                            membershipState = @{
-                              href = "https://vssps.dev.azure.com/organization/_apis/Graph/MembershipStates/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
-                            }
-                            storageKey = @{
-                              href = "https://vssps.dev.azure.com/organization/_apis/Graph/StorageKeys/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
-                            }
-                            avatar = @{
-                              href = "https://dev.azure.com/organization/_apis/GraphProfile/MemberAvatars/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
-                            }
-                          }
-                          url = "https://vssps.dev.azure.com/organization/_apis/Graph/Users/2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
-                          descriptor = "2U6MnTofiLmudoZye6zz2uwnyNaPJZf5nZQlqep9i38sjln2QjF2ODiZ25VxQR99bz3sSdQwGDRBoYwfl8Q35Ruz8UeT3auMwrk9VNvrbmnvAJXubyRAjmvN74iaCPFUsICFMVUHBYdg"
+                            lastAccessedDate    = '1901-01-01T00:00:00.0000000Z'
+                            dateCreated         = '1901-01-01T00:00:00.0000000Z'
+                            projectEntitlements = @()
+                            groupAssignments    = @()
                         }
-                        extensions = @()
-                        id = "11111111-1111-1111-1111-111111111111"
-                        accessLevel = @{
-                          licensingSource = "account"
-                          accountLicenseType = "express"
-                          msdnLicenseType = "none"
-                          licenseDisplayName = "Basic"
-                          status = "active"
-                          statusMessage = ""
-                          assignmentSource = "unknown"
-                        }
-                        lastAccessedDate = "1901-01-01T00:00:00.0000000Z"
-                        dateCreated = "1901-01-01T00:00:00.0000000Z"
-                        projectEntitlements = @()
-                        groupAssignments = @()
-                      }
                     )
-                  }                  
-            }
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = 'DummyOrg'
                 }
             }
         }
 
-        It "Returns users by query string" {
-            Get-ADOPSUser -Organization 'DummyOrg' -Name 'something' | Should -Not -BeNullOrEmpty
+        It 'Returns users by query string' {
+            Get-ADOPSUser -Name 'something' | Should -Not -BeNullOrEmpty
         }
 
         It 'Calls InvokeADOPSRestMethod with the correct query pararms' {
-            Get-ADOPSUser -Organization 'DummyOrg' -Name 'john'
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq "https://vsaex.dev.azure.com/DummyOrg/_apis/UserEntitlements?`$filter=name eq 'john'&`$orderBy=name Ascending&api-version=6.0-preview.3" }
+            Get-ADOPSUser -Name 'john'
+            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq "https://vsaex.dev.azure.com/DummyOrg/_apis/UserEntitlements?`$filter=name eq 'john'&`$orderBy=name Ascending&api-version=7.1-preview.3" }
         }
     }
 }

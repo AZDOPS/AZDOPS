@@ -34,26 +34,11 @@ Describe 'Remove-ADOPSVariableGroup' {
 
     Context 'Removing variable group' {
         BeforeAll {
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = $OrganizationName
-                }
-            } -ParameterFilter { $OrganizationName -eq 'Organization' }
-            Mock -CommandName GetADOPSHeader -ModuleName ADOPS -MockWith {
-                @{
-                    Header       = @{
-                        'Authorization' = 'Basic Base64=='
-                    }
-                    Organization = $OrganizationName
-                }
-            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'DummyOrg' }
 
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return ''
-            } -ParameterFilter { $method -eq 'Delete' }
+            } -ParameterFilter { $Method -eq 'Delete' }
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return [pscustomobject]@{
                     'count' = 1
@@ -84,7 +69,7 @@ Describe 'Remove-ADOPSVariableGroup' {
                         }
                     )
                 }
-            } -ParameterFilter { $method -eq 'Get' }
+            } -ParameterFilter { $Method -eq 'Get' }
             Mock -CommandName Get-ADOPSProject -ModuleName ADOPS -MockWith {
                 return [pscustomobject]@{
                     id = (New-Guid).Guid
