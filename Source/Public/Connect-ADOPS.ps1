@@ -66,7 +66,7 @@ function Connect-ADOPS {
     $Orgs = GetADOPSOrganizationAccess -AccountId $Me.publicAlias -Token $Token
     
     if ($Organization -notin $Orgs) {
-        throw "The connected account does not have access to the organization '$Organization'"
+        throw "The connected account does not have access to the organization '$Organization'. Organizations available: $($Orgs -join ",") "
     }
 
     # If user provided a token, we have not parsed the JWT for the email/id
