@@ -51,7 +51,7 @@
     # ProcessorArchitecture = ''
 
     # Modules that must be imported into the global environment prior to importing this module
-    # RequiredModules = @()
+    RequiredModules = @(@{ModuleName='AzAuth'; ModuleVersion='2.2.2'; GUID='6efad2e7-3439-46fb-862d-eea4ebd67bc4'})
 
     # Assemblies that must be loaded prior to importing this module
     # RequiredAssemblies = @()
