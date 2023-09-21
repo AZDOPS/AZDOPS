@@ -56,7 +56,7 @@ Describe "New-ADOPSElasticPoolObject" {
                 Type = 'bool'
             },
             @{
-                Name = 'TimeToLiveMinues'
+                Name = 'TimeToLiveMinutes'
                 Mandatory = $false
                 Type = 'int'
             },

@@ -50,8 +50,9 @@ function New-ADOPSElasticPoolObject {
 
         # Time before scaling down
         [Parameter()]
+        [Alias('TimeToLiveMinues')]
         [int]
-        $TimeToLiveMinues = 15,
+        $TimeToLiveMinutes = 15,
 
         # maxSavedNodeCount
         [Parameter()]
@@ -80,7 +81,7 @@ function New-ADOPSElasticPoolObject {
         osType = $OsType
         desiredSize = $DesiredSize
         agentInteractiveUI = $AgentInteractiveUI
-        timeToLiveMinutes = $TimeToLiveMinues
+        timeToLiveMinutes = $TimeToLiveMinutes
     }
     
     if ($OutputType -eq 'json') {
