@@ -18,7 +18,7 @@ function New-ADOPSRepository {
         $Organization = GetADOPSDefaultOrganization
     }
 
-    $ProjectID = (Get-ADOPSProject -Project $Project -Organization $Organization).id
+    $ProjectID = (Get-ADOPSProject -Name $Project -Organization $Organization).id
 
     $URI = "https://dev.azure.com/$Organization/_apis/git/repositories?api-version=7.1-preview.1"
     $Body = "{""name"":""$Name"",""project"":{""id"":""$ProjectID""}}"

@@ -53,7 +53,7 @@ Describe 'New-ADOPSRepository' {
                         "visibility": "private",
                     }
 '@ | ConvertFrom-Json
-                } -ParameterFilter { $Name -eq 'MyRepoName' }
+                } -ParameterFilter { $Name -eq 'DummyProject' }
             }
         }
 
