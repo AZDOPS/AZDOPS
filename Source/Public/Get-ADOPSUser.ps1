@@ -41,6 +41,9 @@ function Get-ADOPSUser {
         $Uri = "https://vsaex.dev.azure.com/$Organization/_apis/UserEntitlements?`$filter=name eq '$Name'&`$orderBy=name Ascending&api-version=7.1-preview.3"
         $Method = 'GET'
         $Users = (InvokeADOPSRestMethod -Uri $Uri -Method $Method).members.user
+        if ($null -eq $Users) {
+            Get-ADOPSUser | Where-Object -Property displayName -eq $Name
+        }
         Write-Output $Users
     }
     elseif ($PSCmdlet.ParameterSetName -eq 'Descriptor') {
