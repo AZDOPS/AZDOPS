@@ -16,16 +16,16 @@ function New-ADOPSMergePolicy {
         [string]$Branch,
 
         [Parameter()]
-        [Switch]$allowNoFastForward,
+        [Switch]$AllowNoFastForward,
 
         [Parameter()]
-        [Switch]$allowSquash,
+        [Switch]$AllowSquash,
 
         [Parameter()]
-        [Switch]$allowRebase,
+        [Switch]$AllowRebase,
 
         [Parameter()]
-        [Switch]$allowRebaseMerge
+        [Switch]$AllowRebaseMerge
     )
 
     # If user didn't specify org, get it from saved context
@@ -46,10 +46,10 @@ function New-ADOPSMergePolicy {
                 matchKind = "exact"
             }
         )
-        allowNoFastForward = $allowNoFastForward.IsPresent
-        allowSquash = $allowSquash.IsPresent
-        allowRebase = $allowRebase.IsPresent
-        allowRebaseMerge = $allowRebaseMerge.IsPresent
+        allowNoFastForward = $AllowNoFastForward.IsPresent
+        allowSquash = $AllowSquash.IsPresent
+        allowRebase = $AllowRebase.IsPresent
+        allowRebaseMerge = $AllowRebaseMerge.IsPresent
     }
 
 

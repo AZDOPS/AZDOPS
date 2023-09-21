@@ -23,7 +23,7 @@ function New-ADOPSBuildPolicy {
         [string]$Displayname,
 
         [Parameter()]
-        [string[]]$filenamePatterns
+        [string[]]$FilenamePatterns
     )
 
     # If user didn't specify org, get it from saved context
@@ -51,8 +51,8 @@ function New-ADOPSBuildPolicy {
         validDuration = "0"
     }
 
-    if ($filenamePatterns.Count -gt 0) {
-        $settings.Add('filenamePatterns', $filenamePatterns)
+    if ($FilenamePatterns.Count -gt 0) {
+        $settings.Add('filenamePatterns', $FilenamePatterns)
     }
 
     $Body = [ordered]@{

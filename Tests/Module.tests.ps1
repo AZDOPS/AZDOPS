@@ -149,6 +149,12 @@ Describe "Module $ModuleName" {
 
                 "$ScriptDirectory\..\Docs\Help\$Function.md" | Should -FileContentMatch $Parameter
             }
+
+            It "Parameter '<Parameter>'in function '<Function>' is PascalCase (starts with capital letter)." -TestCases $ParametersTestCases {
+                param ( $Function, $Parameter )
+
+                $Parameter | Should -MatchExactly "^[A-Z].*"
+            }
         }
         # Tests only for compiled modules goes here
         if ($CompiledModule) {
