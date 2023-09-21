@@ -20,10 +20,17 @@ function New-ADOPSServiceConnection {
         [string]$ConnectionName,
       
         [Parameter(Mandatory, ParameterSetName = 'ServicePrincipal')]
+        [Parameter(Mandatory, ParameterSetName = 'ManagedServiceIdentity')]
         [pscredential]$ServicePrincipal,
 
         [Parameter(Mandatory, ParameterSetName = 'ManagedServiceIdentity')]
-        [switch]$ManagedIdentity
+        [switch]$ManagedIdentity,
+
+        [Parameter(Mandatory, ParameterSetName = 'WorkloadIdentityFederation')]
+        [switch]$WorkloadIdentityFederation,
+
+        [Parameter(Mandatory, ParameterSetName = 'WorkloadIdentityFederation')]
+        [string]$AzureScope
     )
 
     # If user didn't specify org, get it from saved context
@@ -65,6 +72,8 @@ function New-ADOPSServiceConnection {
             $authorization = [ordered]@{
                 parameters = [ordered]@{
                     tenantid = $TenantId
+                    serviceprincipalid  = $ServicePrincipal.UserName
+                    serviceprincipalkey = $ServicePrincipal.GetNetworkCredential().Password
                 }
                 scheme     = 'ManagedServiceIdentity'
             }
@@ -74,6 +83,24 @@ function New-ADOPSServiceConnection {
                 subscriptionName = $SubscriptionName
                 environment      = 'AzureCloud'
                 scopeLevel       = 'Subscription'
+            }
+        }
+
+        'WorkloadIdentityFederation' {
+            $authorization = [ordered]@{
+                parameters = [ordered]@{
+                    tenantid = $TenantId
+                    scope    = $AzureScope
+                }
+                scheme     = 'WorkloadIdentityFederation'
+            }
+    
+            $data = [ordered]@{
+                subscriptionId   = $SubscriptionId
+                subscriptionName = $SubscriptionName
+                environment      = 'AzureCloud'
+                scopeLevel       = 'Subscription'
+                creationMode	 = 'Automatic'
             }
         }
     }
@@ -93,13 +120,13 @@ function New-ADOPSServiceConnection {
                     id   = $ProjectInfo.Id
                     name = $Project
                 }
-                name             = $ConnectionName
+                name = $ConnectionName
             }
         )
     } | ConvertTo-Json -Depth 10
 
     # Run function
-    $URI = "https://dev.azure.com/$Organization/$Project/_apis/serviceendpoint/endpoints?api-version=7.1-preview.4"
+    $URI = "https://dev.azure.com/$Organization/$Project/_apis/serviceendpoint/endpoints?api-version=7.2-preview.4"
     $InvokeSplat = @{
         Uri          = $URI
         Method       = 'POST'
