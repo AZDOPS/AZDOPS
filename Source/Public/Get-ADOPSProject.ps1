@@ -1,11 +1,18 @@
 function Get-ADOPSProject {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName='All')]
     param (
-        [Parameter()]
-        [string]$Project,
+        [Parameter(ParameterSetName='All')]
+        [Parameter(ParameterSetName='ByName')]
+        [Parameter(ParameterSetName='ById')]
+        [string]$Organization,
 
-        [Parameter()]
-        [string]$Organization
+        [Parameter(ParameterSetName='ByName')]
+        [Alias('Project')]
+        [string]$Name,
+
+        [Parameter(ParameterSetName='ById')]
+        [string]$Id
+
     )
 
     # If user didn't specify org, get it from saved context
@@ -18,8 +25,11 @@ function Get-ADOPSProject {
     $Method = 'GET'
     $ProjectInfo = (InvokeADOPSRestMethod -Uri $Uri -Method $Method).value
 
-    if (-not [string]::IsNullOrWhiteSpace($Project)) {
-        $ProjectInfo = $ProjectInfo | Where-Object -Property Name -eq $Project
+    if ($PSCmdlet.ParameterSetName -eq 'ByName') {
+        $ProjectInfo = $ProjectInfo | Where-Object -Property Name -eq $Name
+    }
+    elseif ($PSCmdlet.ParameterSetName -eq 'ById') {
+        $ProjectInfo = $ProjectInfo | Where-Object -Property Id -eq $Id
     }
 
     Write-Output $ProjectInfo

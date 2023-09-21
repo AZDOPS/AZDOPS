@@ -16,7 +16,7 @@ Describe 'Get-ADOPSProject' {
                 Type = 'string'
             },
             @{
-                Name = 'Project'
+                Name = 'Name'
                 Mandatory = $false
                 Type = 'string'
             }
@@ -54,11 +54,11 @@ Describe 'Get-ADOPSProject' {
         }
 
         It 'uses InvokeADOPSRestMethod one time.' {
-            Get-ADOPSProject -Organization $OrganizationName -Project $Project 
+            Get-ADOPSProject -Organization $OrganizationName -Name $Project 
             Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
         }
         It 'returns output after getting project' {
-            Get-ADOPSProject -Organization $OrganizationName -Project $Project | Should -BeOfType [pscustomobject] -Because 'InvokeADOPSRestMethod should convert the json to pscustomobject'
+            Get-ADOPSProject -Organization $OrganizationName -Name $Project | Should -BeOfType [pscustomobject] -Because 'InvokeADOPSRestMethod should convert the json to pscustomobject'
         }
         It 'should not throw with no parameters' {
             { Get-ADOPSProject } | Should -Not -Throw

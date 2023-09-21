@@ -13,8 +13,19 @@ Gets one or several projects in an Azure DevOps organization.
 
 ## SYNTAX
 
+### All (Default)
 ```
-Get-ADOPSProject [[-Project] <String>] [[-Organization] <String>] [<CommonParameters>]
+Get-ADOPSProject [-Organization <String>] [<CommonParameters>]
+```
+
+### ById
+```
+Get-ADOPSProject [-Organization <String>] [-Id <String>] [<CommonParameters>]
+```
+
+### ByName
+```
+Get-ADOPSProject [-Organization <String>] [-Name <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -26,7 +37,7 @@ Gets one or several projects in an Azure DevOps organization.
 ### Example 1
 
 ```powershell
-PS C:\> Get-ADOPSProject -Organization 'ADOPS' -Project 'ADOPSproj'
+PS C:\> Get-ADOPSProject -Organization 'ADOPS' -Name 'ADOPSproj'
 ```
 
 Gets the project called "ADOPSproj" from the organization "ADOPS".
@@ -34,12 +45,44 @@ Gets the project called "ADOPSproj" from the organization "ADOPS".
 ### Example 2
 
 ```powershell
-PS C:\> Get-ADOPSProject -Project 'ADOPSproj'
+PS C:\> Get-ADOPSProject -Name 'ADOPSproj'
 ```
 
 Gets the project called "ADOPSproj" from the default organization.
 
 ## PARAMETERS
+
+### -Id
+
+The id (GUID) of the project to find.
+
+```yaml
+Type: String
+Parameter Sets: ById
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Name
+
+The name of the project to find.
+
+```yaml
+Type: String
+Parameter Sets: ByName
+Aliases: Project
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -Organization
 
@@ -51,23 +94,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Project
-
-The name of the project to find.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

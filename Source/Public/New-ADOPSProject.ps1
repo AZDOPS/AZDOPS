@@ -3,6 +3,7 @@ function New-ADOPSProject {
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
+        [Alias('Project')]
         [string]$Name,
 
         [Parameter()]
