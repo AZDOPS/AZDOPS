@@ -14,7 +14,7 @@ Gets one or several projects in an Azure DevOps organization.
 ## SYNTAX
 
 ```
-Get-ADOPSProject [[-Project] <String>] [[-Organization] <String>] [<CommonParameters>]
+Get-ADOPSProject [[-Name] <String>] [[-Organization] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -26,7 +26,7 @@ Gets one or several projects in an Azure DevOps organization.
 ### Example 1
 
 ```powershell
-PS C:\> Get-ADOPSProject -Organization 'ADOPS' -Project 'ADOPSproj'
+PS C:\> Get-ADOPSProject -Organization 'ADOPS' -Name 'ADOPSproj'
 ```
 
 Gets the project called "ADOPSproj" from the organization "ADOPS".
@@ -34,7 +34,7 @@ Gets the project called "ADOPSproj" from the organization "ADOPS".
 ### Example 2
 
 ```powershell
-PS C:\> Get-ADOPSProject -Project 'ADOPSproj'
+PS C:\> Get-ADOPSProject -Name 'ADOPSproj'
 ```
 
 Gets the project called "ADOPSproj" from the default organization.
@@ -57,7 +57,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Project
+### -Name
 
 The name of the project to find.
 

@@ -2,7 +2,8 @@ function Get-ADOPSProject {
     [CmdletBinding()]
     param (
         [Parameter()]
-        [string]$Project,
+        [Alias('Project')]
+        [string]$Name,
 
         [Parameter()]
         [string]$Organization
@@ -18,8 +19,8 @@ function Get-ADOPSProject {
     $Method = 'GET'
     $ProjectInfo = (InvokeADOPSRestMethod -Uri $Uri -Method $Method).value
 
-    if (-not [string]::IsNullOrWhiteSpace($Project)) {
-        $ProjectInfo = $ProjectInfo | Where-Object -Property Name -eq $Project
+    if (-not [string]::IsNullOrWhiteSpace($Name)) {
+        $ProjectInfo = $ProjectInfo | Where-Object -Property Name -eq $Name
     }
 
     Write-Output $ProjectInfo
