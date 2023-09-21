@@ -60,7 +60,8 @@ Accept wildcard characters: False
 ```
 
 ### -AzureId
-The resource id for the Virtual Machine Scale Set in Azure.
+The full resource id for the Virtual Machine Scale Set in Azure.
+/subscriptions/subscriptionID/resourceGroups/resourceGroup/providers/Microsoft.Compute/virtualMachineScaleSets/vmssName
 
 ```yaml
 Type: String
@@ -182,7 +183,8 @@ Accept wildcard characters: False
 ```
 
 ### -ServiceEndpointId
-Id of the Service Endpoint used to connect to Azure
+Id of the Service connection used to connect to Azure.
+(Get-ADOPSServiceConnection -Project MyAzureDevOpsProject -Name MyServiceConnection).id
 
 ```yaml
 Type: Guid
@@ -197,7 +199,9 @@ Accept wildcard characters: False
 ```
 
 ### -ServiceEndpointScope
-Scope the Service Endpoint belongs to
+Scope the Service Endpoint belongs to.
+Azure DevOps project ID
+(Get-ADOPSProject -Project MyAzureDevOpsProject).id
 
 ```yaml
 Type: Guid
@@ -211,7 +215,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -TimeToLiveMinues
+### -TimeToLiveMinutes
 The minimum time in minutes to keep idle agents alive
 
 ```yaml
