@@ -13,8 +13,19 @@ Gets one or several projects in an Azure DevOps organization.
 
 ## SYNTAX
 
+### All (Default)
 ```
-Get-ADOPSProject [[-Name] <String>] [[-Organization] <String>] [<CommonParameters>]
+Get-ADOPSProject [-Organization <String>] [<CommonParameters>]
+```
+
+### ById
+```
+Get-ADOPSProject [-Organization <String>] [-Id <String>] [<CommonParameters>]
+```
+
+### ByName
+```
+Get-ADOPSProject [-Organization <String>] [-Name <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -41,17 +52,17 @@ Gets the project called "ADOPSproj" from the default organization.
 
 ## PARAMETERS
 
-### -Organization
+### -Id
 
-The name of the organization of the project.
+The id (GUID) of the project to find.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: ById
 Aliases:
 
 Required: False
-Position: 1
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -63,11 +74,27 @@ The name of the project to find.
 
 ```yaml
 Type: String
+Parameter Sets: ByName
+Aliases: Project
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Organization
+
+The name of the organization of the project.
+
+```yaml
+Type: String
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
