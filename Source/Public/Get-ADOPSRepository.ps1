@@ -23,7 +23,23 @@ function Get-ADOPSRepository {
         $Uri = "https://dev.azure.com/$Organization/$Project/_apis/git/repositories?api-version=7.1-preview.1"
     }
     
-    $result = InvokeADOPSRestMethod -Uri $Uri -Method Get
+    try {
+        $result = InvokeADOPSRestMethod -Uri $Uri -Method Get
+    }
+    catch [Microsoft.PowerShell.Commands.HttpResponseException] {
+        $ErrorMessage = $_.ErrorDetails.Message | ConvertFrom-Json
+        if ($ErrorMessage.message -like "TF401019:*") {
+            Write-Verbose "The Git repository with name or identifier $Repository does not exist or you do not have permissions for the operation you are attempting."
+            $result = $null
+        }
+        elseif ($ErrorMessage.message -like "TF200016:*") {
+            Write-Verbose "The following project does not exist: $Project. Verify that the name of the project is correct and that the project exists on the specified Azure DevOps Server."
+            $result = $null
+        }
+        else {
+            Throw $_
+        }
+    }
 
     if ($result.psobject.properties.name -contains 'value') {
         Write-Output -InputObject $result.value

@@ -69,11 +69,11 @@ Describe "Get-ADOPSRepository" {
         It 'Can handle single repository responses from API' {
             Mock InvokeADOPSRestMethod -ModuleName ADOPS {
                 [PSCustomObject]@{
-                    Name = 'Fisar'
+                    Name = 'SingleRepo'
                 }
             }
             
-            (Get-ADOPSRepository -Organization 'MyOrg' -Project 'MyProject' -Repository 'MyRepo').Name | Should -Be 'Fisar'
+            (Get-ADOPSRepository -Organization 'MyOrg' -Project 'MyProject' -Repository 'MyRepo').Name | Should -Be 'SingleRepo'
         }
     }
 }

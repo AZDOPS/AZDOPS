@@ -44,6 +44,10 @@ function New-ADOPSPipeline {
         throw "The specified Repository $Repository was not found."
     }
 
+    if ($null -eq $RepositoryID) {
+        throw "The specified Repository $Repository was not found."
+    }
+
     $Body = [ordered]@{
         "name" = $Name
         "folder" = "\$FolderPath"

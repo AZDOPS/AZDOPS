@@ -25,8 +25,26 @@ function New-ADOPSWiki {
         $Organization = GetADOPSDefaultOrganization
     }
 
-    $ProjectId = (Get-ADOPSProject -Project $Project).id
-    $RepositoryId = (Get-ADOPSRepository -Project $Project -Repository $WikiRepository).id
+    try {
+        $ProjectId = (Get-ADOPSProject -Project $Project).id
+    }
+    catch {
+        throw "The specified Project $Project was not found."
+    }
+    if ($null -eq $ProjectId) {
+        throw "The specified Project $Project was not found."
+    }
+
+    try {
+        $RepositoryId = (Get-ADOPSRepository -Project $Project -Repository $WikiRepository).id
+    }
+    catch {
+        throw "The specified Repository $WikiRepository was not found."
+    }
+
+    if ($null -eq $RepositoryID) {
+        throw "The specified Repository $WikiRepository was not found."
+    }
 
     $URI = "https://dev.azure.com/$Organization/_apis/wiki/wikis?api-version=7.1-preview.2"
     
