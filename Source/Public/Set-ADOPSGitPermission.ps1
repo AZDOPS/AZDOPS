@@ -66,7 +66,7 @@ function Set-ADOPSGitPermission {
         $SubjectDescriptor = (InvokeADOPSRestMethod -Uri "https://vssps.dev.azure.com/$Organization/_apis/identities?subjectDescriptors=$Descriptor&queryMembership=None&api-version=7.1-preview.1" -Method Get).value.descriptor
 
         $Body = [ordered]@{
-            token                = "repov2/$Projectid/$RepositoryId"
+            token                = "repov2/$Project/$Repository"
             merge                = $true
             accessControlEntries = @(
                 [ordered]@{

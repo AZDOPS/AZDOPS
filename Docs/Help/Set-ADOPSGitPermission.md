@@ -13,7 +13,7 @@ Sets git ref permissions on a Azure DevOps git repo
 ## SYNTAX
 
 ```
-Set-ADOPSGitPermission [[-Organization] <String>] [-ProjectId] <String> [-RepositoryId] <String>
+Set-ADOPSGitPermission [[-Organization] <String>] [-Project] <String> [-Repository] <String>
  [-Descriptor] <String> [[-Allow] <AccessLevels[]>] [[-Deny] <AccessLevels[]>] [<CommonParameters>]
 ```
 
@@ -151,14 +151,13 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ProjectId
-Project id where the repository is located.
-Can be found using the `Get-ADOPSProject` command
+### -Project
+Project ID or Project Name where the repo is located.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases:
+Aliases: ProjectId
 
 Required: True
 Position: 1
@@ -167,14 +166,13 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -RepositoryId
-Repository id of the git repo in Azure DevOps.
-Can be found using the `Get-ADOPSRepository` command
+### -Repository
+Repository ID or Repository Name to set access to.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases:
+Aliases: RepositoryId
 
 Required: True
 Position: 2
