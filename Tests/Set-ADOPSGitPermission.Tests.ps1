@@ -16,12 +16,12 @@ Describe 'Set-ADOPSGitPermission' {
                 Type = 'string'
             },
             @{
-                Name = 'RepositoryId'
+                Name = 'Repository'
                 Mandatory = $true
                 Type = 'string'
             },
             @{
-                Name = 'ProjectId'
+                Name = 'Project'
                 Mandatory = $true
                 Type = 'string'
             },
@@ -70,8 +70,8 @@ Describe 'Set-ADOPSGitPermission' {
 
         It 'If organization is given, it should not call GetADOPSDefaultOrganization' {
             $s = @{
-                ProjectId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
-                RepositoryId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
+                Project = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
+                Repository = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
                 Descriptor = 'aad.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' 
                 Organization = 'DummyOrg'
                 Allow = 'Administer'
@@ -82,8 +82,8 @@ Describe 'Set-ADOPSGitPermission' {
 
         It 'If organization is not given, it should call GetADOPSDefaultOrganization' {
             $s = @{
-                ProjectId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
-                RepositoryId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
+                Project = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
+                Repository = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
                 Descriptor = 'aad.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
                 Allow = 'Administer'
             }
@@ -93,34 +93,30 @@ Describe 'Set-ADOPSGitPermission' {
 
         It 'If neither allow or deny is set, it should not do anything' {
             $s = @{
-                ProjectId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
-                RepositoryId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
+                Project = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
+                Repository = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
                 Descriptor = 'aad.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
             }
             Set-ADOPSGitPermission @s | Should -BeNullOrEmpty
         }
 
         It 'Should throw if user descriptor is not formated like a descriptor, too short' {
-            {Set-ADOPSGitPermission -Allow Administer -Descriptor 'aad.NotADescriptorLength' -ProjectId 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' -RepositoryId '11111111-1111-1111-1111-111111111111'} | Should -Throw
+            {Set-ADOPSGitPermission -Allow Administer -Descriptor 'aad.NotADescriptorLength' -Project 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' -Repository '11111111-1111-1111-1111-111111111111'} | Should -Throw
         }
 
         It 'Should throw if Group descriptor is not formated like a descriptor, too short' {
-            {Set-ADOPSGitPermission -Allow Administer -Descriptor 'aadgp.NotADescriptorLength' -ProjectId 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' -RepositoryId '11111111-1111-1111-1111-111111111111'} | Should -Throw
+            {Set-ADOPSGitPermission -Allow Administer -Descriptor 'aadgp.NotADescriptorLength' -Project 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' -Repository '11111111-1111-1111-1111-111111111111'} | Should -Throw
         }
 
         It 'Should throw if user descriptor is not formated like a descriptor, no first three letters' {
-            {Set-ADOPSGitPermission -Allow Administer -Descriptor 'NotADescriptor' -ProjectId 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' -RepositoryId '11111111-1111-1111-1111-111111111111'} | Should -Throw
-        }
-
-        It 'Should throw if projectID is not in correct format' {
-            {Set-ADOPSGitPermission -Allow Administer -Descriptor 'aad.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' -ProjectId 'projectId' -RepositoryId '11111111-1111-1111-1111-111111111111'} | Should -Throw
+            {Set-ADOPSGitPermission -Allow Administer -Descriptor 'NotADescriptor' -Project 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' -Repository '11111111-1111-1111-1111-111111111111'} | Should -Throw
         }
 
         It 'Verifying tokenPath' {
             $Expected = 'repov2/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa/11111111-1111-1111-1111-111111111111'
             $s = @{
-                ProjectId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
-                RepositoryId = '11111111-1111-1111-1111-111111111111' 
+                Project = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
+                Repository = '11111111-1111-1111-1111-111111111111' 
                 Descriptor = 'aad.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
                 Allow = 'Administer'
             }
@@ -141,8 +137,8 @@ Describe 'Set-ADOPSGitPermission' {
 
             $Expected = 'Microsoft.IdentityModel.Claims.ClaimsIdentity;aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa\user@domain.onmicrosoft.com'
             $s = @{
-                ProjectId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
-                RepositoryId = '11111111-1111-1111-1111-111111111111' 
+                Project = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
+                Repository = '11111111-1111-1111-1111-111111111111' 
                 Descriptor = 'aad.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
                 Allow = 'Administer'
             }
@@ -153,8 +149,8 @@ Describe 'Set-ADOPSGitPermission' {
         It 'Set allow to the expected int value, no input' {
             $Expected = 0
             $s = @{
-                ProjectId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
-                RepositoryId = '11111111-1111-1111-1111-111111111111' 
+                Project = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
+                Repository = '11111111-1111-1111-1111-111111111111' 
                 Descriptor = 'aad.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
                 Deny = 'Administer'
             }
@@ -165,8 +161,8 @@ Describe 'Set-ADOPSGitPermission' {
         It 'Set deny to the expected int value, no input' {
             $Expected = 0
             $s = @{
-                ProjectId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
-                RepositoryId = '11111111-1111-1111-1111-111111111111' 
+                Project = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
+                Repository = '11111111-1111-1111-1111-111111111111' 
                 Descriptor = 'aad.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
                 Allow = 'Administer'
             }
@@ -177,8 +173,8 @@ Describe 'Set-ADOPSGitPermission' {
         It 'Set allow to the expected int value, one input' {
             $Expected = 256
             $s = @{
-                ProjectId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
-                RepositoryId = '11111111-1111-1111-1111-111111111111' 
+                Project = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
+                Repository = '11111111-1111-1111-1111-111111111111' 
                 Descriptor = 'aad.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
                 Allow = 'CreateRepository'
             }
@@ -189,8 +185,8 @@ Describe 'Set-ADOPSGitPermission' {
         It 'Set deny to the expected int value, one input' {
             $Expected = 256
             $s = @{
-                ProjectId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
-                RepositoryId = '11111111-1111-1111-1111-111111111111' 
+                Project = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
+                Repository = '11111111-1111-1111-1111-111111111111' 
                 Descriptor = 'aad.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
                 Deny = 'CreateRepository'
             }
@@ -201,8 +197,8 @@ Describe 'Set-ADOPSGitPermission' {
         It 'Set allow to the expected int value, multiple inputs' {
             $Expected = 1032
             $s = @{
-                ProjectId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
-                RepositoryId = '11111111-1111-1111-1111-111111111111' 
+                Project = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
+                Repository = '11111111-1111-1111-1111-111111111111' 
                 Descriptor = 'aad.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
                 Allow = 'RenameRepository','ForcePush'
             }
@@ -213,8 +209,8 @@ Describe 'Set-ADOPSGitPermission' {
         It 'Set deny to the expected int value, multiple inputs' {
             $Expected = 1032
             $s = @{
-                ProjectId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
-                RepositoryId = '11111111-1111-1111-1111-111111111111' 
+                Project = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
+                Repository = '11111111-1111-1111-1111-111111111111' 
                 Descriptor = 'aad.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
                 Deny = 'RenameRepository','ForcePush'
             }
@@ -235,8 +231,8 @@ Describe 'Set-ADOPSGitPermission' {
 
             $Expected = '{"token":"repov2/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa/11111111-1111-1111-1111-111111111111","merge":true,"accessControlEntries":[{"allow":1,"deny":0,"descriptor":"Microsoft.IdentityModel.Claims.ClaimsIdentity;aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa\\user@domain.onmicrosoft.com"}]}'
             $s = @{
-                ProjectId = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
-                RepositoryId = '11111111-1111-1111-1111-111111111111' 
+                Project = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
+                Repository = '11111111-1111-1111-1111-111111111111' 
                 Descriptor = 'aad.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
                 Allow = 'Administer'
             }
