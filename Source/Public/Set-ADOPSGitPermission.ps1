@@ -6,12 +6,12 @@ function Set-ADOPSGitPermission {
         [string]$Organization,
         
         [Parameter(Mandatory)]
-        [ValidatePAttern('^[a-z0-9]{8}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{12}$', ErrorMessage = 'ProjectId must be in GUID format (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)')]
-        [string]$ProjectId,
+        [Alias('ProjectId')]
+        [string]$Project,
         
         [Parameter(Mandatory)]
-        [ValidatePAttern('^[a-z0-9]{8}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{12}$', ErrorMessage = 'ProjectId must be in GUID format (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)')]
-        [string]$RepositoryId,
+        [Alias('RepositoryId')]
+        [string]$Repository,
         
         [Parameter(Mandatory)]
         [ValidatePattern('^[a-z]{3,5}\.[a-zA-Z0-9]{40,}$', ErrorMessage = 'Descriptor must be in the descriptor format')]
@@ -26,6 +26,21 @@ function Set-ADOPSGitPermission {
         [AccessLevels[]]$Deny
     )
     
+    # Allow input of names instead of IDs
+    if ($Project -notmatch '^[a-z0-9]{8}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{12}$') {
+        $Project = Get-ADOPSProject -Name $Project | Select-Object -ExpandProperty id
+        if ($null -eq $Project) {
+            throw "No project named $Project found."
+        }
+    }
+    if ($Repository -notmatch '^[a-z0-9]{8}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{12}$') {
+        $Repository = Get-ADOPSRepository -Repository $Repository -Project $Project
+        if ($null -eq $Repository) {
+            throw "No repository named $Repository in project $Project found."
+        }
+    }
+
+
     if (-not $Allow -and -not $Deny) {
         Write-Verbose 'No allow or deny rules set'
     }
