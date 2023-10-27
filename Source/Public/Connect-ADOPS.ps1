@@ -66,7 +66,7 @@ function Connect-ADOPS {
     $Orgs = GetADOPSOrganizationAccess -AccountId $Me.publicAlias -Token $Token
 
     if ($Organization -match "https://dev.azure.com/*") {
-        $Organization = $Organization -replace "https://dev.azure.com/", ""
+        $Organization = ($Organization -split "/")[3]
     }
     
     if ($Organization -notin $Orgs) {
