@@ -82,6 +82,12 @@ Describe 'Connect-ADOPS' {
                 }
             }
         }
+        
+        It 'Should parse organization from Azure DevOps Service url' {
+            Mock -ModuleName ADOPS SetADOPSConfigFile
+            Connect-ADOPS -OAuthToken 'MyTokenGoesHere' -Organization 'https://dev.azure.com/MyOrg1/'
+            Should -Invoke SetADOPSConfigFile -Times 1 -Exactly -ModuleName ADOPS -ParameterFilter { $ConfigObject['Default']['Organization'] -eq "MyOrg1" }
+        }
 
         It 'Should not call Get-AzToken when OAuthToken is provided' {
             Connect-ADOPS -OAuthToken 'MyTokenGoesHere' -Organization 'MyOrg1'
