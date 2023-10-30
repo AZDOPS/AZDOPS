@@ -64,6 +64,10 @@ function Connect-ADOPS {
 
     # Get available orgs
     $Orgs = GetADOPSOrganizationAccess -AccountId $Me.publicAlias -Token $Token
+
+    if ($Organization -like "https://dev.azure.com/*") {
+        $Organization = ($Organization -split "/")[3]
+    }
     
     if ($Organization -notin $Orgs) {
         throw "The connected account does not have access to the organization '$Organization'. Organizations available: $($Orgs -join ",")`nAre you connected to the correct tennant? $TokenTenantId"

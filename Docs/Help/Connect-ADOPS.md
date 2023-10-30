@@ -111,7 +111,7 @@ Accept wildcard characters: False
 
 ### -Organization
 
-Name of the Azure DevOps organization.
+Name of the Azure DevOps organization or url of the organization like `https://dev.azure.com/MyOrg/`
 
 ```yaml
 Type: String
