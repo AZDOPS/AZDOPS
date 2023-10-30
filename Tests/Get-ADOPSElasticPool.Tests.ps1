@@ -98,6 +98,11 @@ Describe "Get-ADOPSElasticPool" {
             Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/_apis/distributedtask/elasticpools?api-version=7.1-preview.1' }
         }
 
+        It 'Calls InvokeADOPSRestMethod when id is used' {
+            Get-ADOPSElasticPool -PoolId 123
+            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/_apis/distributedtask/elasticpools/123?api-version=7.1-preview.1' }
+        }
+
         It 'Can handle single elastic pool responses from API' {
             Mock InvokeADOPSRestMethod -ModuleName ADOPS {
                 [PSCustomObject]@{
