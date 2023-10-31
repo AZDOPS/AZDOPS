@@ -28,6 +28,11 @@ Describe 'Connect-ADOPS' {
                 Type      = 'string'
             },
             @{
+                Name      = 'SkipVerification'
+                Mandatory = $false
+                Type      = 'switch'
+            },
+            @{
                 Name      = 'Interactive'
                 Mandatory = $false
                 Type      = 'System.Management.Automation.SwitchParameter'
@@ -104,6 +109,12 @@ Describe 'Connect-ADOPS' {
 
         It 'Should throw if token does not have access to provided organization' {
             { Connect-ADOPS -OAuthToken 'MyTokenGoesHere' -Organization 'MyOrg3' } | Should -Throw
+        }
+
+        It 'If -SkipVerification is set, should not verify organization' {
+            { Connect-ADOPS -OAuthToken 'MyTokenGoesHere' -Organization 'MyOrg1' -SkipVerification } | Should -Not -Throw
+            Should -Invoke InvokeADOPSRestMethod -Times 0 -Exactly -ModuleName ADOPS
+            Should -Invoke GetADOPSOrganizationAccess -Times 0 -Exactly -ModuleName ADOPS
         }
     }
 }

@@ -10,6 +10,11 @@ function Connect-ADOPS {
         [Parameter(ParameterSetName = 'ManagedIdentity')]
         [Parameter(ParameterSetName = 'OAuthToken')]
         [string]$TenantId,
+        
+        [Parameter(ParameterSetName = 'Interactive')]
+        [Parameter(ParameterSetName = 'ManagedIdentity')]
+        [Parameter(ParameterSetName = 'OAuthToken')]
+        [switch]$SkipVerification,
 
         [Parameter(ParameterSetName = 'Interactive')]
         [switch]$Interactive,
@@ -59,18 +64,23 @@ function Connect-ADOPS {
         }
     }
 
-    # Get User context
-    $Me = InvokeADOPSRestMethod -Method GET -Token $Token -Uri 'https://app.vssps.visualstudio.com/_apis/profile/profiles/me?api-version=7.1-preview.3'
-
-    # Get available orgs
-    $Orgs = GetADOPSOrganizationAccess -AccountId $Me.publicAlias -Token $Token
-
     if ($Organization -like "https://dev.azure.com/*") {
         $Organization = ($Organization -split "/")[3]
     }
     
-    if ($Organization -notin $Orgs) {
-        throw "The connected account does not have access to the organization '$Organization'. Organizations available: $($Orgs -join ",")`nAre you connected to the correct tennant? $TokenTenantId"
+    if (-not $PSBoundParameters.ContainsKey('SkipVerification')) {
+        # Get User context
+        $Me = InvokeADOPSRestMethod -Method GET -Token $Token -Uri 'https://app.vssps.visualstudio.com/_apis/profile/profiles/me?api-version=7.1-preview.3'
+    
+        # Get available orgs
+        $Orgs = GetADOPSOrganizationAccess -AccountId $Me.publicAlias -Token $Token
+    
+        if ($Organization -notin $Orgs) {
+            throw "The connected account does not have access to the organization '$Organization'. Organizations available: $($Orgs -join ",")`nAre you connected to the correct tennant? $TokenTenantId"
+        }
+    }
+    else {
+        $Me = @{ id = 'unverified' }
     }
 
     # If user provided a token, we have not parsed the JWT for the email/id

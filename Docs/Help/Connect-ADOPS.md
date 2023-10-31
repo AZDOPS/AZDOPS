@@ -15,17 +15,20 @@ Establish a connection to Azure DevOps.
 
 ### Interactive (Default)
 ```
-Connect-ADOPS -Organization <String> [-TenantId <String>] [-Interactive] [<CommonParameters>]
+Connect-ADOPS -Organization <String> [-TenantId <String>] [-SkipVerification] [-Interactive]
+ [<CommonParameters>]
 ```
 
 ### OAuthToken
 ```
-Connect-ADOPS -Organization <String> [-TenantId <String>] -OAuthToken <String> [<CommonParameters>]
+Connect-ADOPS -Organization <String> [-TenantId <String>] [-SkipVerification] -OAuthToken <String>
+ [<CommonParameters>]
 ```
 
 ### ManagedIdentity
 ```
-Connect-ADOPS -Organization <String> [-TenantId <String>] [-ManagedIdentity] [<CommonParameters>]
+Connect-ADOPS -Organization <String> [-TenantId <String>] [-SkipVerification] [-ManagedIdentity]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -54,10 +57,10 @@ Connect to an Azure DevOps organization using a managed identity, specifying the
 ### Example 3
 
 ```powershell
-Connect-ADOPS -OAuthToken $AccessToken -Organization 'ADOPS'
+Connect-ADOPS -OAuthToken $AccessToken -Organization 'ADOPS' -SkipVerification
 ```
 
-Connect to an Azure DevOps organization using an existing access token.
+Connect to an Azure DevOps organization using an existing access token. It will not verify that the token has access to the selected organization, and may result in failed API calls.
 
 ## PARAMETERS
 
@@ -119,6 +122,23 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SkipVerification
+
+This switch is necessary to set when using System.AccessToken as OAuth token in Azure DevOps.
+This will bypass the access verification. If this flag is set we will not check if the provided account can access the selected organization, and there may be access errors when API calls are made.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
