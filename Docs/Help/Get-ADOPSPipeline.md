@@ -34,6 +34,14 @@ Get pipeline with name $Name from $Project.
 ### Example 2
 
 ```powershell
+PS C:\> Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $Name -Revision $Revision
+```
+
+Get pipeline with name $Name and specific $Revision from $Project
+
+### Example 2
+
+```powershell
 PS C:\> Get-ADOPSPipeline -Organization $OrganizationName -Project $Project
 ```
 
@@ -65,9 +73,25 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -Revision
+
+Revision of the pipeline. Omit to get latest.
+
+```yaml
+Type: int
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Organization
 
-The organization to get pipeline/s from.
+The organization to get pipelines from.
 
 ```yaml
 Type: String
@@ -75,7 +99,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -83,7 +107,7 @@ Accept wildcard characters: False
 
 ### -Project
 
-The project to get pilepine/s from.
+The project to get pipelines from.
 
 ```yaml
 Type: String
@@ -91,7 +115,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 1
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
