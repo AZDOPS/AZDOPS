@@ -5,8 +5,8 @@ function Set-ADOPSPipelineSettings {
         [Parameter(ParameterSetName = 'Values')]
         [string]$Organization,
 
-        [Parameter(ParameterSetName = 'Value')]
-        [Parameter(ParameterSetName = 'Values')]
+        [Parameter(Mandatory, ParameterSetName = 'Value')]
+        [Parameter(Mandatory, ParameterSetName = 'Values')]
         [ValidateNotNullOrEmpty()]
         [string]$Project,
 
