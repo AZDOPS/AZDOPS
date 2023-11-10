@@ -14,14 +14,9 @@ Sets specific pipeline setting or set multiple pipeline settings.
 
 ### Values
 ```
-Set-ADOPSPipelineSettings [-Organization <String>] [-Project <String>] -Values <Object> [<CommonParameters>]
+Set-ADOPSPipelineSettings [-Organization <String>] -Project <String> -Values <Object> [<CommonParameters>]
 ```
 
-### Value
-```
-Set-ADOPSPipelineSettings [-Organization <String>] [-Project <String>] -Name <String> -Value <Boolean>
- [<CommonParameters>]
-```
 
 ## DESCRIPTION
 {{ Fill in the Description }}
@@ -30,10 +25,12 @@ Set-ADOPSPipelineSettings [-Organization <String>] [-Project <String>] -Name <St
 
 ### Example 1
 ```powershell
-PS C:\> Set-ADOPSPipelineSettings -Project 'MyProject' -Name 'statusBadgesArePrivate' -Value $false
+PS C:\> Set-ADOPSPipelineSettings -Project 'MyProject' -Values @{
+    statusBadgesArePrivate
+}
 ```
 
-This command will return a value for specific setting with the name `statusBadgesArePrivate`
+This command will set a single setting `statusBadgesArePrivate`
 
 ### Example 2
 ```powershell
@@ -43,23 +40,10 @@ PS C:\> Set-ADOPSPipelineSettings -Project 'MyProject' -Values @{
 }
 ```
 
+This command will set multiple settings
+
 ## PARAMETERS
 
-### -Name
-
-Name of the pipeline setting. Exact matches, no wildcards.
-
-```yaml
-Type: String
-Parameter Sets: Value
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -Organization
 The organization to get pipeline settings from
@@ -84,21 +68,6 @@ Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Value
-Value of the pipeline setting.
-
-```yaml
-Type: Boolean
-Parameter Sets: Value
-Aliases:
-
 Required: True
 Position: Named
 Default value: None
@@ -107,7 +76,7 @@ Accept wildcard characters: False
 ```
 
 ### -Values
-Multiple pipeline settings to set.
+Pipeline settings to patch
 
 ```yaml
 Type: Object
@@ -132,7 +101,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ### System.Object
 
-A key/value custom object of all pipeline settings is returned even when the name parameter is passed..
+A key/value custom object of all pipeline settings is returned.
 
 ## NOTES
 

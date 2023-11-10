@@ -1,23 +1,14 @@
 function Set-ADOPSPipelineSettings {
     [CmdletBinding()]
     param (
-        [Parameter(ParameterSetName = 'Value')]
-        [Parameter(ParameterSetName = 'Values')]
+        [Parameter()]
         [string]$Organization,
 
-        [Parameter(Mandatory, ParameterSetName = 'Value')]
-        [Parameter(Mandatory, ParameterSetName = 'Values')]
+        [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string]$Project,
 
-        [Parameter(Mandatory, ParameterSetName = 'Value')]
-        [ValidateNotNullOrEmpty()]
-        [string]$Name,
-
-        [Parameter(Mandatory, ParameterSetName = 'Value')]
-        [boolean]$Value,
-
-        [Parameter(Mandatory, ParameterSetName = 'Values')]
+        [Parameter(Mandatory)]
         $Values
     )
 
@@ -27,17 +18,9 @@ function Set-ADOPSPipelineSettings {
     }
 
     $Uri = "https://dev.azure.com/$Organization/$Project/_apis/build/generalsettings?api-version=7.1-preview.1"
-    $Body = @{}
 
-    if ($PSCmdlet.ParameterSetName -eq "Value") {
-        $Body.$Name = $Value
-    }
-    elseif ($PSCmdlet.ParameterSetName -eq "Values") {
-        $Body = $Values
-    }
-
-    $Body =  $Body | ConvertTo-Json -Compress
-    $Settings = InvokeADOPSRestMethod -Uri $Uri -Method 'PATCH' -Body $Body -Debug
+    $Body =  $Values | ConvertTo-Json -Compress
+    $Settings = InvokeADOPSRestMethod -Uri $Uri -Method 'PATCH' -Body $Body
 
     Write-Output $Settings
 }

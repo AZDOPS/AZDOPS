@@ -19,11 +19,6 @@ Describe 'Get-ADOPSPipelineSettings' {
                 Name      = 'Project'
                 Mandatory = $true
                 Type      = 'string'
-            },
-            @{
-                Name      = 'Name'
-                Mandatory = $false
-                Type      = 'string'
             }
         )
 
@@ -74,16 +69,10 @@ Describe 'Get-ADOPSPipelineSettings' {
         It 'should not throw with mandatory parameters' {
             { Get-ADOPSPipelineSettings -Organization $OrganizationName -Project $Project } | Should -Not -Throw
         }
-        It 'should not throw with optional parameters' {
-            { Get-ADOPSPipelineSettings -Organization $OrganizationName -Project $Project -Name $Setting } | Should -Not -Throw
-        }
         It 'should not throw without Organization parameter' {
-            { Get-ADOPSPipelineSettings -Project $Project -Name $Setting } | Should -Not -Throw
+            { Get-ADOPSPipelineSettings -Project $Project } | Should -Not -Throw
         }
-        It 'returns single output after passing setting name' {
-            (Get-ADOPSPipelineSettings -Organization $OrganizationName -Project $Project -Name $Setting) | Should -BeOfType Boolean
-        }
-        It 'returns multiple outputs after getting pipelines' {
+        It 'returns settings after getting pipelines' {
             (Get-ADOPSPipelineSettings -Organization $OrganizationName -Project $Project | Get-Member -MemberType NoteProperty).count | Should -Be 19
         }
     }

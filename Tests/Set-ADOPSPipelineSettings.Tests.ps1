@@ -21,16 +21,6 @@ Describe 'Set-ADOPSPipelineSettings' {
                 Type      = 'string'
             },
             @{
-                Name      = 'Name'
-                Mandatory = $true
-                Type      = 'string'
-            },
-            @{
-                Name      = 'Value'
-                Mandatory = $true
-                Type      = 'boolean'
-            },
-            @{
                 Name      = 'Values'
                 Mandatory = $true
                 Type      = 'object'
@@ -39,11 +29,6 @@ Describe 'Set-ADOPSPipelineSettings' {
 
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
             Get-Command Set-ADOPSPipelineSettings | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
-        }
-
-        It 'Should have two parameterSets' {
-            $c = Get-Command Set-ADOPSPipelineSettings
-            $c.ParameterSets.Name.Count | Should -Be 2
         }
     }
     
@@ -83,20 +68,17 @@ Describe 'Set-ADOPSPipelineSettings' {
         }
         
         It 'uses InvokeADOPSRestMethod single times' {
-            Set-ADOPSPipelineSettings -Organization $OrganizationName -Project $Project -Values @{ statusBadgesArePrivate = $false }
+            Set-ADOPSPipelineSettings -Organization $OrganizationName -Project $Project -Values @{ $Setting = $false }
             Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
         }
-        It 'should not throw with parameters set value' {
-            { Set-ADOPSPipelineSettings -Organization $OrganizationName -Project $Project -Name $Setting -Value $false } | Should -Not -Throw
-        }
-        It 'should not throw with parameters set multiple values' {
+        It 'should not throw with all parameters' {
             { Set-ADOPSPipelineSettings -Organization $OrganizationName -Project $Project -Values @{ $Setting = $false } } | Should -Not -Throw
         }
         It 'should not throw without Organization parameter' {
-            { Set-ADOPSPipelineSettings -Project $Project -Name $Setting -Value $false } | Should -Not -Throw
+            { Set-ADOPSPipelineSettings -Project $Project -Values $false } | Should -Not -Throw
         }
         It 'returns outputs after patching pipeline settings' {
-            (Set-ADOPSPipelineSettings -Project $Project -Name $Setting -Value $false | Get-Member -MemberType NoteProperty).count | Should -Be 19
+            (Set-ADOPSPipelineSettings -Project $Project -Values $false | Get-Member -MemberType NoteProperty).count | Should -Be 19
         }
     }
 }
