@@ -28,9 +28,9 @@ function InvokeADOPSRestMethod {
     }
 
     $InvokeSplat = @{
-        'Uri' = $Uri
-        'Method' = $Method
-        'Headers' = @{
+        'Uri'         = $Uri
+        'Method'      = $Method
+        'Headers'     = @{
             'Authorization' = "Bearer $Token"
         }
         'ContentType' = $ContentType
@@ -46,9 +46,11 @@ function InvokeADOPSRestMethod {
     }
 
     if ($OutFile) {
+        Write-Debug "$Method $Uri"
         Invoke-RestMethod @InvokeSplat -OutFile $OutFile
     }
     else {
+        Write-Debug "$Method $Uri"
         $Result = Invoke-RestMethod @InvokeSplat
 
         if ($Result -like "*Azure DevOps Services | Sign In*") {
