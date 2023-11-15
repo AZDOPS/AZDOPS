@@ -15,16 +15,9 @@ function Get-ADOPSProjectRetentionSettings {
     }
 
     $Uri = "https://dev.azure.com/$Organization/$Project/_apis/build/retention?api-version=7.2-preview.1"
-    $Settings = InvokeADOPSRestMethod -Uri $Uri -Method Get
+    $Response = InvokeADOPSRestMethod -Uri $Uri -Method Get
 
-    $ResponseHasRetainRunsPerProtectedBranch = $Settings | Get-Member -MemberType NoteProperty | Where-Object Name -eq "retainRunsPerProtectedBranch"
-    if ($ResponseHasRetainRunsPerProtectedBranch -and ($null -eq $Settings.retainRunsPerProtectedBranch)) {
-        $Settings.retainRunsPerProtectedBranch = [pscustomobject]@{
-            min   = [long]0
-            max   = [long]50
-            value = $null
-        }
-    }
+    $Settings = GetADOPSRetentionSettings -Response $Response
 
     Write-Output $Settings
 }
