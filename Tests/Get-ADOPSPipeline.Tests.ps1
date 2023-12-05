@@ -24,6 +24,11 @@ Describe 'Get-ADOPSPipeline' {
                 Name = 'name'
                 Mandatory = $false
                 Type = 'string'
+            },
+            @{
+                Name = 'revision'
+                Mandatory = $false
+                Type = 'int'
             }
         )
 
@@ -96,6 +101,14 @@ Describe 'Get-ADOPSPipeline' {
         It 'uses InvokeADOPSRestMethod two times' {
             Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName
             Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 2
+        }
+        It 'Calls InvokeADOPSRestMethod when revision is from pipeline lookup' {
+            Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName
+            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/DummyProject/_apis/pipelines/10?api-version=7.1-preview.1&pipelineVersion=1' }
+        }
+        It 'Calls InvokeADOPSRestMethod when revision is from input' {
+            Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -Revision 2
+            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/DummyProject/_apis/pipelines/10?api-version=7.1-preview.1&pipelineVersion=2' }
         }
         It 'returns output after getting pipeline' {
             Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName | Should -BeOfType [pscustomobject] -Because 'InvokeADOPSRestMethod should convert the json to pscustomobject'
