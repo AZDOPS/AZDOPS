@@ -26,8 +26,11 @@ function Start-ADOPSPipeline {
         throw "No pipeline with name $Name found."
     }
 
+    if ($Branch -notmatch '^refs/.*') {
+        $Branch = 'refs/heads/' + $Branch
+    }
     $URI = "https://dev.azure.com/$Organization/$Project/_apis/pipelines/$PipelineID/runs?api-version=7.1-preview.1"
-    $Body = '{"stagesToSkip":[],"resources":{"repositories":{"self":{"refName":"refs/heads/' + $Branch + '"}}},"variables":{}}'
+    $Body = '{"stagesToSkip":[],"resources":{"repositories":{"self":{"refName":"' + $Branch + '"}}},"variables":{}}'
     
     $InvokeSplat = @{
         Method       = 'Post' 

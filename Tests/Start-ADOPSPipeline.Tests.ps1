@@ -77,11 +77,15 @@ Describe 'Start-ADOPSPipeline' {
         }
         It 'Body should be set with branch name. If no branch is given, "main"' {
             $r = Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject'
-            $r.Body | Should -BeLike '*main*'
+            ($r.Body | ConvertFrom-Json).resources.repositories.self.refName | Should -Be 'refs/heads/main'
         }
         It 'Body should be set with branch name If branch is given as parameter, "branch"' {
             $r = Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject' -Branch 'branch'
-            $r.Body | Should -BeLike '*branch*'
+            ($r.Body | ConvertFrom-Json).resources.repositories.self.refName | Should -Be 'refs/heads/branch'
+        }
+        It 'Body should be set with correct branch name If branch is given and starts with "refs"' {
+            $r = Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject' -Branch 'refs/thing/otherBranch'
+            ($r.Body | ConvertFrom-Json).resources.repositories.self.refName | Should -Be 'refs/thing/otherBranch'
         }
     }
 }
