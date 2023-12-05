@@ -29,6 +29,13 @@ Start-ADOPSPipeline -Name 'myPipeline' -Project 'myProject' -Organization 'ADOPS
 
 Starts the DevOps Pipeline 'myPipeline' in the project 'myProject'.
 
+### Example 2
+```powershell
+Start-ADOPSPipeline -Name 'myPipeline' -Project 'myProject' -Organization 'ADOPS' -Branch 'refs/other/branch'
+```
+
+Starts the DevOps Pipeline 'myPipeline' in the project 'myProject' using the git ref 'refs/other/branch'.
+
 ## PARAMETERS
 
 ### -Branch
