@@ -1,4 +1,4 @@
-function Get-ADOPSProjectRetentionSettings {
+function Get-ADOPSPipelineRetentionSettings {
     [CmdletBinding()]
     param (
         [Parameter()]
@@ -17,7 +17,7 @@ function Get-ADOPSProjectRetentionSettings {
     $Uri = "https://dev.azure.com/$Organization/$Project/_apis/build/retention?api-version=7.2-preview.1"
     $Response = InvokeADOPSRestMethod -Uri $Uri -Method Get
 
-    $Settings = GetADOPSRetentionSettings -Response $Response
+    $Settings = ConvertRetentionSettingsGetToPatch -Response $Response
 
     Write-Output $Settings
 }
