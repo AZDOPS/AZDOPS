@@ -22,6 +22,7 @@ function Set-ADOPSPipelineRetentionSettings {
 
     $Body = ConvertRetentionSettingsToPatchBody -Values $Values | ConvertTo-Json
     Write-Debug $Body
+    
     $Response = InvokeADOPSRestMethod -Uri $Uri -Method Patch -Body $Body
     Write-Debug $Response
 

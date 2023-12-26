@@ -8,7 +8,7 @@ schema: 2.0.0
 # Set-ADOPSPipelineRetentionSettings
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Set Pipeline Retention Settings scoped at a Project level.
 
 ## SYNTAX
 
@@ -18,21 +18,35 @@ Set-ADOPSPipelineRetentionSettings [[-Organization] <String>] [-Project] <String
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+This command will set the retention settings values for a project.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Set-ADOPSPipelineRetentionSettings -Project 'MyProject' -Values @{
+    artifactsRetention = 51
+    runRetention = 37
+    pullRequestRunRetention = 4
+    retainRunsPerProtectedBranch = 0
+}
 ```
 
-{{ Add example description here }}
+This command will set all pipeline retention settings.
+
+### Example 2
+```powershell
+PS C:\> Set-ADOPSPipelineRetentionSettings -Project 'MyProject' -Values @{
+    artifactsRetention = 51
+}
+```
+
+This command will set a single pipeline retention settings.
 
 ## PARAMETERS
 
 ### -Organization
-{{ Fill Organization Description }}
+The organization to get pipeline retention settings from.
 
 ```yaml
 Type: String
@@ -47,7 +61,7 @@ Accept wildcard characters: False
 ```
 
 ### -Project
-{{ Fill Project Description }}
+The project to get pipeline retention settings from.
 
 ```yaml
 Type: String

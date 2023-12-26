@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-ADOPSPipelineRetentionSettings
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Returns all pipeline retention settings.
 
 ## SYNTAX
 
@@ -17,21 +17,21 @@ Get-ADOPSPipelineRetentionSettings [[-Organization] <String>] [-Project] <String
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+This command will return all pipeline retention settings.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-ADOPSPipelineRetentionSettings -Project 'MyProject'
 ```
 
-{{ Add example description here }}
+This command will get all the pipeline retention settings values for a project.
 
 ## PARAMETERS
 
 ### -Organization
-{{ Fill Organization Description }}
+The organization to get pipeline retention settings from.
 
 ```yaml
 Type: String
@@ -46,7 +46,7 @@ Accept wildcard characters: False
 ```
 
 ### -Project
-{{ Fill Project Description }}
+The project to get pipeline retention settings from.
 
 ```yaml
 Type: String
@@ -68,6 +68,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ### None
 
 ## OUTPUTS
+
+System.Object
+
+A Key/value custom object of all the pipeline retention values.
 
 ### System.Object
 ## NOTES
