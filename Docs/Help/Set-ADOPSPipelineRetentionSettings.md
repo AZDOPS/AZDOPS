@@ -8,7 +8,7 @@ schema: 2.0.0
 # Set-ADOPSPipelineRetentionSettings
 
 ## SYNOPSIS
-Set Pipeline Retention Settings scoped at a Project level.
+Set pipeline retention settings for a project.
 
 ## SYNTAX
 
@@ -76,7 +76,7 @@ Accept wildcard characters: False
 ```
 
 ### -Values
-{{ Fill Values Description }}
+Pipeline retention settings to set.
 
 ```yaml
 Type: Object
@@ -98,6 +98,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ### None
 
 ## OUTPUTS
+
+System.Object
+
+A Key/value custom object of all the pipeline retention value
 
 ### System.Object
 ## NOTES

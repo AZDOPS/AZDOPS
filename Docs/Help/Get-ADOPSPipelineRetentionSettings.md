@@ -17,7 +17,7 @@ Get-ADOPSPipelineRetentionSettings [[-Organization] <String>] [-Project] <String
 ```
 
 ## DESCRIPTION
-This command will return all pipeline retention settings.
+This command will return all pipeline retention settings for a Azure DevOps Project.
 
 ## EXAMPLES
 
