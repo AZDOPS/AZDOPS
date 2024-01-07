@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Returns all or specific pipeline setting.
+Returns all pipeline settings for a project.
 
 ## SYNTAX
 
@@ -20,8 +20,7 @@ Get-ADOPSPipelineSettings [[-Organization] <String>] -Project <String>
 
 ## DESCRIPTION
 
-This command will return a single pipeline setting available in your Azure DevOps Project.
-If no parameters is given it will return all settings for Pipelines in a Azure DevOps Project.
+This command will return all pipeline settings for a project.
 
 ## EXAMPLES
 
@@ -57,7 +56,7 @@ This command will return a value for specific setting with the name `statusBadge
 
 ### -Organization
 
-The organization to get pipeline settings from
+The organization to get pipeline settings from.
 
 ```yaml
 Type: String

@@ -8,7 +8,7 @@ schema: 2.0.0
 # Set-ADOPSPipelineSettings
 
 ## SYNOPSIS
-Sets specific pipeline setting or set multiple pipeline settings.
+Set pipeline settings for a project.
 
 ## SYNTAX
 
@@ -19,7 +19,7 @@ Set-ADOPSPipelineSettings [-Organization <String>] -Project <String> -Values <Ob
 
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+This command will set pipeline settings for a project.
 
 ## EXAMPLES
 
@@ -46,7 +46,7 @@ This command will set multiple settings
 
 
 ### -Organization
-The organization to get pipeline settings from
+The organization to get pipeline settings from.
 
 ```yaml
 Type: String
@@ -76,7 +76,7 @@ Accept wildcard characters: False
 ```
 
 ### -Values
-Pipeline settings to patch
+Pipeline settings to set.
 
 ```yaml
 Type: Object
