@@ -1,6 +1,6 @@
 # ADOPS
 
-This repository contains functions for creating and maintaining Azure DevOps environments with support for multiple environment connections.
+This repository contains functions for creating and maintaining Azure DevOps environments using OAuth and simple login without PATs.
 
 This project started out as a hackathon around PowerShell and Pester with the goal to be able to create, update, and remove, all or most of the parts we regularly use in our own Azure DevOps environments, in a standardized and easy way.
 
