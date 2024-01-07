@@ -8,6 +8,7 @@ schema: 2.0.0
 # Set-ADOPSPipelineRetentionSettings
 
 ## SYNOPSIS
+
 Set pipeline retention settings for a project.
 
 ## SYNTAX
@@ -18,11 +19,13 @@ Set-ADOPSPipelineRetentionSettings [[-Organization] <String>] [-Project] <String
 ```
 
 ## DESCRIPTION
+
 This command will set the retention settings values for a project.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
 PS C:\> Set-ADOPSPipelineRetentionSettings -Project 'MyProject' -Values @{
     artifactsRetention = 51
@@ -35,6 +38,7 @@ PS C:\> Set-ADOPSPipelineRetentionSettings -Project 'MyProject' -Values @{
 This command will set all pipeline retention settings.
 
 ### Example 2
+
 ```powershell
 PS C:\> Set-ADOPSPipelineRetentionSettings -Project 'MyProject' -Values @{
     artifactsRetention = 51
@@ -46,6 +50,7 @@ This command will set a single pipeline retention settings.
 ## PARAMETERS
 
 ### -Organization
+
 The organization to get pipeline retention settings from.
 
 ```yaml
@@ -61,6 +66,7 @@ Accept wildcard characters: False
 ```
 
 ### -Project
+
 The project to get pipeline retention settings from.
 
 ```yaml
@@ -76,6 +82,7 @@ Accept wildcard characters: False
 ```
 
 ### -Values
+
 Pipeline retention settings to set.
 
 ```yaml
@@ -91,6 +98,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
@@ -99,11 +107,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-System.Object
+### System.Object
 
 A Key/value custom object of all the pipeline retention value
 
-### System.Object
 ## NOTES
 
 ## RELATED LINKS

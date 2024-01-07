@@ -8,6 +8,7 @@ schema: 2.0.0
 # Get-ADOPSPipelineRetentionSettings
 
 ## SYNOPSIS
+
 Returns all pipeline retention settings.
 
 ## SYNTAX
@@ -17,11 +18,13 @@ Get-ADOPSPipelineRetentionSettings [[-Organization] <String>] [-Project] <String
 ```
 
 ## DESCRIPTION
+
 This command will return all pipeline retention settings for a Azure DevOps Project.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
 PS C:\> Get-ADOPSPipelineRetentionSettings -Project 'MyProject'
 ```
@@ -31,6 +34,7 @@ This command will get all the pipeline retention settings values for a project.
 ## PARAMETERS
 
 ### -Organization
+
 The organization to get pipeline retention settings from.
 
 ```yaml
@@ -46,6 +50,7 @@ Accept wildcard characters: False
 ```
 
 ### -Project
+
 The project to get pipeline retention settings from.
 
 ```yaml
@@ -61,6 +66,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
@@ -69,11 +75,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-System.Object
+### System.Object
 
 A Key/value custom object of all the pipeline retention values.
 
-### System.Object
 ## NOTES
 
 ## RELATED LINKS
