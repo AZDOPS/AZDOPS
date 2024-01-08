@@ -40,7 +40,7 @@ Exclusion of standard tests can be done using the SkipTest attribute (See f.eg N
 [SkipTest('HasOrganizationParameter')]
 ```
 
-Introducing additional exclusions should be discussed in a GitHub issue before implemention.
+Introducing additional exclusions should be discussed in a GitHub issue before implementation.
 
 ### platyPS
 
