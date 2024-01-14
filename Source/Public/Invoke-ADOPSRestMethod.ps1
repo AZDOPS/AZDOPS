@@ -11,6 +11,11 @@ function Invoke-ADOPSRestMethod {
         [string]$Body
     )
 
+    If ( ($Uri -NotLike "*dev.azure.com*") -and ($Uri -NotLike "*visualstudio.com*")) {
+        $Organization = GetADOPSDefaultOrganization
+        $Uri = "https://dev.azure.com/$Organization/$Uri"
+    }
+
     $InvokeSplat = @{
         Uri = $Uri
         Method = $Method

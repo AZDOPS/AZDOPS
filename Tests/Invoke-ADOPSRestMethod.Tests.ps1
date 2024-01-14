@@ -62,12 +62,31 @@ Describe 'Invoke-ADOPSRestMethod' {
             Invoke-ADOPSRestMethod -Uri 'uri' -Method 'Post' | Should -Be 'Post'
         }
 
-        it 'Uri should be set' {
+        it 'Uri should be set using full uri - dev.azure.com' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $Uri
             }
 
-            Invoke-ADOPSRestMethod -Uri 'uri' -Method 'Post' | Should -Be 'Uri'
+            Invoke-ADOPSRestMethod -Uri 'https://dev.azure.com/dummyUri' -Method 'Post' | Should -Be 'https://dev.azure.com/dummyUri'
+        }
+
+        it 'Uri should be set using full uri - visualstudio.com' {
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                return $Uri
+            }
+            
+            Invoke-ADOPSRestMethod -Uri 'https://dummyOrg.visualstudio.com/dummyUri' -Method 'Post' | Should -Be 'https://dummyOrg.visualstudio.com/dummyUri'
+        }
+
+        it 'Uri should be set using partial uri' {
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
+                return $Uri
+            }
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith {
+                return 'dummyOrg'
+            }
+
+            Invoke-ADOPSRestMethod -Uri 'dummyUri' -Method 'Post' | Should -Be 'https://dev.azure.com/dummyOrg/dummyUri'
         }
 
         it 'If a body is given, post should include body'  {
