@@ -14,7 +14,7 @@ This command will initialize a newly created Azure DevOps repository.
 
 ```
 Initialize-ADOPSRepository [[-Message] <String>] [[-Branch] <String>] [-RepositoryId] <String>
- [[-newContentTemplate] <String[]>] [-Readme] [[-Path] <String>] [[-Content] <String>]
+ [[-NewContentTemplate] <String[]>] [-Readme] [[-Path] <String>] [[-Content] <String>]
  [<CommonParameters>]
 ```
 
@@ -39,7 +39,7 @@ This command will initialize the repo with only the default "README.md" template
 ### Example 2
 ```powershell
 PS C:\> $r = New-ADOPSRepository -Name "myNewRepo" -Project 'myProject' -Organization 'myOrg'
-PS C:\> Initialize-ADOPSRepository -RepositoryId $r.id -Message 'my initial commit message' -newContentTemplate Actionscript.gitignore, Ada.gitignore, Android.gitignore -Path '/newCustomFile.txt' -Readme
+PS C:\> Initialize-ADOPSRepository -RepositoryId $r.id -Message 'my initial commit message' -NewContentTemplate Actionscript.gitignore, Ada.gitignore, Android.gitignore -Path '/newCustomFile.txt' -Readme
 ```
 
 This command will initialize a repository containing the files
@@ -159,7 +159,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -newContentTemplate
+### -NewContentTemplate
 Initialize the repo with one or more of the existing .gitignore templates.
 If one template is selected it will be given the name '.gitignore'
 If 2 or more templates are given they will be named as the template name.

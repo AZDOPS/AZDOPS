@@ -160,25 +160,25 @@ Describe 'Initialize-ADOPSRepository' {
         }
 
         It 'Body - Changes - If one template is given, set it as .gitignore' {
-            $Res = Initialize-ADOPSRepository -RepositoryId $RepositoryId -newContentTemplate Actionscript.gitignore
+            $Res = Initialize-ADOPSRepository -RepositoryId $RepositoryId -NewContentTemplate Actionscript.gitignore
             $actual = ($Res.Body | ConvertFrom-Json).commits.changes
             $actual[0].newContentTemplate.type | Should -Be 'gitignore'
         }
 
         It 'Body - Changes - If one template is given, set it as .gitignore' {
-            $Res = Initialize-ADOPSRepository -RepositoryId $RepositoryId -newContentTemplate Actionscript.gitignore
+            $Res = Initialize-ADOPSRepository -RepositoryId $RepositoryId -NewContentTemplate Actionscript.gitignore
             $actual = ($Res.Body | ConvertFrom-Json).commits.changes
             $actual[0].newContentTemplate.name | Should -Be 'Actionscript.gitignore'
         }
 
         It 'Body - Changes - If one template is given, set it as .gitignore' {
-            $Res = Initialize-ADOPSRepository -RepositoryId $RepositoryId -newContentTemplate Actionscript.gitignore
+            $Res = Initialize-ADOPSRepository -RepositoryId $RepositoryId -NewContentTemplate Actionscript.gitignore
             $actual = ($Res.Body | ConvertFrom-Json).commits.changes
             $actual[0].item.path| Should -Be '/.gitignore'
         }
 
         It 'Body - Changes - If more than one template is given, add it as templatename, count.' {
-            $Res = Initialize-ADOPSRepository -RepositoryId $RepositoryId -newContentTemplate Actionscript.gitignore, Ada.gitignore, Agda.gitignore
+            $Res = Initialize-ADOPSRepository -RepositoryId $RepositoryId -NewContentTemplate Actionscript.gitignore, Ada.gitignore, Agda.gitignore
             $actual = ($Res.Body | ConvertFrom-Json).commits.changes
             $actual.Count | Should -Be 3
         }
@@ -186,7 +186,7 @@ Describe 'Initialize-ADOPSRepository' {
         It 'Body - Changes - If more than one template is given, add it as templatename, type, <_>' -TestCases @('Actionscript.gitignore', 'Ada.gitignore', 'Agda.gitignore') {
             $multiTemplateTestcases = @('Actionscript.gitignore', 'Ada.gitignore', 'Agda.gitignore')
             $currName = $_
-            $Res = Initialize-ADOPSRepository -RepositoryId $RepositoryId -newContentTemplate $multiTemplateTestcases
+            $Res = Initialize-ADOPSRepository -RepositoryId $RepositoryId -NewContentTemplate $multiTemplateTestcases
             $actual = ($Res.Body | ConvertFrom-Json).commits.changes.where({$_.newContentTemplate.name -eq $currName})
             $actual.newContentTemplate.type | Should -Be 'gitignore'
         }
@@ -194,7 +194,7 @@ Describe 'Initialize-ADOPSRepository' {
         It 'Body - Changes - If more than one template is given, add it as templatename, name, <_>' -TestCases @('Actionscript.gitignore', 'Ada.gitignore', 'Agda.gitignore') {
             $multiTemplateTestcases = @('Actionscript.gitignore', 'Ada.gitignore', 'Agda.gitignore')
             $currName = $_
-            $Res = Initialize-ADOPSRepository -RepositoryId $RepositoryId -newContentTemplate $multiTemplateTestcases
+            $Res = Initialize-ADOPSRepository -RepositoryId $RepositoryId -NewContentTemplate $multiTemplateTestcases
             $actual = ($Res.Body | ConvertFrom-Json).commits.changes.where({$_.newContentTemplate.name -eq $currName})
             $actual.newContentTemplate.name | Should -Be $currName
         }
@@ -202,14 +202,14 @@ Describe 'Initialize-ADOPSRepository' {
         It 'Body - Changes - If more than one template is given, add it as templatename, path, <_>' -TestCases @('Actionscript.gitignore', 'Ada.gitignore', 'Agda.gitignore') {
             $multiTemplateTestcases = @('Actionscript.gitignore', 'Ada.gitignore', 'Agda.gitignore')
             $currName = $_
-            $Res = Initialize-ADOPSRepository -RepositoryId $RepositoryId -newContentTemplate $multiTemplateTestcases
+            $Res = Initialize-ADOPSRepository -RepositoryId $RepositoryId -NewContentTemplate $multiTemplateTestcases
             $actual = ($Res.Body | ConvertFrom-Json).commits.changes.where({$_.newContentTemplate.name -eq $currName})
             # Because .item is a static object member we need to index this as an array to get the actual member..
             $actual[0].item.path| Should -Be "/$_"
         }
 
         It 'Body - Changes - Combining templates and files should work, count.' {
-            $Res = Initialize-ADOPSRepository -RepositoryId $RepositoryId -newContentTemplate Actionscript.gitignore, Android.gitignore -Readme -Path /fileName.txt 
+            $Res = Initialize-ADOPSRepository -RepositoryId $RepositoryId -NewContentTemplate Actionscript.gitignore, Android.gitignore -Readme -Path /fileName.txt 
             $actual = ($Res.Body | ConvertFrom-Json).commits.changes
             $actual.Count | Should -Be 4
         }
