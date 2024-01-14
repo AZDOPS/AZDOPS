@@ -17,24 +17,33 @@ Invoke-ADOPSRestMethod [-Uri] <String> [[-Method] <WebRequestMethod>] [[-Body] <
 ```
 
 ## DESCRIPTION
-This command invokes a API call to Azure DevOps using the default logged in account (Get-ADOPSConnection | Where-Object {$_.Values.Default -EQ $true}). You will need to give the full Uri to call, for example
-http://dev.azure.com/myOrganization/_api/GetStuff
+This command invokes a API call to Azure DevOps using the standard ADOPS logged in account.
+If you do not give the full Uri to call, for example 'https://dev.azure.com/myOrganization/_api/GetStuff', it will append 'https://dev.azure.com/$Organization', where $Organization is the one you are connected to, to your URI.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> InvokeADOPSRestMethod -Uri "https://dev.azure.com/$Organization/_apis/distributedtask/tasks"
+PS C:\> Invoke-ADOPSRestMethod -Uri "https://dev.azure.com/$Organization/_apis/distributedtask/tasks"
 ```
 
-This command will return whatever this API endpoint returns. It will perform the API call using the logged in "Default" credentials
+This command will return whatever this API endpoint returns.
 
 ### Example 2
 ```powershell
-PS C:\> InvokeADOPSRestMethod -Uri "https://dev.azure.com/$Organization/_apis/distributedtask/tasks" -Method Post -Body $BodyObject
+PS C:\> Invoke-ADOPSRestMethod -Uri "/_apis/distributedtask/tasks"
 ```
 
-This command will perform a Post call to the API endpoint. It will perform the API call using the logged in "Default" credentials. It will include the body object in the call. It will _not_ format or validate any of the input values.
+This command will append 'https://dev.azure.com/$Organization' to URI and return whatever the full API endpoint 'https://dev.azure.com/$Organization/_apis/distributedtask/tasks' returns.
+
+$Organization is taken from the current ADOPS connection. 
+
+### Example 3
+```powershell
+PS C:\> Invoke-ADOPSRestMethod -Uri "https://dev.azure.com/$Organization/_apis/distributedtask/tasks" -Method Post -Body $BodyObject
+```
+
+This command will perform a Post call to the API endpoint. It will perform the API call using the logged in ADOPS credentials. It will include the body object in the call. It will _not_ format or validate any of the input values.
 
 ## PARAMETERS
 
