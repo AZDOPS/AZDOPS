@@ -72,7 +72,6 @@ Describe 'New-ADOPSServiceConnection' {
     }
     
     Context "AzureResourceManagerConnectionArgumentTypes" {
-
         BeforeAll {
             Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
             
@@ -138,7 +137,6 @@ Describe 'New-ADOPSServiceConnection' {
     }
 
     Context "GenericServiceConnection" {
-
         BeforeAll {
             Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
             
@@ -154,26 +152,32 @@ Describe 'New-ADOPSServiceConnection' {
         BeforeEach {
             $Splat = @{
                 ConnectionData = [ordered]@{
-                    type          = "dockerregistry"
-                    name          = "Service Connection Name"
-                    description   = "Service Connection Description"
-                    authorization = [ordered]@{
+                    type                             = "dockerregistry"
+                    name                             = "Service Connection Name"
+                    description                      = "Service Connection Description"
+                    authorization                    = [ordered]@{
                         paramaters = [ordered]@{
                             registry = "dockerregistry.local"
                             username = "pipeline"
                             password = "supersecretpassword"
                             email    = "admin@dockerregistry.local"
                         }
+                        scheme     = "UsernamePassword"
                     }
-                    isSshared     = $false
-                    isReady       = $true
-                    owner         = "Library"
+                    isSshared                        = $false
+                    isReady                          = $true
+                    owner                            = "Library"
+                    serviceEndpointProjectReferences = @(
+                        [ordered]@{
+                            projectReference = [ordered]@{
+                                id   = "/43cf98ab-e228-451f-b0b1-05008d45460d"
+                                name = "myProject"
+                            }
+                            name             = "myNewServiceEndpoint"
+                        }            
+                    )
                 }
             }
-        }
-
-        It 'Test' {
-            Get-Help New-ADOPSServiceConnection -Full | Out-Host
         }
 
         It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
@@ -198,7 +202,7 @@ Describe 'New-ADOPSServiceConnection' {
                 -MockWith { return $body }
 
             $r = New-ADOPSServiceConnection @Splat | ConvertFrom-Json | ConvertTo-Json -Depth 10 -Compress
-            $r | Should -Be '{"type":"dockerregistry","name":"Service Connection Name","description":"Service Connection Description","authorization":{"paramaters":{"registry":"dockerregistry.local","username":"pipeline","password":"supersecretpassword","email":"admin@dockerregistry.local"}},"isSshared":false,"isReady":true,"owner":"Library"}'
+            $r | Should -Be '{"type":"dockerregistry","name":"Service Connection Name","description":"Service Connection Description","authorization":{"paramaters":{"registry":"dockerregistry.local","username":"pipeline","password":"supersecretpassword","email":"admin@dockerregistry.local"},"scheme":"UsernamePassword"},"isSshared":false,"isReady":true,"owner":"Library","serviceEndpointProjectReferences":[{"projectReference":{"id":"/43cf98ab-e228-451f-b0b1-05008d45460d","name":"myProject"},"name":"myNewServiceEndpoint"}]}'
         }
     }
 }
