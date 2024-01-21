@@ -31,6 +31,11 @@ function New-ADOPSServiceConnection {
         [Parameter(ParameterSetName = 'ManagedServiceIdentity')]
         [Parameter(ParameterSetName = 'WorkloadIdentityFederation')]
         [string]$ConnectionName,
+
+        [Parameter(ParameterSetName = 'ServicePrincipal')]
+        [Parameter(ParameterSetName = 'ManagedServiceIdentity')]
+        [Parameter(ParameterSetName = 'WorkloadIdentityFederation')]
+        [string]$Description,
       
         [Parameter(Mandatory, ParameterSetName = 'ServicePrincipal')]
         [Parameter(Mandatory, ParameterSetName = 'ManagedServiceIdentity')]

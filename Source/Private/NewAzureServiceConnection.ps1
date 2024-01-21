@@ -11,6 +11,8 @@ function NewAzureServiceConnection {
         [string]$Project,
 
         [string]$ConnectionName,
+
+        [string]$Description,
       
         [pscredential]$ServicePrincipal,
 
@@ -94,10 +96,11 @@ function NewAzureServiceConnection {
 
     # Create body for the API call
     $Body = [ordered]@{
-        data                             = $data
         name                             = ($SubscriptionName -replace ' ')
+        description                      = "$Description"
         type                             = 'AzureRM'
         url                              = 'https://management.azure.com/'
+        data                             = $data
         authorization                    = $authorization
         isShared                         = $false
         isReady                          = $true
