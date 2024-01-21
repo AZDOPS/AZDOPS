@@ -172,7 +172,7 @@ Accept wildcard characters: False
 ```
 
 ### -Description
-{{ Fill Description Description }}
+Description of Service Connection in Azure DevOps.
 
 ```yaml
 Type: String
