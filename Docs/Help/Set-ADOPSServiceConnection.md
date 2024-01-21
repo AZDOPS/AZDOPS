@@ -17,13 +17,13 @@ Allows update of a Azure DevOps Service Connection.
 Set-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
  -SubscriptionId <String> -Project <String> -ServiceEndpointId <Guid> [-ConnectionName <String>]
  [-Description <String>] [-EndpointOperation <String>] -ServicePrincipal <PSCredential>
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [<CommonParameters>]
 ```
 
 ### GenericServiceConnection
 ```
 Set-ADOPSServiceConnection [-Organization <String>] -ConnectionData <Object> [-EndpointOperation <String>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [<CommonParameters>]
 ```
 
 ### WorkloadIdentityFederation
@@ -31,7 +31,7 @@ Set-ADOPSServiceConnection [-Organization <String>] -ConnectionData <Object> [-E
 Set-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
  -SubscriptionId <String> -Project <String> -ServiceEndpointId <Guid> [-ConnectionName <String>]
  [-Description <String>] [-EndpointOperation <String>] [-WorkloadIdentityFederation] -AzureScope <String>
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [<CommonParameters>]
 ```
 
 ### ManagedServiceIdentity
@@ -39,7 +39,7 @@ Set-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -Subscrip
 Set-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
  -SubscriptionId <String> -Project <String> -ServiceEndpointId <Guid> [-ConnectionName <String>]
  [-Description <String>] [-EndpointOperation <String>] -ServicePrincipal <PSCredential> [-ManagedIdentity]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
