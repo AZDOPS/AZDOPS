@@ -15,27 +15,27 @@ Create an Azure DevOps Service Connection to Azure.
 ### ServicePrincipal (Default)
 ```
 New-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
- -SubscriptionId <String> -Project <String> [-ConnectionName <String>] -ServicePrincipal <PSCredential>
- [<CommonParameters>]
+ -SubscriptionId <String> -Project <String> [-ConnectionName <String>] [-Description <String>]
+ -ServicePrincipal <PSCredential> [<CommonParameters>]
 ```
 
 ### ManagedServiceIdentity
 ```
 New-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
- -SubscriptionId <String> -Project <String> [-ConnectionName <String>] -ServicePrincipal <PSCredential>
- [-ManagedIdentity] [<CommonParameters>]
+ -SubscriptionId <String> -Project <String> [-ConnectionName <String>] [-Description <String>]
+ -ServicePrincipal <PSCredential> [-ManagedIdentity] [<CommonParameters>]
 ```
 
 ### WorkloadIdentityFederation
 ```
 New-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
- -SubscriptionId <String> -Project <String> [-ConnectionName <String>] [-WorkloadIdentityFederation]
- -AzureScope <String> [<CommonParameters>]
+ -SubscriptionId <String> -Project <String> [-ConnectionName <String>] [-Description <String>]
+ [-WorkloadIdentityFederation] -AzureScope <String> [<CommonParameters>]
 ```
 
 ### GenericServiceConnection
 ```
-New-ADOPSServiceConnection [-Organization <String>] -ConnectionData <object>
+New-ADOPSServiceConnection [-Organization <String>] -ConnectionData <Object> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -158,6 +158,21 @@ Accept wildcard characters: False
 
 ### -ConnectionName
 Name of Service Connection in Azure DevOps.
+
+```yaml
+Type: String
+Parameter Sets: ServicePrincipal, WorkloadIdentityFederation, ManagedServiceIdentity
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Description
+{{ Fill Description Description }}
 
 ```yaml
 Type: String
