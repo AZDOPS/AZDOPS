@@ -1,23 +1,17 @@
-function SewAzureServiceConnection {
+function SetAzureServiceConnection {
     param(
         [string]$Organization,
-
         [string]$TenantId,
-
         [string]$SubscriptionName,
-
         [string]$SubscriptionId,
-
         [string]$Project,
-
+        [guid]$ServiceEndpointId,
         [string]$ConnectionName,
-      
+        [string]$Description,
+        [string]$EndpointOperation,
         [pscredential]$ServicePrincipal,
-
         [switch]$ManagedIdentity,
-
         [switch]$WorkloadIdentityFederation,
-
         [string]$AzureScope
     )
 
@@ -95,7 +89,7 @@ function SewAzureServiceConnection {
     
     # Create body for the API call
     $Body = [ordered]@{
-        id                               = $ServiceConnectionId
+        id                               = $ServiceEndpointId
         name                             = ($SubscriptionName -replace " ")
         description                      = "$Description"
         type                             = "AzureRM"

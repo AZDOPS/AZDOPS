@@ -76,7 +76,7 @@ Describe 'New-ADOPSServiceConnection' {
         }
     }
     
-    Context "AzureResourceManagerConnectionArgumentTypes" {
+    Context "AzureResourceManagerConnection" {
         BeforeAll {
             Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
             
@@ -116,7 +116,7 @@ Describe 'New-ADOPSServiceConnection' {
             $r = New-ADOPSServiceConnection @Splat
             $r | Should -Be 'https://dev.azure.com/myorg/myproj/_apis/serviceendpoint/endpoints?api-version=7.2-preview.4'
         }
-
+        
         It 'Verifying body is correct - ServicePrincipal' {
             $Splat.Add('ServicePrincipal', [pscredential]::new('User', (ConvertTo-SecureString -String 'PassWord' -AsPlainText -Force)))
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { return $body }
