@@ -41,10 +41,7 @@ function Set-ADOPSServiceConnection {
         [Parameter(ParameterSetName = 'ManagedServiceIdentity')]
         [Parameter(ParameterSetName = 'WorkloadIdentityFederation')]
         [string]$Description,
-        
-        [Parameter(ParameterSetName = 'ServicePrincipal')]
-        [Parameter(ParameterSetName = 'ManagedServiceIdentity')]
-        [Parameter(ParameterSetName = 'WorkloadIdentityFederation')]
+
         [ValidateNotNullOrEmpty()]
         [string]$EndpointOperation,
       
