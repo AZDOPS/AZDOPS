@@ -41,6 +41,11 @@ Describe 'New-ADOPSServiceConnection' {
                 Type      = 'string'
             },
             @{
+                Name      = 'Description'
+                Mandatory = $false
+                Type      = 'string'
+            },
+            @{
                 Name      = 'ConnectionData'
                 Mandatory = $true
             },
@@ -116,7 +121,7 @@ Describe 'New-ADOPSServiceConnection' {
             $Splat.Add('ServicePrincipal', [pscredential]::new('User', (ConvertTo-SecureString -String 'PassWord' -AsPlainText -Force)))
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { return $body }
             $r = New-ADOPSServiceConnection @Splat | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 10
-            $r | Should -Be '{"data":{"subscriptionId":"AzureSubscriptionId","subscriptionName":"AzureSubscriptionName","environment":"AzureCloud","scopeLevel":"Subscription","creationMode":"Manual"},"name":"AzureSubscriptionName","type":"AzureRM","url":"https://management.azure.com/","authorization":{"parameters":{"tenantid":"AzureTennantId","serviceprincipalid":"User","authenticationType":"spnKey","serviceprincipalkey":"PassWord"},"scheme":"ServicePrincipal"},"isShared":false,"isReady":true,"serviceEndpointProjectReferences":[{"projectReference":{"id":"ProjectInfoId","name":"myproj"},"name":"AzureSubscriptionName"}]}'
+            $r | Should -Be '{"name":"AzureSubscriptionName","description":"","type":"AzureRM","url":"https://management.azure.com/","data":{"subscriptionId":"AzureSubscriptionId","subscriptionName":"AzureSubscriptionName","environment":"AzureCloud","scopeLevel":"Subscription","creationMode":"Manual"},"authorization":{"parameters":{"tenantid":"AzureTennantId","serviceprincipalid":"User","authenticationType":"spnKey","serviceprincipalkey":"PassWord"},"scheme":"ServicePrincipal"},"isShared":false,"isReady":true,"serviceEndpointProjectReferences":[{"projectReference":{"id":"ProjectInfoId","name":"myproj"},"name":"AzureSubscriptionName"}]}'
         }
 
         It 'Verifying body is correct - ManagedServiceIdentity' {
@@ -124,7 +129,7 @@ Describe 'New-ADOPSServiceConnection' {
             $Splat.Add('ManagedIdentity', $true)
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { return $body }
             $r = New-ADOPSServiceConnection @Splat | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 10
-            $r | Should -Be '{"data":{"subscriptionId":"AzureSubscriptionId","subscriptionName":"AzureSubscriptionName","environment":"AzureCloud","scopeLevel":"Subscription"},"name":"AzureSubscriptionName","type":"AzureRM","url":"https://management.azure.com/","authorization":{"parameters":{"tenantid":"AzureTennantId","serviceprincipalid":"User","serviceprincipalkey":"PassWord"},"scheme":"ManagedServiceIdentity"},"isShared":false,"isReady":true,"serviceEndpointProjectReferences":[{"projectReference":{"id":"ProjectInfoId","name":"myproj"},"name":"AzureSubscriptionName"}]}'
+            $r | Should -Be '{"name":"AzureSubscriptionName","description":"","type":"AzureRM","url":"https://management.azure.com/","data":{"subscriptionId":"AzureSubscriptionId","subscriptionName":"AzureSubscriptionName","environment":"AzureCloud","scopeLevel":"Subscription"},"authorization":{"parameters":{"tenantid":"AzureTennantId","serviceprincipalid":"User","serviceprincipalkey":"PassWord"},"scheme":"ManagedServiceIdentity"},"isShared":false,"isReady":true,"serviceEndpointProjectReferences":[{"projectReference":{"id":"ProjectInfoId","name":"myproj"},"name":"AzureSubscriptionName"}]}'
         }
 
         It 'Verifying body is correct - WorkloadIdentityFederation' {
@@ -132,7 +137,7 @@ Describe 'New-ADOPSServiceConnection' {
             $Splat.Add('AzureScope', 'Azure/Scope')
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { return $body }
             $r = New-ADOPSServiceConnection @Splat | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 10
-            $r | Should -Be '{"data":{"subscriptionId":"AzureSubscriptionId","subscriptionName":"AzureSubscriptionName","environment":"AzureCloud","scopeLevel":"Subscription","creationMode":"Automatic"},"name":"AzureSubscriptionName","type":"AzureRM","url":"https://management.azure.com/","authorization":{"parameters":{"tenantid":"AzureTennantId","scope":"Azure/Scope"},"scheme":"WorkloadIdentityFederation"},"isShared":false,"isReady":true,"serviceEndpointProjectReferences":[{"projectReference":{"id":"ProjectInfoId","name":"myproj"},"name":"AzureSubscriptionName"}]}'
+            $r | Should -Be '{"name":"AzureSubscriptionName","description":"","type":"AzureRM","url":"https://management.azure.com/","data":{"subscriptionId":"AzureSubscriptionId","subscriptionName":"AzureSubscriptionName","environment":"AzureCloud","scopeLevel":"Subscription","creationMode":"Automatic"},"authorization":{"parameters":{"tenantid":"AzureTennantId","scope":"Azure/Scope"},"scheme":"WorkloadIdentityFederation"},"isShared":false,"isReady":true,"serviceEndpointProjectReferences":[{"projectReference":{"id":"ProjectInfoId","name":"myproj"},"name":"AzureSubscriptionName"}]}'
         }
     }
 
