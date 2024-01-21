@@ -93,10 +93,11 @@ New-ADOPSServiceConnection @Params
 ### Example 4
 ```powershell
 $ConnectionData = [ordered]@{
-    type          = "dockerregistry"
-    name          = "Service Connection Name"
-    description   = "Service Connection Description"
-    authorization = [ordered]@{
+    type                             = "dockerregistry"
+    name                             = "Service Connection Name"
+    description                      = "Service Connection Description"
+    authorization                    = [ordered]@{
+        scheme     = "UsernamePassword"
         paramaters = [ordered]@{
             registry = "dockerregistry.local"
             username = "pipeline"
@@ -104,9 +105,18 @@ $ConnectionData = [ordered]@{
             email    = "admin@dockerregistry.local"
         }
     }
-    isSshared     = $false
-    isReady       = $true
-    owner         = "Library"
+    isSshared                        = $false
+    isReady                          = $true
+    owner                            = "Library"
+    serviceEndpointProjectReferences = @(
+        [ordered]@{
+            projectReference = [ordered]@{
+                id   = "de6a3035-0146-4ae2-81c1-68596d187cf4"
+                name = "My DevOps Project"
+            }
+            name             = "Service Connection Name"
+        }
+    )
 }
 New-ADOPSServiceConnection -ConnectionData $ConnectionData
 ```
