@@ -59,22 +59,51 @@ function SewAzureServiceConnection {
         'ManagedServiceIdentity' {
             $authorization = [ordered]@{
                 parameters = [ordered]@{
-                    tenantid = $TenantId
+                    tenantid            = $TenantId
+                    serviceprincipalid  = $ServicePrincipal.UserName
+                    serviceprincipalkey = $ServicePrincipal.GetNetworkCredential().Password
                 }
                 scheme     = "ManagedServiceIdentity"
+            }
+
+            $data = [ordered]@{
+                subscriptionId   = $SubscriptionId
+                subscriptionName = $SubscriptionName
+                environment      = 'AzureCloud'
+                scopeLevel       = 'Subscription'
+            }
+        }
+
+        'WorkloadIdentityFederation' {
+            $authorization = [ordered]@{
+                parameters = [ordered]@{
+                    tenantid = $TenantId
+                    scope    = $AzureScope
+                }
+                scheme     = 'WorkloadIdentityFederation'
+            }
+
+            $data = [ordered]@{
+                subscriptionId   = $SubscriptionId
+                subscriptionName = $SubscriptionName
+                environment      = 'AzureCloud'
+                scopeLevel       = 'Subscription'
+                creationMode     = 'Automatic'
             }
         }
     }
     
     # Create body for the API call
     $Body = [ordered]@{
-        authorization                    = $authorization
-        data                             = $data
-        description                      = "$Description"
         id                               = $ServiceConnectionId
-        isReady                          = $true
-        isShared                         = $false
         name                             = ($SubscriptionName -replace " ")
+        description                      = "$Description"
+        type                             = "AzureRM"
+        url                              = "https://management.azure.com/"
+        data                             = $data
+        authorization                    = $authorization
+        isShared                         = $false
+        isReady                          = $true
         serviceEndpointProjectReferences = @(
             [ordered]@{
                 projectReference = [ordered]@{
@@ -84,8 +113,6 @@ function SewAzureServiceConnection {
                 name             = $ConnectionName
             }
         )
-        type                             = "AzureRM"
-        url                              = "https://management.azure.com/"
     } | ConvertTo-Json -Depth 10
         
     if ($PSBoundParameters.ContainsKey('EndpointOperation')) {
@@ -101,5 +128,5 @@ function SewAzureServiceConnection {
         Body   = $Body
     }
         
-    InvokeADOPSRestMethod @InvokeSplat
+    return (InvokeADOPSRestMethod @InvokeSplat)
 }
