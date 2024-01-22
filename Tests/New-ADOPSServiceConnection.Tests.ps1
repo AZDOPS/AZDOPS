@@ -175,7 +175,7 @@ Describe 'New-ADOPSServiceConnection' {
                     serviceEndpointProjectReferences = @(
                         [ordered]@{
                             projectReference = [ordered]@{
-                                id   = "/43cf98ab-e228-451f-b0b1-05008d45460d"
+                                id   = "43cf98ab-e228-451f-b0b1-05008d45460d"
                                 name = "myProject"
                             }
                             name             = "myNewServiceEndpoint"
@@ -196,18 +196,21 @@ Describe 'New-ADOPSServiceConnection' {
         }
 
         It 'Verifying URI is correct' {
-            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { return $URI }
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS `
+                -ParameterFilter { $Method -eq "POST" } `
+                -MockWith { return $URI }
+
             $r = New-ADOPSServiceConnection @Splat
             $r | Should -Be 'https://dev.azure.com/myorg/_apis/serviceendpoint/endpoints?api-version=7.2-preview.4'
         }
 
         It 'Verifying body is correct - GenericServiceConnection' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS `
-                -ParameterFilter { $Uri -like "*_apis/serviceendpoint/endpoints*" } `
+                -ParameterFilter { ($Method -eq "POST") -and ($Uri -like "*_apis/serviceendpoint/endpoints*") } `
                 -MockWith { return $body }
 
             $r = New-ADOPSServiceConnection @Splat | ConvertFrom-Json | ConvertTo-Json -Depth 10 -Compress
-            $r | Should -Be '{"type":"dockerregistry","name":"Service Connection Name","description":"Service Connection Description","authorization":{"paramaters":{"registry":"dockerregistry.local","username":"pipeline","password":"supersecretpassword","email":"admin@dockerregistry.local"},"scheme":"UsernamePassword"},"isSshared":false,"isReady":true,"owner":"Library","serviceEndpointProjectReferences":[{"projectReference":{"id":"/43cf98ab-e228-451f-b0b1-05008d45460d","name":"myProject"},"name":"myNewServiceEndpoint"}]}'
+            $r | Should -Be '{"type":"dockerregistry","name":"Service Connection Name","description":"Service Connection Description","authorization":{"paramaters":{"registry":"dockerregistry.local","username":"pipeline","password":"supersecretpassword","email":"admin@dockerregistry.local"},"scheme":"UsernamePassword"},"isSshared":false,"isReady":true,"owner":"Library","serviceEndpointProjectReferences":[{"projectReference":{"id":"43cf98ab-e228-451f-b0b1-05008d45460d","name":"myProject"},"name":"myNewServiceEndpoint"}]}'
         }
     }
 }
