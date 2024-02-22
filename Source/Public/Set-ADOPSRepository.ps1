@@ -32,8 +32,32 @@ function Set-ADOPSRepository {
         if ([string]::IsNullOrEmpty($Organization)) {
             $Organization = GetADOPSDefaultOrganization
         }
-
+        
         $URI = "https://dev.azure.com/${Organization}/${Project}/_apis/git/repositories/${RepositoryId}?api-version=7.1-preview.1"
+        
+        $InvokeSplat = @{
+            URI = $Uri
+            Method = 'Patch'
+        }
+
+        if ($PSBoundParameters.ContainsKey('IsDisabled') -and ($false -eq $IsDisabled)) {
+            # Enabling a repo needs to be done in a separate call before changing any other settings.
+            $Body = [ordered]@{
+                'isDisabled' = $IsDisabled
+            }
+            $InvokeSplat.Body = $Body | ConvertTo-Json -Compress
+            try {
+                InvokeADOPSRestMethod @InvokeSplat
+            }
+            catch {
+                if (($_.ErrorDetails.Message | ConvertFrom-Json).message -eq 'The repository change is not supported.') {
+                    Write-Warning 'Failed to enable the repo. This is most likely because it is already enabled.'
+                }
+                else {
+                    throw $_
+                }
+            }
+        }
 
         $Body = [ordered]@{}
 
@@ -48,16 +72,38 @@ function Set-ADOPSRepository {
             $Body.Add('defaultBranch',$DefaultBranch)
         }
 
-        if ($PSBoundParameters.ContainsKey('IsDisabled')) {
-            $Body.Add('isDisabled',$IsDisabled)
+        if ($body.Keys.Count -gt 0) {
+            $InvokeSplat.Body = $Body | ConvertTo-Json -Compress
+            try {
+                InvokeADOPSRestMethod @InvokeSplat
+            }
+            catch {
+                if (($_.ErrorDetails.Message | ConvertFrom-Json).message -like "TF401019*") {
+                    Write-Warning 'Failed to update the repo. This may happen if the repo is disabled. Make sure it is enabled, or add -IsDisabled:$false'
+                }
+                else {
+                    throw $_
+                }
+            }
         }
-
-        $InvokeSplat = @{
-            URI = $Uri
-            Method = 'Patch'
-            Body = $Body | ConvertTo-Json -Compress
+        
+        if ($PSBoundParameters.ContainsKey('IsDisabled') -and ($true -eq $IsDisabled)) {
+            # Disabling a repo needs to be done in a separate call and after any other changes.
+            $Body = [ordered]@{
+                'isDisabled' = $IsDisabled
+            }
+            $InvokeSplat.Body = $Body | ConvertTo-Json -Compress
+            try {
+                InvokeADOPSRestMethod @InvokeSplat
+            }
+            catch {
+                if (($_.ErrorDetails.Message | ConvertFrom-Json).message -eq 'The repository change is not supported.') {
+                    Write-Warning 'Failed to disable the repo. This is most likely because it is already disabled.'
+                }
+                else {
+                    throw $_
+                }
+            }
         }
-
-        InvokeADOPSRestMethod @InvokeSplat
     }
 }

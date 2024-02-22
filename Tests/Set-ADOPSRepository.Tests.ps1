@@ -116,10 +116,14 @@ Describe 'Set-ADOPSRepository' {
             $actual.Body | Should -Be $required
         }
 
-        It 'Verifying body, all parameters' {
-            $required = '{"name":"NewName","defaultBranch":"refs/heads/defBranch","IsDisabled":true}'
+        It 'Verifying body, all parameters. If IsDisabled and others are set we should invoke the API twice -IsDisabled:$true.' {
             $actual = Set-ADOPSRepository -IsDisabled:$true -NewName 'NewName' -DefaultBranch 'defBranch' -Project 'DummyProj' -RepositoryId 'd5f24968-f2ab-4048-bd65-58711420f6fa'
-            $actual.Body | Should -Be $required
+            $actual.Count | Should -Be 2
+        }
+
+        It 'Verifying body, all parameters. If IsDisabled and others are set we should invoke the API twice-IsDisabled:$false.' {
+            $actual = Set-ADOPSRepository -IsDisabled:$false -NewName 'NewName' -DefaultBranch 'defBranch' -Project 'DummyProj' -RepositoryId 'd5f24968-f2ab-4048-bd65-58711420f6fa'
+            $actual.Count | Should -Be 2
         }
     }
 }
