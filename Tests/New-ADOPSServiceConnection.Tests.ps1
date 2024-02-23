@@ -11,69 +11,77 @@ Describe 'New-ADOPSServiceConnection' {
     Context 'Parameters' {
         $TestCases = @(
             @{
-                Name = 'Organization'
+                Name      = 'Organization'
                 Mandatory = $false
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'TenantId'
+                Name      = 'TenantId'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'SubscriptionName'
+                Name      = 'SubscriptionName'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'SubscriptionId'
+                Name      = 'SubscriptionId'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'Project'
+                Name      = 'Project'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'ConnectionName'
+                Name      = 'ConnectionName'
                 Mandatory = $false
-                Type = 'string'
+                Type      = 'string'
             },
             @{
-                Name = 'ServicePrincipal'
-                Mandatory = $true
-                Type = 'pscredential'
+                Name      = 'Description'
+                Mandatory = $false
+                Type      = 'string'
             },
             @{
-                Name = 'ManagedIdentity'
+                Name      = 'ConnectionData'
                 Mandatory = $true
-                Type = 'switch'
             },
             @{
-                Name = 'WorkloadIdentityFederation'
+                Name      = 'ServicePrincipal'
                 Mandatory = $true
-                Type = 'switch'
+                Type      = 'pscredential'
             },
             @{
-                Name = 'AzureScope'
+                Name      = 'ManagedIdentity'
                 Mandatory = $true
-                Type = 'string'
+                Type      = 'switch'
+            },
+            @{
+                Name      = 'WorkloadIdentityFederation'
+                Mandatory = $true
+                Type      = 'switch'
+            },
+            @{
+                Name      = 'AzureScope'
+                Mandatory = $true
+                Type      = 'string'
             }
         )
     
-        It 'Should have parameter <_.Name>' -TestCases $TestCases  {
+        It 'Should have parameter <_.Name>' -TestCases $TestCases {
             Get-Command New-ADOPSServiceConnection | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
-
     
-    Context "Functionality" {
+    Context "AzureResourceManagerConnection" {
         BeforeAll {
             Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
             
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
-
+    
             Mock -CommandName Get-ADOPSProject -ModuleName ADOPS -MockWith {
                 @{
                     id = 'ProjectInfoId'
@@ -83,10 +91,10 @@ Describe 'New-ADOPSServiceConnection' {
         
         BeforeEach {
             $Splat = @{
-                Project = 'myproj' 
-                TenantId = 'AzureTennantId' 
+                Project          = 'myproj' 
+                TenantId         = 'AzureTennantId' 
                 SubscriptionName = 'AzureSubscriptionName' 
-                SubscriptionId = 'AzureSubscriptionId' 
+                SubscriptionId   = 'AzureSubscriptionId' 
             }
         }
 
@@ -104,32 +112,105 @@ Describe 'New-ADOPSServiceConnection' {
 
         It 'Verifying URI is correct' {
             $Splat.Add('ServicePrincipal', [pscredential]::new('User', (ConvertTo-SecureString -String 'PassWord' -AsPlainText -Force)))
-            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { return $URI}
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { return $URI }
             $r = New-ADOPSServiceConnection @Splat
             $r | Should -Be 'https://dev.azure.com/myorg/myproj/_apis/serviceendpoint/endpoints?api-version=7.2-preview.4'
         }
-
+        
         It 'Verifying body is correct - ServicePrincipal' {
             $Splat.Add('ServicePrincipal', [pscredential]::new('User', (ConvertTo-SecureString -String 'PassWord' -AsPlainText -Force)))
-            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { return $body}
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { return $body }
             $r = New-ADOPSServiceConnection @Splat | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 10
-            $r | Should -Be '{"data":{"subscriptionId":"AzureSubscriptionId","subscriptionName":"AzureSubscriptionName","environment":"AzureCloud","scopeLevel":"Subscription","creationMode":"Manual"},"name":"AzureSubscriptionName","type":"AzureRM","url":"https://management.azure.com/","authorization":{"parameters":{"tenantid":"AzureTennantId","serviceprincipalid":"User","authenticationType":"spnKey","serviceprincipalkey":"PassWord"},"scheme":"ServicePrincipal"},"isShared":false,"isReady":true,"serviceEndpointProjectReferences":[{"projectReference":{"id":"ProjectInfoId","name":"myproj"},"name":"AzureSubscriptionName"}]}'
+            $r | Should -Be '{"name":"AzureSubscriptionName","description":"","type":"AzureRM","url":"https://management.azure.com/","data":{"subscriptionId":"AzureSubscriptionId","subscriptionName":"AzureSubscriptionName","environment":"AzureCloud","scopeLevel":"Subscription","creationMode":"Manual"},"authorization":{"parameters":{"tenantid":"AzureTennantId","serviceprincipalid":"User","authenticationType":"spnKey","serviceprincipalkey":"PassWord"},"scheme":"ServicePrincipal"},"isShared":false,"isReady":true,"serviceEndpointProjectReferences":[{"projectReference":{"id":"ProjectInfoId","name":"myproj"},"name":"AzureSubscriptionName"}]}'
         }
 
         It 'Verifying body is correct - ManagedServiceIdentity' {
             $Splat.Add('ServicePrincipal', [pscredential]::new('User', (ConvertTo-SecureString -String 'PassWord' -AsPlainText -Force)))
             $Splat.Add('ManagedIdentity', $true)
-            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { return $body}
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { return $body }
             $r = New-ADOPSServiceConnection @Splat | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 10
-            $r | Should -Be '{"data":{"subscriptionId":"AzureSubscriptionId","subscriptionName":"AzureSubscriptionName","environment":"AzureCloud","scopeLevel":"Subscription"},"name":"AzureSubscriptionName","type":"AzureRM","url":"https://management.azure.com/","authorization":{"parameters":{"tenantid":"AzureTennantId","serviceprincipalid":"User","serviceprincipalkey":"PassWord"},"scheme":"ManagedServiceIdentity"},"isShared":false,"isReady":true,"serviceEndpointProjectReferences":[{"projectReference":{"id":"ProjectInfoId","name":"myproj"},"name":"AzureSubscriptionName"}]}'
+            $r | Should -Be '{"name":"AzureSubscriptionName","description":"","type":"AzureRM","url":"https://management.azure.com/","data":{"subscriptionId":"AzureSubscriptionId","subscriptionName":"AzureSubscriptionName","environment":"AzureCloud","scopeLevel":"Subscription"},"authorization":{"parameters":{"tenantid":"AzureTennantId","serviceprincipalid":"User","serviceprincipalkey":"PassWord"},"scheme":"ManagedServiceIdentity"},"isShared":false,"isReady":true,"serviceEndpointProjectReferences":[{"projectReference":{"id":"ProjectInfoId","name":"myproj"},"name":"AzureSubscriptionName"}]}'
         }
 
         It 'Verifying body is correct - WorkloadIdentityFederation' {
             $Splat.Add('WorkloadIdentityFederation', $true)
             $Splat.Add('AzureScope', 'Azure/Scope')
-            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { return $body}
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith { return $body }
             $r = New-ADOPSServiceConnection @Splat | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 10
-            $r | Should -Be '{"data":{"subscriptionId":"AzureSubscriptionId","subscriptionName":"AzureSubscriptionName","environment":"AzureCloud","scopeLevel":"Subscription","creationMode":"Automatic"},"name":"AzureSubscriptionName","type":"AzureRM","url":"https://management.azure.com/","authorization":{"parameters":{"tenantid":"AzureTennantId","scope":"Azure/Scope"},"scheme":"WorkloadIdentityFederation"},"isShared":false,"isReady":true,"serviceEndpointProjectReferences":[{"projectReference":{"id":"ProjectInfoId","name":"myproj"},"name":"AzureSubscriptionName"}]}'
+            $r | Should -Be '{"name":"AzureSubscriptionName","description":"","type":"AzureRM","url":"https://management.azure.com/","data":{"subscriptionId":"AzureSubscriptionId","subscriptionName":"AzureSubscriptionName","environment":"AzureCloud","scopeLevel":"Subscription","creationMode":"Automatic"},"authorization":{"parameters":{"tenantid":"AzureTennantId","scope":"Azure/Scope"},"scheme":"WorkloadIdentityFederation"},"isShared":false,"isReady":true,"serviceEndpointProjectReferences":[{"projectReference":{"id":"ProjectInfoId","name":"myproj"},"name":"AzureSubscriptionName"}]}'
+        }
+    }
+
+    Context "GenericServiceConnection" {
+        BeforeAll {
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith { 'myorg' }
+            
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {}
+    
+            Mock -CommandName Get-ADOPSProject -ModuleName ADOPS -MockWith {
+                @{
+                    id = 'ProjectInfoId'
+                }
+            }
+        }
+        
+        BeforeEach {
+            $Splat = @{
+                ConnectionData = [ordered]@{
+                    type                             = "dockerregistry"
+                    name                             = "Service Connection Name"
+                    description                      = "Service Connection Description"
+                    authorization                    = [ordered]@{
+                        paramaters = [ordered]@{
+                            registry = "dockerregistry.local"
+                            username = "pipeline"
+                            password = "supersecretpassword"
+                            email    = "admin@dockerregistry.local"
+                        }
+                        scheme     = "UsernamePassword"
+                    }
+                    isSshared                        = $false
+                    isReady                          = $true
+                    owner                            = "Library"
+                    serviceEndpointProjectReferences = @(
+                        [ordered]@{
+                            projectReference = [ordered]@{
+                                id   = "43cf98ab-e228-451f-b0b1-05008d45460d"
+                                name = "myProject"
+                            }
+                            name             = "myNewServiceEndpoint"
+                        }            
+                    )
+                }
+            }
+        }
+
+        It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
+            New-ADOPSServiceConnection -Organization 'anotherorg' @Splat
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+        }
+
+        It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
+            New-ADOPSServiceConnection @Splat
+            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+        }
+
+        It 'Verifying URI is correct' {
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS `
+                -ParameterFilter { $Method -eq "POST" } `
+                -MockWith { return $URI }
+
+            $r = New-ADOPSServiceConnection @Splat
+            $r | Should -Be 'https://dev.azure.com/myorg/_apis/serviceendpoint/endpoints?api-version=7.2-preview.4'
+        }
+
+        It 'Verifying body is correct - GenericServiceConnection' {
+            Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS `
+                -ParameterFilter { ($Method -eq "POST") -and ($Uri -like "*_apis/serviceendpoint/endpoints*") } `
+                -MockWith { return $body }
+
+            $r = New-ADOPSServiceConnection @Splat | ConvertFrom-Json | ConvertTo-Json -Depth 10 -Compress
+            $r | Should -Be '{"type":"dockerregistry","name":"Service Connection Name","description":"Service Connection Description","authorization":{"paramaters":{"registry":"dockerregistry.local","username":"pipeline","password":"supersecretpassword","email":"admin@dockerregistry.local"},"scheme":"UsernamePassword"},"isSshared":false,"isReady":true,"owner":"Library","serviceEndpointProjectReferences":[{"projectReference":{"id":"43cf98ab-e228-451f-b0b1-05008d45460d","name":"myProject"},"name":"myNewServiceEndpoint"}]}'
         }
     }
 }

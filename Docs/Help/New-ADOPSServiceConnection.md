@@ -15,26 +15,33 @@ Create an Azure DevOps Service Connection to Azure.
 ### ServicePrincipal (Default)
 ```
 New-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
- -SubscriptionId <String> -Project <String> [-ConnectionName <String>] -ServicePrincipal <PSCredential>
- [<CommonParameters>]
+ -SubscriptionId <String> -Project <String> [-ConnectionName <String>] [-Description <String>]
+ -ServicePrincipal <PSCredential> [<CommonParameters>]
 ```
 
 ### ManagedServiceIdentity
 ```
 New-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
- -SubscriptionId <String> -Project <String> [-ConnectionName <String>] -ServicePrincipal <PSCredential>
- [-ManagedIdentity] [<CommonParameters>]
+ -SubscriptionId <String> -Project <String> [-ConnectionName <String>] [-Description <String>]
+ -ServicePrincipal <PSCredential> [-ManagedIdentity] [<CommonParameters>]
 ```
 
 ### WorkloadIdentityFederation
 ```
 New-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
- -SubscriptionId <String> -Project <String> [-ConnectionName <String>] [-WorkloadIdentityFederation]
- -AzureScope <String> [<CommonParameters>]
+ -SubscriptionId <String> -Project <String> [-ConnectionName <String>] [-Description <String>]
+ [-WorkloadIdentityFederation] -AzureScope <String> [<CommonParameters>]
+```
+
+### GenericServiceConnection
+```
+New-ADOPSServiceConnection [-Organization <String>] -ConnectionData <Object> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 Creates an Azure DevOps Service Connection to Azure subscription using an existing Service Principal. Assign the necessary permissions in Azure for the service principal.
+
+With the parameter set `GenericServiceConnection` any service connection type can be created.
 
 ## EXAMPLES
 
@@ -83,7 +90,38 @@ $Params = @{
 New-ADOPSServiceConnection @Params
 ```
 
-Creates an Azure DevOps Service Connection to an Azure resource group using workload identity federation (OAuth) and automatically creating an app registration in Azure AD.
+### Example 4
+```powershell
+$ConnectionData = [ordered]@{
+    type                             = "dockerregistry"
+    name                             = "Service Connection Name"
+    description                      = "Service Connection Description"
+    authorization                    = [ordered]@{
+        scheme     = "UsernamePassword"
+        paramaters = [ordered]@{
+            registry = "dockerregistry.local"
+            username = "pipeline"
+            password = "supersecretpassword"
+            email    = "admin@dockerregistry.local"
+        }
+    }
+    isSshared                        = $false
+    isReady                          = $true
+    owner                            = "Library"
+    serviceEndpointProjectReferences = @(
+        [ordered]@{
+            projectReference = [ordered]@{
+                id   = "de6a3035-0146-4ae2-81c1-68596d187cf4"
+                name = "My DevOps Project"
+            }
+            name             = "Service Connection Name"
+        }
+    )
+}
+New-ADOPSServiceConnection -ConnectionData $ConnectionData
+```
+
+Creates an Azure DevOps Service Connection to a Docker Registry.
 
 ## PARAMETERS
 
@@ -103,12 +141,42 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ConnectionData
+New Service Connection request data.
+
+```yaml
+Type: Object
+Parameter Sets: GenericServiceConnection
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ConnectionName
 Name of Service Connection in Azure DevOps.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: ServicePrincipal, WorkloadIdentityFederation, ManagedServiceIdentity
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Description
+Description of Service Connection in Azure DevOps.
+
+```yaml
+Type: String
+Parameter Sets: ServicePrincipal, WorkloadIdentityFederation, ManagedServiceIdentity
 Aliases:
 
 Required: False
@@ -153,7 +221,7 @@ Name of Azure DevOps project.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: ServicePrincipal, WorkloadIdentityFederation, ManagedServiceIdentity
 Aliases:
 
 Required: True
@@ -183,7 +251,7 @@ The subscription id that the service connection will be connected to.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: ServicePrincipal, WorkloadIdentityFederation, ManagedServiceIdentity
 Aliases:
 
 Required: True
@@ -198,7 +266,7 @@ The subscription name that the service connection will be connected to.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: ServicePrincipal, WorkloadIdentityFederation, ManagedServiceIdentity
 Aliases:
 
 Required: True
@@ -213,7 +281,7 @@ The tenant id connected to your Azure AD and subscriptions.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: ServicePrincipal, WorkloadIdentityFederation, ManagedServiceIdentity
 Aliases:
 
 Required: True

@@ -16,18 +16,36 @@ Allows update of a Azure DevOps Service Connection.
 ```
 Set-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
  -SubscriptionId <String> -Project <String> -ServiceEndpointId <Guid> [-ConnectionName <String>]
- [-Description <String>] [-EndpointOperation <String>] -ServicePrincipal <PSCredential> [<CommonParameters>]
+ [-Description <String>] [-EndpointOperation <String>] -ServicePrincipal <PSCredential>
+ [<CommonParameters>]
+```
+
+### GenericServiceConnection
+```
+Set-ADOPSServiceConnection [-Organization <String>] -ConnectionData <Object> [-EndpointOperation <String>]
+ [<CommonParameters>]
+```
+
+### WorkloadIdentityFederation
+```
+Set-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
+ -SubscriptionId <String> -Project <String> -ServiceEndpointId <Guid> [-ConnectionName <String>]
+ [-Description <String>] [-EndpointOperation <String>] [-WorkloadIdentityFederation] -AzureScope <String>
+ [<CommonParameters>]
 ```
 
 ### ManagedServiceIdentity
 ```
 Set-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
  -SubscriptionId <String> -Project <String> -ServiceEndpointId <Guid> [-ConnectionName <String>]
- [-Description <String>] [-EndpointOperation <String>] [-ManagedIdentity] [<CommonParameters>]
+ [-Description <String>] [-EndpointOperation <String>] -ServicePrincipal <PSCredential> [-ManagedIdentity]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-If a managed identity will be used for the connection.
+Updates an Azure DevOps Service Connection to Azure subscription using an existing Service Principal. Assign the necessary permissions in Azure for the service principal.
+
+With the parameter set `GenericServiceConnection` any service connection type can be modified.
 
 ## EXAMPLES
 
@@ -58,12 +76,43 @@ Updates the Service Connection called 'demo-vmss-scaling-app-serviceconnection' 
 
 ## PARAMETERS
 
+### -AzureScope
+resource group ID where the app registration will be granted contributor access.
+/subscriptions/4ba9b4a1-dc0d-4ec8-adaf-061771ccd1da/resourceGroups/MyAzureRG
+
+```yaml
+Type: String
+Parameter Sets: WorkloadIdentityFederation
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ConnectionData
+New Service Connection request data.
+
+```yaml
+Type: Object
+Parameter Sets: GenericServiceConnection
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ConnectionName
 Name of Service Connection in Azure DevOps.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: ServicePrincipal, WorkloadIdentityFederation, ManagedServiceIdentity
 Aliases:
 
 Required: False
@@ -78,7 +127,7 @@ The description field of the Service connection.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: ServicePrincipal, WorkloadIdentityFederation, ManagedServiceIdentity
 Aliases:
 
 Required: False
@@ -138,7 +187,7 @@ Name of the Azure DevOps project.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: ServicePrincipal, WorkloadIdentityFederation, ManagedServiceIdentity
 Aliases:
 
 Required: True
@@ -153,7 +202,7 @@ The GUID of the Azure DevOps Service Endpoint.
 
 ```yaml
 Type: Guid
-Parameter Sets: (All)
+Parameter Sets: ServicePrincipal, WorkloadIdentityFederation, ManagedServiceIdentity
 Aliases:
 
 Required: True
@@ -168,7 +217,7 @@ Azure AD Service principal, Application (Client) ID and valid secret.
 
 ```yaml
 Type: PSCredential
-Parameter Sets: ServicePrincipal
+Parameter Sets: ServicePrincipal, ManagedServiceIdentity
 Aliases:
 
 Required: True
@@ -183,7 +232,7 @@ The subscription id that the service connection will be connected to.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: ServicePrincipal, WorkloadIdentityFederation, ManagedServiceIdentity
 Aliases:
 
 Required: True
@@ -198,7 +247,7 @@ The subscription name that the service connection will be connected to.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: ServicePrincipal, WorkloadIdentityFederation, ManagedServiceIdentity
 Aliases:
 
 Required: True
@@ -213,7 +262,22 @@ The tenant id connected to your Azure AD and subscriptions.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: ServicePrincipal, WorkloadIdentityFederation, ManagedServiceIdentity
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WorkloadIdentityFederation
+If Workload identity federation will be used for the connection.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: WorkloadIdentityFederation
 Aliases:
 
 Required: True
