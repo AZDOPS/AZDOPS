@@ -32,7 +32,7 @@ Describe 'Get-ADOPSBuildDefinition' {
         }
     }
     
-    Context 'Getting Pipeline' {
+    Context 'Getting Build definition' {
         BeforeAll {
             $OrganizationName = 'DummyOrg'
             $Project = 'DummyProject'
