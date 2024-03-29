@@ -15,6 +15,7 @@ function New-ADOPSArtifactFeed {
         [string]$Description,
 
         [Parameter()]
+        [Alias('UpstreamEnabled')]
         [switch]$IncludeUpstream
     )
     

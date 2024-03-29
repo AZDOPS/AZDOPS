@@ -10,6 +10,7 @@ function Get-ADOPSArtifactFeed {
         [string]$Organization,
 
         [Parameter(ParameterSetName = 'FeedId', Mandatory)]
+        [Alias('Name')]
         [string]$FeedId
     )
     

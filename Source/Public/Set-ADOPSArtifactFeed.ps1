@@ -8,12 +8,14 @@ function Set-ADOPSArtifactFeed {
         [string]$Organization,
 
         [Parameter(Mandatory)]
+        [Alias('Name')]
         [string]$FeedId,
         
         [Parameter()]
         [string]$Description,
         
         [Parameter()]
+        [Alias('IncludeUpstream')]
         [bool]$UpstreamEnabled
     )
  
