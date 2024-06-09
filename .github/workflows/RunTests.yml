@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Import required modules
-      run: Install-Module -Name Pester, AzAuth -Force
+      run: Install-Module -Name Pester, AzAuth -Force -SkipPublisherCheck
       shell: pwsh
     - name: Run tests
       run: .\Tests\TestRunner.ps1 -TestResults -Verbosity Normal -ModuleLoadPath ".\Source\ADOPS.psm1" -CodeCoveragePath ".\Source\Public"
