@@ -1,0 +1,20 @@
+trigger: none
+
+pool: dummyPool
+
+parameters:
+- name: Param1
+  displayName: First parameter
+  type: string
+  default: "value1"
+  values:
+  - "value1"
+  - "value2"
+
+- task: PowerShell@2
+  displayName: Run some code
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host 'Hello world!'
+      Write-Host '$(Param1)'
