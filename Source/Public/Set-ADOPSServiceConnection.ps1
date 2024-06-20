@@ -4,120 +4,65 @@ function Set-ADOPSServiceConnection {
         [Parameter()]
         [string]$Organization,
         
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ParameterSetName = 'GenericServiceConnection')]
+        $ConnectionData,
+
+        [Parameter(Mandatory, ParameterSetName = 'ServicePrincipal')]
+        [Parameter(Mandatory, ParameterSetName = 'ManagedServiceIdentity')]
+        [Parameter(Mandatory, ParameterSetName = 'WorkloadIdentityFederation')]
         [string]$TenantId,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ParameterSetName = 'ServicePrincipal')]
+        [Parameter(Mandatory, ParameterSetName = 'ManagedServiceIdentity')]
+        [Parameter(Mandatory, ParameterSetName = 'WorkloadIdentityFederation')]
         [string]$SubscriptionName,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ParameterSetName = 'ServicePrincipal')]
+        [Parameter(Mandatory, ParameterSetName = 'ManagedServiceIdentity')]
+        [Parameter(Mandatory, ParameterSetName = 'WorkloadIdentityFederation')]
         [string]$SubscriptionId,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ParameterSetName = 'ServicePrincipal')]
+        [Parameter(Mandatory, ParameterSetName = 'ManagedServiceIdentity')]
+        [Parameter(Mandatory, ParameterSetName = 'WorkloadIdentityFederation')]
         [string]$Project,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ParameterSetName = 'ServicePrincipal')]
+        [Parameter(Mandatory, ParameterSetName = 'ManagedServiceIdentity')]
+        [Parameter(Mandatory, ParameterSetName = 'WorkloadIdentityFederation')]
         [guid]$ServiceEndpointId,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ServicePrincipal')]
+        [Parameter(ParameterSetName = 'ManagedServiceIdentity')]
+        [Parameter(ParameterSetName = 'WorkloadIdentityFederation')]
         [string]$ConnectionName,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'ServicePrincipal')]
+        [Parameter(ParameterSetName = 'ManagedServiceIdentity')]
+        [Parameter(ParameterSetName = 'WorkloadIdentityFederation')]
         [string]$Description,
-        
-        [Parameter()]
+
         [ValidateNotNullOrEmpty()]
         [string]$EndpointOperation,
       
         [Parameter(Mandatory, ParameterSetName = 'ServicePrincipal')]
+        [Parameter(Mandatory, ParameterSetName = 'ManagedServiceIdentity')]
         [pscredential]$ServicePrincipal,
 
         [Parameter(Mandatory, ParameterSetName = 'ManagedServiceIdentity')]
-        [switch]$ManagedIdentity
+        [switch]$ManagedIdentity,
+
+        [Parameter(Mandatory, ParameterSetName = 'WorkloadIdentityFederation')]
+        [switch]$WorkloadIdentityFederation,
+
+        [Parameter(Mandatory, ParameterSetName = 'WorkloadIdentityFederation')]
+        [string]$AzureScope
     )
     
-    process {
-
-        # If user didn't specify org, get it from saved context
-        if ([string]::IsNullOrEmpty($Organization)) {
-            $Organization = GetADOPSDefaultOrganization
-        }
-
-        # Get ProjectId
-        $ProjectInfo = Get-ADOPSProject -Organization $Organization -Project $Project
-
-        # Set connection name if not set by parameter
-        if (-not $ConnectionName) {
-            $ConnectionName = $SubscriptionName -replace " "
-        }
-
-        switch ($PSCmdlet.ParameterSetName) {
-        
-            'ServicePrincipal' {
-                $authorization = [ordered]@{
-                    parameters = [ordered]@{
-                        tenantid            = $TenantId
-                        serviceprincipalid  = $ServicePrincipal.UserName
-                        authenticationType  = "spnKey"
-                        serviceprincipalkey = $ServicePrincipal.GetNetworkCredential().Password
-                    }
-                    scheme     = "ServicePrincipal"
-                }
-        
-                $data = [ordered]@{
-                    subscriptionId   = $SubscriptionId
-                    subscriptionName = $SubscriptionName
-                    environment      = "AzureCloud"
-                    scopeLevel       = "Subscription"
-                    creationMode     = "Manual"
-                }
-            }
-    
-            'ManagedServiceIdentity' {
-                $authorization = [ordered]@{
-                    parameters = [ordered]@{
-                        tenantid = $TenantId
-                    }
-                    scheme     = "ManagedServiceIdentity"
-                }
-            }
-        }
-
-        # Create body for the API call
-        $Body = [ordered]@{
-            authorization                    = $authorization
-            data                             = $data
-            description                      = "$Description"
-            id                               = $ServiceConnectionId
-            isReady                          = $true
-            isShared                         = $false
-            name                             = ($SubscriptionName -replace " ")
-            serviceEndpointProjectReferences = @(
-                [ordered]@{
-                    projectReference = [ordered]@{
-                        id   = $ProjectInfo.Id
-                        name = $Project
-                    }
-                    name             = $ConnectionName
-                }
-            )
-            type                             = "AzureRM"
-            url                              = "https://management.azure.com/"
-        } | ConvertTo-Json -Depth 10
-    
-        if ($PSBoundParameters.ContainsKey('EndpointOperation')) {
-            $URI = "https://dev.azure.com/$Organization/_apis/serviceendpoint/endpoints/$ServiceEndpointId`?operation=$EndpointOperation`&api-version=7.1-preview.4"
-        }
-        else {
-            $URI = "https://dev.azure.com/$Organization/_apis/serviceendpoint/endpoints/$ServiceEndpointId`?api-version=7.1-preview.4"
-        }
-        
-        $InvokeSplat = @{
-            Uri          = $URI
-            Method       = "PUT"
-            Body         = $Body
-        }
-    
-        InvokeADOPSRestMethod @InvokeSplat
+    if ($PSCmdlet.ParameterSetName -in "ServicePrincipal", "ManagedServiceIdentity", "WorkloadIdentityFederation") {
+        return (SetAzureServiceConnection @PSBoundParameters)
+    }
+    elseif ($PSCmdlet.ParameterSetName -eq "GenericServiceConnection") {
+        return (SetGenericServiceConnection @PSBoundParameters)
     }
 }
