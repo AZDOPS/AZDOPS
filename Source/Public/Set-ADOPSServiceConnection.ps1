@@ -33,7 +33,17 @@ function Set-ADOPSServiceConnection {
         [pscredential]$ServicePrincipal,
 
         [Parameter(Mandatory, ParameterSetName = 'ManagedServiceIdentity')]
-        [switch]$ManagedIdentity
+        [switch]$ManagedIdentity,
+
+        [Parameter(Mandatory, ParameterSetName = 'WorkloadIdentityFederation')]
+        [string]$ServicePrincipalId,
+
+        [Parameter(Mandatory, ParameterSetName = 'WorkloadIdentityFederation')]
+        [string]$WorkloadIdentityFederationIssuer,
+
+        [Parameter(Mandatory, ParameterSetName = 'WorkloadIdentityFederation')]
+        [string]$WorkloadIdentityFederationSubject
+
     )
     
     process {
@@ -81,17 +91,37 @@ function Set-ADOPSServiceConnection {
                     scheme     = "ManagedServiceIdentity"
                 }
             }
+
+            'WorkloadIdentityFederation' {
+                $authorization = [ordered]@{
+                    parameters = [ordered]@{
+                        tenantid                          = $TenantId
+                        serviceprincipalid                = $ServicePrincipalId
+                        workloadIdentityFederationIssuer  = $WorkloadIdentityFederationIssuer
+                        workloadIdentityFederationSubject = $WorkloadIdentityFederationSubject
+                    }
+                    scheme     = "WorkloadIdentityFederation"
+                }
+        
+                $data = [ordered]@{
+                    subscriptionId   = $SubscriptionId
+                    subscriptionName = $SubscriptionName
+                    environment      = "AzureCloud"
+                    scopeLevel       = "Subscription"
+                    creationMode     = "Manual"
+                }
+            }
         }
 
         # Create body for the API call
         $Body = [ordered]@{
             authorization                    = $authorization
             data                             = $data
-            description                      = "$Description"
-            id                               = $ServiceConnectionId
+            description                      = $Description
+            id                               = $ServiceEndpointId
             isReady                          = $true
             isShared                         = $false
-            name                             = ($SubscriptionName -replace " ")
+            name                             = $ConnectionName
             serviceEndpointProjectReferences = @(
                 [ordered]@{
                     projectReference = [ordered]@{
@@ -113,9 +143,9 @@ function Set-ADOPSServiceConnection {
         }
         
         $InvokeSplat = @{
-            Uri          = $URI
-            Method       = "PUT"
-            Body         = $Body
+            Uri    = $URI
+            Method = "PUT"
+            Body   = $Body
         }
     
         InvokeADOPSRestMethod @InvokeSplat
