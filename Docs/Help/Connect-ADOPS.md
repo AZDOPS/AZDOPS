@@ -151,7 +151,7 @@ Specify a tenant to connect to, by id.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: Interactive, ManagedIdentity
 Aliases:
 
 Required: False
