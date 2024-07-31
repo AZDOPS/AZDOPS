@@ -1,17 +1,21 @@
 function Get-ADOPSServiceConnection {
     [CmdletBinding()]
     param (
-        [Parameter()]
-        [ValidateNotNullOrEmpty()]
-        [string]$Name,
-
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string]$Project,
 
         [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [string]$Organization
+        [string]$Name,
+
+        [Parameter()]
+        [ValidateNotNullOrEmpty()]
+        [string]$Organization,
+        
+        [Parameter()]
+        [switch]
+        $IncludeFailed
     )
     
     # If user didn't specify org, get it from saved context
@@ -19,24 +23,21 @@ function Get-ADOPSServiceConnection {
         $Organization = GetADOPSDefaultOrganization
     }
 
-    $Uri = "https://dev.azure.com/$Organization/$Project/_apis/serviceendpoint/endpoints?api-version=7.1-preview.4"
+    $Uri = "https://dev.azure.com/$Organization/$Project/_apis/serviceendpoint/endpoints?includeFailed=$IncludeFailed&api-version=7.1-preview.4"
     
     $InvokeSplat = @{
-        Method       = 'Get'
-        Uri          = $URI
+        Method = 'Get'
+        Uri    = $URI
     }
 
-    $AllPipelines = (InvokeADOPSRestMethod @InvokeSplat).value
+    $ServiceConnections = (InvokeADOPSRestMethod @InvokeSplat).value
 
     if ($PSBoundParameters.ContainsKey('Name')) {
-        $Pipelines = $AllPipelines | Where-Object {$_.name -eq $Name}
-        if (-not $Pipelines) {
-            throw "The specified ServiceConnectionName $Name was not found amongst Connections: $($AllPipelines.name -join ', ')!" 
-        } 
-    } else {
-        $Pipelines = $AllPipelines
+        $ServiceConnection = $ServiceConnections | Where-Object { $_.name -eq $Name }
+        return $ServiceConnection
     }
-
-    return $Pipelines
+    else {
+        return $ServiceConnections
+    }
 
 }
