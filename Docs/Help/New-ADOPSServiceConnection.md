@@ -15,22 +15,23 @@ Create an Azure DevOps Service Connection to Azure.
 ### ServicePrincipal (Default)
 ```
 New-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
- -SubscriptionId <String> -Project <String> [-ConnectionName <String>] -ServicePrincipal <PSCredential>
- [<CommonParameters>]
+ -SubscriptionId <String> -Project <String> [-ConnectionName <String>] [-Description <String>]
+ -ServicePrincipal <PSCredential> [<CommonParameters>]
 ```
 
 ### ManagedServiceIdentity
 ```
 New-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
- -SubscriptionId <String> -Project <String> [-ConnectionName <String>] -ServicePrincipal <PSCredential>
- [-ManagedIdentity] [<CommonParameters>]
+ -SubscriptionId <String> -Project <String> [-ConnectionName <String>] [-Description <String>]
+ -ServicePrincipal <PSCredential> [-ManagedIdentity] [<CommonParameters>]
 ```
 
 ### WorkloadIdentityFederation
 ```
 New-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
- -SubscriptionId <String> -Project <String> [-ConnectionName <String>] [-WorkloadIdentityFederation]
- -AzureScope <String> [<CommonParameters>]
+ -SubscriptionId <String> -Project <String> [-ConnectionName <String>] [-Description <String>]
+ [-WorkloadIdentityFederation] [-AzureScope <String>] [-CreationMode <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -96,7 +97,7 @@ Type: String
 Parameter Sets: WorkloadIdentityFederation
 Aliases:
 
-Required: True
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -232,6 +233,36 @@ Parameter Sets: WorkloadIdentityFederation
 Aliases:
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -CreationMode
+Sets the creation mode.
+
+```yaml
+Type: String
+Parameter Sets: WorkloadIdentityFederation
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Description
+Description for the Service Connection.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False

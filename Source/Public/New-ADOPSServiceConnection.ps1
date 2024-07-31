@@ -18,6 +18,9 @@ function New-ADOPSServiceConnection {
 
         [Parameter()]
         [string]$ConnectionName,
+
+        [Parameter()]
+        [string]$Description,
       
         [Parameter(Mandatory, ParameterSetName = 'ServicePrincipal')]
         [Parameter(Mandatory, ParameterSetName = 'ManagedServiceIdentity')]
@@ -29,8 +32,13 @@ function New-ADOPSServiceConnection {
         [Parameter(Mandatory, ParameterSetName = 'WorkloadIdentityFederation')]
         [switch]$WorkloadIdentityFederation,
 
-        [Parameter(Mandatory, ParameterSetName = 'WorkloadIdentityFederation')]
-        [string]$AzureScope
+        [Parameter(ParameterSetName = 'WorkloadIdentityFederation')]
+        [string]$AzureScope,
+
+        [Parameter(ParameterSetName = 'WorkloadIdentityFederation')]
+        [ValidateSet('Manual', 'Automatic')]
+        [string]
+        $CreationMode = 'Automatic'
     )
 
     # If user didn't specify org, get it from saved context
@@ -71,7 +79,7 @@ function New-ADOPSServiceConnection {
         'ManagedServiceIdentity' {
             $authorization = [ordered]@{
                 parameters = [ordered]@{
-                    tenantid = $TenantId
+                    tenantid            = $TenantId
                     serviceprincipalid  = $ServicePrincipal.UserName
                     serviceprincipalkey = $ServicePrincipal.GetNetworkCredential().Password
                 }
@@ -87,11 +95,19 @@ function New-ADOPSServiceConnection {
         }
 
         'WorkloadIdentityFederation' {
-            $authorization = [ordered]@{
-                parameters = [ordered]@{
+            if ($PSBoundParameters.ContainsKey('AzureScope')) {
+                $AuthParams =  [ordered]@{
                     tenantid = $TenantId
                     scope    = $AzureScope
                 }
+            } else {
+                 $AuthParams =  [ordered]@{
+                    tenantid = $TenantId
+                }
+            }
+
+            $authorization = [ordered]@{
+                parameters = $AuthParams
                 scheme     = 'WorkloadIdentityFederation'
             }
     
@@ -100,7 +116,8 @@ function New-ADOPSServiceConnection {
                 subscriptionName = $SubscriptionName
                 environment      = 'AzureCloud'
                 scopeLevel       = 'Subscription'
-                creationMode	 = 'Automatic'
+                creationMode     = $CreationMode
+                isDraft          = ($CreationMode = 'Manual') ? $True : $False
             }
         }
     }
@@ -108,7 +125,8 @@ function New-ADOPSServiceConnection {
     # Create body for the API call
     $Body = [ordered]@{
         data                             = $data
-        name                             = ($SubscriptionName -replace ' ')
+        name                             = $ConnectionName
+        description                      = $Description
         type                             = 'AzureRM'
         url                              = 'https://management.azure.com/'
         authorization                    = $authorization
@@ -120,7 +138,7 @@ function New-ADOPSServiceConnection {
                     id   = $ProjectInfo.Id
                     name = $Project
                 }
-                name = $ConnectionName
+                name             = $ConnectionName
             }
         )
     } | ConvertTo-Json -Depth 10
@@ -128,9 +146,9 @@ function New-ADOPSServiceConnection {
     # Run function
     $URI = "https://dev.azure.com/$Organization/$Project/_apis/serviceendpoint/endpoints?api-version=7.2-preview.4"
     $InvokeSplat = @{
-        Uri          = $URI
-        Method       = 'POST'
-        Body         = $Body
+        Uri    = $URI
+        Method = 'POST'
+        Body   = $Body
     }
 
     InvokeADOPSRestMethod @InvokeSplat
