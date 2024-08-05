@@ -8,6 +8,7 @@ function Connect-ADOPS {
         
         [Parameter(ParameterSetName = 'Interactive')]
         [Parameter(ParameterSetName = 'ManagedIdentity')]
+        [Parameter(ParameterSetName = 'OAuthToken')]
         [string]$TenantId,
         
         [Parameter(ParameterSetName = 'Interactive')]
