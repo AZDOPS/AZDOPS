@@ -34,6 +34,9 @@ function Get-ADOPSServiceConnection {
 
     if ($PSBoundParameters.ContainsKey('Name')) {
         $ServiceConnection = $ServiceConnections | Where-Object { $_.name -eq $Name }
+        if (-not $ServiceConnection) {
+            throw "The specified ServiceConnectionName $Name was not found amongst Connections: $($AllPipelines.name -join ', ')!" 
+        }
         return $ServiceConnection
     }
     else {
