@@ -91,8 +91,8 @@ Describe 'Get-ADOPSServiceConnection' {
         It 'should not throw without optional parameters' {
             { Get-ADOPSServiceConnection -Project $Project } | Should -Not -Throw
         }
-        It 'return null if connection name cannot be found' {
-            Get-ADOPSServiceConnection -Project $Project -Name 'MissingName' | Should -BeNullOrEmpty
+        It 'throw if connection name cannot be found' {
+            { Get-ADOPSServiceConnection -Project $Project -Name 'MissingName' } | Should -Throw
         }
         It 'returns single output after getting service connection' {
             (Get-ADOPSServiceConnection -Organization $OrganizationName -Project $Project -Name $SCName).count | Should -Be 1
