@@ -58,6 +58,18 @@ Describe 'Set-ADOPSServiceConnection' {
                 Name = 'EndpointOperation'
                 Mandatory = $false
                 Type = 'string'
+            },@{
+                Name = 'ServicePrincipalId'
+                Mandatory = $true
+                Type = 'string'
+            },@{
+                Name = 'WorkloadIdentityFederationIssuer'
+                Mandatory = $true
+                Type = 'string'
+            },@{
+                Name = 'WorkloadIdentityFederationSubject'
+                Mandatory = $true
+                Type = 'string'
             }
             
         )

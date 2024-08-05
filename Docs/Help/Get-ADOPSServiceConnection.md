@@ -14,7 +14,7 @@ Get a specific ServiceConnection or all ServiceConnections in a DevOps project.
 ## SYNTAX
 
 ```
-Get-ADOPSServiceConnection [[-Name] <String>] [-Project] <String> [[-Organization] <String>]
+Get-ADOPSServiceConnection [-Project] <String> [[-Name] <String>] [[-Organization] <String>] [-IncludeFailed]
  [<CommonParameters>]
 ```
 
@@ -98,8 +98,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### CommonParameters
+### -IncludeFailed
+Includes Service Connections in failed & draft state.
 
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS

@@ -23,7 +23,17 @@ Set-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -Subscrip
 ```
 Set-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
  -SubscriptionId <String> -Project <String> -ServiceEndpointId <Guid> [-ConnectionName <String>]
- [-Description <String>] [-EndpointOperation <String>] [-ManagedIdentity] [<CommonParameters>]
+ [-Description <String>] [-EndpointOperation <String>] [-ManagedIdentity] 
+ [<CommonParameters>]
+```
+
+### WorkloadIdentityFederation
+```
+Set-ADOPSServiceConnection [-Organization <String>] -TenantId <String> -SubscriptionName <String>
+ -SubscriptionId <String> -Project <String> -ServiceEndpointId <Guid> [-ConnectionName <String>]
+ [-Description <String>] [-EndpointOperation <String>] -ServicePrincipalId <String>
+ -WorkloadIdentityFederationIssuer <String> -WorkloadIdentityFederationSubject <String>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -214,6 +224,51 @@ The tenant id connected to your Azure AD and subscriptions.
 ```yaml
 Type: String
 Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ServicePrincipalId
+Id of the Service Principal to be used for Federation.
+
+```yaml
+Type: String
+Parameter Sets: WorkloadIdentityFederation
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WorkloadIdentityFederationIssuer
+Federation issuer.
+
+```yaml
+Type: String
+Parameter Sets: WorkloadIdentityFederation
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WorkloadIdentityFederationSubject
+Federation Subject.
+
+```yaml
+Type: String
+Parameter Sets: WorkloadIdentityFederation
 Aliases:
 
 Required: True

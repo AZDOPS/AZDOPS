@@ -85,19 +85,19 @@ Describe 'Get-ADOPSServiceConnection' {
             Get-ADOPSServiceConnection -Organization $OrganizationName -Project $Project -Name $SCName  
             Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
         }
-        It 'returns output after getting pipeline' {
+        It 'returns output after getting service connection' {
             Get-ADOPSServiceConnection -Organization $OrganizationName -Project $Project -Name $SCName | Should -BeOfType [pscustomobject] -Because 'InvokeADOPSRestMethod should convert the json to pscustomobject'
         }
         It 'should not throw without optional parameters' {
             { Get-ADOPSServiceConnection -Project $Project } | Should -Not -Throw
         }
-        It 'should throw if connection name does not exist' {
+        It 'throw if connection name cannot be found' {
             { Get-ADOPSServiceConnection -Project $Project -Name 'MissingName' } | Should -Throw
         }
-        It 'returns single output after getting pipeline' {
+        It 'returns single output after getting service connection' {
             (Get-ADOPSServiceConnection -Organization $OrganizationName -Project $Project -Name $SCName).count | Should -Be 1
         }
-        It 'returns multiple outputs after getting pipelines' {
+        It 'returns multiple outputs after getting service connections' {
             (Get-ADOPSServiceConnection -Organization $OrganizationName -Project $Project).count | Should -Be 2
         }
     }
