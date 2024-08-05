@@ -92,8 +92,8 @@ task Compile_Module {
     }
     
     # Manifest
-    $ManifestContent = (Get-Content "$ModuleSourcePath\$ModuleName.psd1" ) -replace 'ModuleVersion\s*=\s*[''"][0-9\.]{1,10}[''"]',"Moduleversion = '$Version'" -replace 'FunctionsToExport\s*=\s*[''"]\*[''"]',"FunctionsToExport = @('$($ExportedFunctionList -join "','")')"
-    $ManifestContent | Out-File $PSD1Path 
+    Update-ModuleManifest -Path "$ModuleSourcePath\$ModuleName.psd1" -ModuleVersion $Version -FunctionsToExport $ExportedFunctionList
+    Copy-Item -Path "$ModuleSourcePath\$ModuleName.psd1" -Destination $PSD1Path 
 }
 
 
