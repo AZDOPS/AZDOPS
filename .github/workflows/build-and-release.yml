@@ -48,3 +48,8 @@ jobs:
       run: |
         Get-ChildItem "${{ github.workspace }}\Bin\ADOPS" -recurse
         Publish-Module -Path "${{ github.workspace }}\Bin\ADOPS" -NuGetApiKey $env:NUGET_KEY -Verbose
+    - name: Archive current build
+      uses: actions/upload-artifact@v4
+      with:
+        name: builtModule
+        path: "${{ github.workspace }}/Bin/ADOPS"
