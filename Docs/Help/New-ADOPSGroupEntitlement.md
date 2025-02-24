@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Add-ADOPSGroupEntitlement
+# New-ADOPSGroupEntitlement
 
 ## SYNOPSIS
 
@@ -14,7 +14,7 @@ Adds a group entitlement in Azure DevOps.
 ## SYNTAX
 
 ```
-Add-ADOPSGroupEntitlement -GroupOriginId <String> -AccountLicenseType <String> -ProjectGroupType <String> -ProjectId <String>
+New-ADOPSGroupEntitlement -GroupOriginId <String> -AccountLicenseType <String> -ProjectGroupType <String> -ProjectId <String>
  [-LicensingSource <String>] [-Organization <String>] [-Wait] [<CommonParameters>]
 ```
 
@@ -27,7 +27,7 @@ Adds a group entitlement in Azure DevOps, allowing you to manage licensing and a
 ### Example 1
 
 ```powershell
-PS C:\> Add-ADOPSGroupEntitlement -GroupOriginId "01d0472d-9949-421e-81d8-fcb5668a394d" -AccountLicenseType "Express" -ProjectGroupType "projectContributor" -ProjectId "8130f18e-f65b-431d-a777-5d4a6f3468ba"
+PS C:\> New-ADOPSGroupEntitlement -GroupOriginId "01d0472d-9949-421e-81d8-fcb5668a394d" -AccountLicenseType "Express" -ProjectGroupType "projectContributor" -ProjectId "8130f18e-f65b-431d-a777-5d4a6f3468ba"
 ```
 
 Adds a group entitlement for the specified Entra ID group with Express license and Contributor access to the specified project.
@@ -35,7 +35,7 @@ Adds a group entitlement for the specified Entra ID group with Express license a
 ### Example 2
 
 ```powershell
-PS C:\> Add-ADOPSGroupEntitlement -GroupOriginId "01d0472d-9949-421e-81d8-fcb5668a394d" -AccountLicenseType "Stakeholder" -ProjectGroupType "projectReader" -ProjectId "8130f18e-f65b-431d-a777-5d4a6f3468ba" -Organization "MyOrg" -Wait
+PS C:\> New-ADOPSGroupEntitlement -GroupOriginId "01d0472d-9949-421e-81d8-fcb5668a394d" -AccountLicenseType "Stakeholder" -ProjectGroupType "projectReader" -ProjectId "8130f18e-f65b-431d-a777-5d4a6f3468ba" -Organization "MyOrg" -Wait
 ```
 
 Adds a group entitlement with Stakeholder license and Reader access to the specified project in the "MyOrg" organization, waiting for the operation to complete.
