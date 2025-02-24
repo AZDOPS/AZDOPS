@@ -104,7 +104,7 @@ Describe 'New-ADOPSGroupEntitlement' {
                 return $uri
             } -ParameterFilter { $Method -eq 'Post' }
 
-            $result = New-ADOPSGroupEntitlement -Organization $testOrgName -GroupOriginId $testGroupId -ProjectId $testProjectId
+            $result = New-ADOPSGroupEntitlement -Organization $testOrgName -GroupOriginId $testGroupId -ProjectId $testProjectId -AccountLicenseType 'Express' -ProjectGroupType 'projectContributor'
             $result.OriginalString | Should -Be "https://vsaex.dev.azure.com/$testOrgName/_apis/GroupEntitlements?api-version=7.1"
         }
     }
