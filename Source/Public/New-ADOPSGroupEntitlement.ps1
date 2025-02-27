@@ -5,10 +5,6 @@ function New-ADOPSGroupEntitlement {
         [ValidateNotNullOrEmpty()]
         [string]$GroupOriginId,
 
-        [Parameter()]
-        [ValidateSet('account')]
-        [string]$LicensingSource = 'account',
-
         [Parameter(Mandatory)]
         [ValidateSet('Express', 'Advanced', 'Stakeholder', 'Professional', 'EarlyAdopter')]
         [string]$AccountLicenseType,

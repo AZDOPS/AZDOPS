@@ -15,7 +15,7 @@ Adds a group entitlement in Azure DevOps.
 
 ```
 New-ADOPSGroupEntitlement -GroupOriginId <String> -AccountLicenseType <String> -ProjectGroupType <String> -ProjectId <String>
- [-LicensingSource <String>] [-Organization <String>] [-Wait] [<CommonParameters>]
+ [-Organization <String>] [-Wait] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -104,23 +104,6 @@ Aliases:
 Required: True
 Position: Named
 Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LicensingSource
-
-The source of licensing. Currently only supports 'account'.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-Accepted values: account
-
-Required: False
-Position: Named
-Default value: account
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
