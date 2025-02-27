@@ -16,11 +16,6 @@ Describe 'New-ADOPSGroupEntitlement' {
                 Type = 'string'
             },
             @{
-                Name = 'LicensingSource'
-                Mandatory = $false
-                Type = 'string'
-            },
-            @{
                 Name = 'AccountLicenseType'
                 Mandatory = $true
                 Type = 'string'
@@ -94,7 +89,6 @@ Describe 'New-ADOPSGroupEntitlement' {
             $resultObj.group.origin | Should -Be 'aad'
             $resultObj.group.originId | Should -Be $testGroupId
             $resultObj.group.subjectKind | Should -Be 'group'
-            $resultObj.licenseRule.licensingSource | Should -Be 'account'
             $resultObj.licenseRule.accountLicenseType | Should -Be 'Express'
             $resultObj.projectEntitlements[0].group.groupType | Should -Be 'projectContributor'
             $resultObj.projectEntitlements[0].projectRef.id | Should -Be $testProjectId
