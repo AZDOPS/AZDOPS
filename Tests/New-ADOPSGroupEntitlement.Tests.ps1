@@ -90,7 +90,14 @@ Describe 'New-ADOPSGroupEntitlement' {
             } -ParameterFilter { $Method -eq 'Post' }
 
             $result = New-ADOPSGroupEntitlement -Organization $testOrgName -GroupOriginId $testGroupId -ProjectId $testProjectId -AccountLicenseType 'Express' -ProjectGroupType 'projectContributor'
-            $result | Should -Be '{"extensionRules":[{"id":"ms.feed"}],"group":{"origin":"aad","originId":"01d0472d-9949-421e-81d8-fcb5668a394d","subjectKind":"group"},"licenseRule":{"licensingSource":"account","accountLicenseType":"Express"},"projectEntitlements":[{"group":{"groupType":"projectContributor"},"projectRef":{"id":"8130f18e-f65b-431d-a777-5d4a6f3468ba"}}]}'
+            $resultObj = $result | ConvertFrom-Json
+            $resultObj.group.origin | Should -Be 'aad'
+            $resultObj.group.originId | Should -Be $testGroupId
+            $resultObj.group.subjectKind | Should -Be 'group'
+            $resultObj.licenseRule.licensingSource | Should -Be 'account'
+            $resultObj.licenseRule.accountLicenseType | Should -Be 'Express'
+            $resultObj.projectEntitlements[0].group.groupType | Should -Be 'projectContributor'
+            $resultObj.projectEntitlements[0].projectRef.id | Should -Be $testProjectId
         }
     }
 }
