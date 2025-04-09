@@ -13,7 +13,7 @@ Gets all resource usage limits in an Azure DevOps organization.
 ## SYNTAX
 
 ```
-Get-ADOPSResourceUsage [[-Organization] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-ADOPSResourceUsage [[-Organization] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION

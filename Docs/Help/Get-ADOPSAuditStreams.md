@@ -13,7 +13,7 @@ Gets all audit streams in an Azure DevOps organization.
 ## SYNTAX
 
 ```
-Get-ADOPSAuditStreams [[-Organization] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-ADOPSAuditStreams [[-Organization] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION

@@ -15,7 +15,7 @@ Gets all organization policy in selected category or all organization policies a
 
 ```
 Get-ADOPSOrganizationPolicy [[-Organization] <String>] [[-PolicyCategory] <String>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
