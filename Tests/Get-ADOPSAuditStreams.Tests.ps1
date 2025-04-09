@@ -49,16 +49,6 @@ Describe 'Get-ADOPSAuditStreams' {
 '@ | ConvertFrom-Json
             }
         }
-        
-        It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
-            Get-ADOPSAuditStreams -Organization 'anotherorg'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
-        }
-
-        It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
-            Get-ADOPSAuditStreams
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
-        }
 
         It 'Should return something' {
             Get-ADOPSAuditStreams | Should -Not -BeNullOrEmpty

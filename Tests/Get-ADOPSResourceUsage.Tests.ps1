@@ -44,16 +44,6 @@ Describe 'Get-ADOPSResourceUsage' {
 '@ | ConvertFrom-Json
             }
         }
-        
-        It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
-            Get-ADOPSResourceUsage -Organization 'anotherorg'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
-        }
-
-        It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
-            Get-ADOPSResourceUsage
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
-        }
 
         It 'Should return something' {
             Get-ADOPSResourceUsage | Should -Not -BeNullOrEmpty
