@@ -45,10 +45,10 @@ Describe 'Get-ADOPSAgentQueue' {
                                 id       = 1
                                 scope    = '786f72e5-619f-4fa0-8084-21d73d36d002'
                                 name     = 'Default'
-                                isHosted = false
+                                isHosted = $false
                                 poolType = 'automation'
                                 size     = 0
-                                isLegacy = false
+                                isLegacy = $false
                                 options  = 'none'
                             }
                         }
@@ -60,10 +60,10 @@ Describe 'Get-ADOPSAgentQueue' {
                                 id       = 2
                                 scope    = '786f72e5-619f-4fa0-8084-21d73d36d002'
                                 name     = 'Hosted'
-                                isHosted = true
+                                isHosted = $true
                                 poolType = 'automation'
                                 size     = 8
-                                isLegacy = true
+                                isLegacy = $true
                                 options  = 'none'
                             }
                         }
