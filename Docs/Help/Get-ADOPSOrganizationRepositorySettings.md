@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-ADOPSOrganizationRepositorySettings
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Get Azure DevOps Organization wide Repository settings
 
 ## SYNTAX
 
@@ -24,7 +24,7 @@ Get Azure DevOps Organization wide Repository settings
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-ADOPSOrganizationRepositorySettings
 ```
 
 Get Azure DevOps Organization wide Repository settings
