@@ -10,12 +10,6 @@ function Get-ADOPSOrganizationRepositorySettings {
         $Organization = GetADOPSDefaultOrganization
     }
 
-    $Body = '{
-        "contributionIds": [
-            "ms.vss-build-web.pipelines-org-settings-data-provider"
-        ]
-    }'
-
     $Uri = "https://dev.azure.com/$Organization/_api/_versioncontrol/AllGitRepositoriesOptions?__v=5"
 
     (InvokeADOPSRestMethod -Uri $Uri -Method Get).__wrappedArray
