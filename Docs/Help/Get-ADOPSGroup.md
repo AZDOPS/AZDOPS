@@ -13,7 +13,7 @@ Gets all Azure DevOps groups
 ## SYNTAX
 
 ```
-Get-ADOPSGroup [[-Organization] <String>] [[-ContinuationToken] <String>] [<CommonParameters>]
+Get-ADOPSGroup [[-Organization] <String>] [-Descriptor <String>] [[-ContinuationToken] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -28,6 +28,13 @@ PS C:\> Get-ADOPSGroup
 ```
 
 Gets all Azure DevOps groups
+
+### Example 2
+```powershell
+PS C:\> Get-ADOPSGroup -Descriptor 'vssgp.Uy0xLTktMTU1MTM3NDI0NS0zNjE3OTkwMTAxLTE2NDMyOTI3NDItMjI3NTA1MDMxMi0zNDgyOTQ1MDkzLTAtMC0wLTAtMg'
+```
+
+Get specified group with descriptor 'vssgp.Uy0xLTktMTU1MTM3NDI0NS0zNjE3OTkwMTAxLTE2NDMyOTI3NDItMjI3NTA1MDMxMi0zNDgyOTQ1MDkzLTAtMC0wLTAtMg'
 
 ## PARAMETERS
 
@@ -56,6 +63,21 @@ Aliases:
 
 Required: False
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Descriptor
+Descriptor of Group
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
