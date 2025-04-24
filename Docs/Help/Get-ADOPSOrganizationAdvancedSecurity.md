@@ -1,6 +1,6 @@
 ---
-external help file:
-Module Name:
+external help file: ADOPS-help.xml
+Module Name: ADOPS
 online version:
 schema: 2.0.0
 ---
@@ -12,9 +12,20 @@ Get the Azure DevOps organization wide Advanced Security Settings
 
 ## SYNTAX
 
+### Org (Default)
 ```
-Get-ADOPSOrganizationAdvancedSecurity [[-Organization] <String>]
+Get-ADOPSOrganizationAdvancedSecurity [-Organization <String>]
  [<CommonParameters>]
+```
+
+### Repository
+```
+Get-ADOPSOrganizationAdvancedSecurity [-Organization <String>] -Project <String> -Repository <String> [<CommonParameters>]
+```
+
+### Project
+```
+Get-ADOPSOrganizationAdvancedSecurity [-Organization <String>] -Project <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -40,7 +51,37 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 0
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Project
+Azure DevOps Project name
+
+```yaml
+Type: String
+Parameter Sets: Repository, Project
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Repository
+Azure DevOps Repository name
+
+```yaml
+Type: String
+Parameter Sets: Repository
+Aliases:
+
+Required: True
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

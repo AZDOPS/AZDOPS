@@ -1,6 +1,6 @@
 ---
-external help file:
-Module Name:
+external help file: ADOPS-help.xml
+Module Name: ADOPS
 online version:
 schema: 2.0.0
 ---
@@ -27,6 +27,8 @@ PS C:\> Test-ADOPSConnection
 ```
 
 Test if an active connection is established to Azure DevOps.
+Returns $false if not connected.
+Returns $true if connected.
 
 ## PARAMETERS
 

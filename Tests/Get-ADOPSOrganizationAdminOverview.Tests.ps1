@@ -14,6 +14,11 @@ Describe 'Get-ADOPSOrganizationAdminOverview' {
                 Name      = 'Organization'
                 Mandatory = $false
                 Type      = 'string'
+            },
+            @{
+                Name      = 'ContributionIds'
+                Mandatory = $false
+                Type      = 'String[]'
             }
         )
     

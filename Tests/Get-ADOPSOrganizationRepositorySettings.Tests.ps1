@@ -74,7 +74,7 @@ Describe 'Get-ADOPSOrganizationRepositorySettings' {
             Get-ADOPSOrganizationRepositorySettings | Should -Not -BeNullOrEmpty
         }
 
-        It 'StatusBadgesArePrivate Should return something' {
+        It 'GravatarEnabled entry Should not be Null or empty' {
             (Get-ADOPSOrganizationRepositorySettings | Where-object key -eq "GravatarEnabled") | Should -Not -BeNullOrEmpty
         }
     }

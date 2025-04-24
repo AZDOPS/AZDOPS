@@ -10,7 +10,7 @@ function Get-ADOPSOrganizationRepositorySettings {
         $Organization = GetADOPSDefaultOrganization
     }
 
-    $Uri = "https://dev.azure.com/$Organization/_api/_versioncontrol/AllGitRepositoriesOptions?__v=5"
+    $Uri = "https://dev.azure.com/$Organization/_api/_versioncontrol/AllGitRepositoriesOptions"
 
     (InvokeADOPSRestMethod -Uri $Uri -Method Get).__wrappedArray
 

@@ -65,12 +65,8 @@ Describe 'Get-ADOPSOrganizationPipelineSettings' {
             }
         }
 
-        It 'Should return something' {
-            Get-ADOPSOrganizationPipelineSettings | Should -Not -BeNullOrEmpty
-        }
-
-        It 'StatusBadgesArePrivate Should return something' {
-            (Get-ADOPSOrganizationPipelineSettings).statusBadgesArePrivate | Should -Not -BeNullOrEmpty
+        It 'buildsEnabledForForks Should be true' {
+            (Get-ADOPSOrganizationPipelineSettings).buildsEnabledForForks | Should -Be $true
         }
     }
 }

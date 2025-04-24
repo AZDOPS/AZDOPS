@@ -2,7 +2,11 @@ function Get-ADOPSOrganizationAdminOverview {
     [CmdletBinding()]
     param (
         [Parameter()]
-        [string]$Organization
+        [string]$Organization,
+
+        [Parameter()]
+        [string[]]
+        $ContributionIds = @("ms.vss-admin-web.organization-admin-overview-delay-load-data-provider")
     )
 
     # If user didn't specify org, get it from saved context
@@ -10,14 +14,19 @@ function Get-ADOPSOrganizationAdminOverview {
         $Organization = GetADOPSDefaultOrganization
     }
 
-    $Body = '{
-        "contributionIds": [
-            "ms.vss-admin-web.organization-admin-overview-delay-load-data-provider"
-        ]
-    }'
+    $Body = @{
+        'contributionIds' = $ContributionIds
+    } | ConvertTo-Json -Depth 100
 
-    $Uri = "https://dev.azure.com/$Organization/_apis/Contribution/HierarchyQuery?api-version=7.1-preview"
+    $Uri = "https://dev.azure.com/$Organization/_apis/Contribution/HierarchyQuery?api-version=7.2-preview"
 
-    (InvokeADOPSRestMethod -Uri $Uri -Method Post -Body $Body).dataProviders.'ms.vss-admin-web.organization-admin-overview-delay-load-data-provider'
+    $Response = InvokeADOPSRestMethod -Uri $Uri -Method Post -Body $Body
+
+    if ($Response.dataProviderExceptions) {
+        $Response.dataProviderExceptions
+    }
+    else {
+        $Response.dataProviders
+    }
 
 }

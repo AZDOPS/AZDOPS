@@ -50,12 +50,8 @@ Describe 'Get-ADOPSOrganizationAdvancedSecurity' {
             }
         }
 
-        It 'Should return something' {
-            Get-ADOPSOrganizationAdvancedSecurity | Should -Not -BeNullOrEmpty
-        }
-
-        It 'StatusBadgesArePrivate Should return something' {
-            (Get-ADOPSOrganizationAdvancedSecurity).enableOnCreate | Should -Not -BeNullOrEmpty
+        It 'enableOnCreate Should be false' {
+            (Get-ADOPSOrganizationAdvancedSecurity).enableOnCreate | Should -Be $false
         }
     }
 }

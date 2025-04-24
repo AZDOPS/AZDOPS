@@ -1,6 +1,6 @@
 ---
-external help file:
-Module Name:
+external help file: ADOPS-help.xml
+Module Name: ADOPS
 online version:
 schema: 2.0.0
 ---
@@ -13,8 +13,7 @@ Get the organization admin overview data.
 ## SYNTAX
 
 ```
-Get-ADOPSOrganizationAdminOverview [[-Organization] <String>]
- [<CommonParameters>]
+Get-ADOPSOrganizationAdminOverview [[-Organization] <String>] [[-ContributionIds] <String[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -30,6 +29,21 @@ PS C:\> Get-ADOPSOrganizationAdminOverview
 Get the organization admin overview data.
 
 ## PARAMETERS
+
+### -ContributionIds
+List of contribution ids
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -Organization
 The identifier of the Azure DevOps organization.

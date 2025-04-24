@@ -8,14 +8,6 @@ BeforeAll {
 }
 
 Describe 'Test-ADOPSConnection' {
-    Context 'Parameters' {
-        $TestCases = @(
-        )
-    
-        It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Test-ADOPSConnection | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
-        }
-    }
     
     Context 'functionality' {
         BeforeAll {
