@@ -23,10 +23,20 @@ function Get-ADOPSMembership {
 
     switch ($Direction) {
         'up' {
-            $Membership = $Response.value.containerDescriptor
+            if ($Response.value.count -ne 0) {
+                $Membership = $Response.value.containerDescriptor
+            }
+            else {
+                $Membership = $Response.value
+            }
         }
         'down' {
-            $Membership = $Response.value.memberDescriptor
+            if ($Response.value.count -ne 0) {
+                $Membership = $Response.value.memberDescriptor
+            }
+            else {
+                $Membership = $Response.value
+            }
         }
     }
 
