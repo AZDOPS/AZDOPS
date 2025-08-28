@@ -238,17 +238,17 @@ Describe 'Get-ADOPSOrganizationPolicy' {
         }
         
         It 'uses InvokeADOPSRestMethod single times' {
-            Get-ADOPSOrganizationPolicy -Organization $OrganizationName
+            Get-ADOPSOrganizationPolicy -Organization $OrganizationName -Force
             Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
         }
         It 'should not throw with mandatory parameters' {
-            { Get-ADOPSOrganizationPolicy -Organization $OrganizationName -PolicyCategory $PolicyCategory } | Should -Not -Throw
+            { Get-ADOPSOrganizationPolicy -Organization $OrganizationName -Force -PolicyCategory $PolicyCategory } | Should -Not -Throw
         }
         It 'should return selected policies in category' {
-            (Get-ADOPSOrganizationPolicy -Organization $OrganizationName -PolicyCategory $PolicyCategory).count | Should -Be 3
+            (Get-ADOPSOrganizationPolicy -Organization $OrganizationName -Force -PolicyCategory $PolicyCategory).count | Should -Be 3
         }
         It 'should return all policies for the organization' {
-            (Get-ADOPSOrganizationPolicy -Organization $OrganizationName).count | Should -Be 11
+            (Get-ADOPSOrganizationPolicy -Organization $OrganizationName -Force).count | Should -Be 11
         }
     }
 }

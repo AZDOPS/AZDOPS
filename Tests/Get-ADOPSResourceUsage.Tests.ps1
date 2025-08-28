@@ -46,7 +46,7 @@ Describe 'Get-ADOPSResourceUsage' {
         }
 
         It 'Should return something' {
-            Get-ADOPSResourceUsage | Should -Not -BeNullOrEmpty
+            Get-ADOPSResourceUsage -Force | Should -Not -BeNullOrEmpty
         }
     }
 }

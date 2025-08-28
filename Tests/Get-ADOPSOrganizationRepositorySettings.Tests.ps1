@@ -71,11 +71,11 @@ Describe 'Get-ADOPSOrganizationRepositorySettings' {
         }
 
         It 'Should return something' {
-            Get-ADOPSOrganizationRepositorySettings | Should -Not -BeNullOrEmpty
+            Get-ADOPSOrganizationRepositorySettings -Force | Should -Not -BeNullOrEmpty
         }
 
         It 'GravatarEnabled entry Should not be Null or empty' {
-            (Get-ADOPSOrganizationRepositorySettings | Where-object key -eq "GravatarEnabled") | Should -Not -BeNullOrEmpty
+            (Get-ADOPSOrganizationRepositorySettings -Force | Where-object key -eq "GravatarEnabled") | Should -Not -BeNullOrEmpty
         }
     }
 }
