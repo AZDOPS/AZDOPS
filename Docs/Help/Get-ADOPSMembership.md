@@ -5,48 +5,46 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-ADOPSGroup
+# Get-ADOPSMembership
 
 ## SYNOPSIS
-Gets all Azure DevOps groups
+Gets membership of or in target descriptor
 
 ## SYNTAX
 
 ```
-Get-ADOPSGroup [[-Organization] <String>] [-Descriptor <String>] [[-ContinuationToken] <String>] [<CommonParameters>]
+Get-ADOPSMembership [[-Organization] <String>] [-Descriptor] <String> [[-Direction] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-This command returns all Azure DevOps groups in your organization.
-It will not filter groups.
+Gets membership of or in target descriptor
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> Get-ADOPSGroup
+PS C:\> Get-ADOPSMembership -Descriptor 'vssgp.Uy0xLTktMTU1MTM3NBI0NS0zNjE3OTkwMTAxLTE2NDMyOTI3NDLtMjI3NTA1MDMxMo0zNDgyOTQ1MDkzLTAtMC0wLTAtMQ'
 ```
 
-Gets all Azure DevOps groups
+Gets membership of target descriptor
 
 ### Example 2
 ```powershell
-PS C:\> Get-ADOPSGroup -Descriptor 'vssgp.Uy0xLTktMTU1MTM3NDI0NS0zNjE3OTkwMTAxLTE2NDMyOTI3NDItMjI3NTA1MDMxMi0zNDgyOTQ1MDkzLTAtMC0wLTAtMg'
+PS C:\> Get-ADOPSMembership -Descriptor 'vssgp.Uy0xLTktMTU1MTM3NBI0NS0zNjE3OTkwMTAxLTE2NDMyOTI3NDLtMjI3NTA1MDMxMo0zNDgyOTQ1MDkzLTAtMC0wLTAtMQ' -Direction 'down'
 ```
 
-Get specified group with descriptor 'vssgp.Uy0xLTktMTU1MTM3NDI0NS0zNjE3OTkwMTAxLTE2NDMyOTI3NDItMjI3NTA1MDMxMi0zNDgyOTQ1MDkzLTAtMC0wLTAtMg'
-
+Gets membership in target descriptor
 ## PARAMETERS
 
-### -ContinuationToken
-Internal parameter. Used to get paged results
+### -Descriptor
+Descriptor
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 1
 Default value: None
 Accept pipeline input: False
@@ -54,7 +52,7 @@ Accept wildcard characters: False
 ```
 
 ### -Organization
-The organization to get groups from.
+Azure DevOps Organization
 
 ```yaml
 Type: String
@@ -68,16 +66,17 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Descriptor
-Descriptor of Group
+### -Direction
+The default value for direction is 'up' meaning return all memberships where the subject is a member (e.g. all groups the subject is a member of). Alternatively, passing the direction as 'down' will return all memberships where the subject is a container (e.g. all members of the subject group).
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
+Accepted values: up, down
 
 Required: False
-Position: Named
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

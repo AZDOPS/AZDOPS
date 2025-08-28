@@ -2,6 +2,10 @@ function Get-ADOPSGroup {
     param ([Parameter()]
         [string]$Organization,
 
+        [Parameter()]
+        [string]
+        $Descriptor,
+
         [Parameter(DontShow)]
         [string]$ContinuationToken
     )
@@ -11,12 +15,20 @@ function Get-ADOPSGroup {
         $Organization = GetADOPSDefaultOrganization
     }
 
-    
-    if (-not [string]::IsNullOrEmpty($ContinuationToken)) {
-        $Uri = "https://vssps.dev.azure.com/$Organization/_apis/graph/groups?continuationToken=$ContinuationToken&api-version=7.1-preview.1"
+    if ($PSBoundParameters.ContainsKey('Descriptor')) {
+        $Uri = "https://vssps.dev.azure.com/$Organization/_apis/graph/groups/$Descriptor`?api-version=7.2-preview.1"
+
+        $Response = InvokeADOPSRestMethod -Uri $Uri -Method 'GET'
+
+        return $Response
     }
     else {
-        $Uri = "https://vssps.dev.azure.com/$Organization/_apis/graph/groups?api-version=7.1-preview.1"
+        if (-not [string]::IsNullOrEmpty($ContinuationToken)) {
+            $Uri = "https://vssps.dev.azure.com/$Organization/_apis/graph/groups?continuationToken=$ContinuationToken&api-version=7.1-preview.1"
+        }
+        else {
+            $Uri = "https://vssps.dev.azure.com/$Organization/_apis/graph/groups?api-version=7.1-preview.1"
+        }
     }
     
     $Method = 'GET'
@@ -26,7 +38,7 @@ function Get-ADOPSGroup {
     $Groups = $Response.Content.value
     Write-Verbose "Found $($Response.Content.count) groups"
 
-    if($Response.Headers.ContainsKey('X-MS-ContinuationToken')) {
+    if ($Response.Headers.ContainsKey('X-MS-ContinuationToken')) {
         Write-Verbose "Found continuationToken. Will fetch more groups."
         $parameters = [hashtable]$PSBoundParameters
         $parameters.Add('ContinuationToken', $Response.Headers['X-MS-ContinuationToken']?[0])
