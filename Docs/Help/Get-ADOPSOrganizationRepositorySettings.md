@@ -19,6 +19,7 @@ Get-ADOPSOrganizationRepositorySettings [[-Organization] <String>]
 
 ## DESCRIPTION
 Get Azure DevOps Organization wide Repository settings
+If the module is loaded without AllowInsecureApis parameter or the variable AdopsAllowInsecureApis set, Use -Force to run command.
 
 ## EXAMPLES
 

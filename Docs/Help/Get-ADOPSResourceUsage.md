@@ -18,6 +18,7 @@ Get-ADOPSResourceUsage [[-Organization] <String>] [<CommonParameters>]
 
 ## DESCRIPTION
 Gets all resource usage limits in an Azure DevOps organization.
+If the module is loaded without AllowInsecureApis parameter or the variable AdopsAllowInsecureApis set, Use -Force to run command.
 
 ## EXAMPLES
 

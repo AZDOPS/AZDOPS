@@ -20,6 +20,7 @@ Get-ADOPSOrganizationPolicy [[-Organization] <String>] [[-PolicyCategory] <Strin
 
 ## DESCRIPTION
 Gets all organization policy in selected category or all organization policies across all categories.
+If the module is loaded without AllowInsecureApis parameter or the variable AdopsAllowInsecureApis set, Use -Force to run command.
 
 ## EXAMPLES
 
