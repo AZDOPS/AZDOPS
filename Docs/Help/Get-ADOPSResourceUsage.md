@@ -1,6 +1,6 @@
 ---
-external help file:
-Module Name:
+external help file: ADOPS-help.xml
+Module Name: ADOPS
 online version:
 schema: 2.0.0
 ---
