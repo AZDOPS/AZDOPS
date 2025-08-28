@@ -126,15 +126,15 @@ Describe 'Get-ADOPSOrganizationCommerceMeterUsage' {
         }
 
         It 'Should return something' {
-            Get-ADOPSOrganizationCommerceMeterUsage | Should -Not -BeNullOrEmpty
+            Get-ADOPSOrganizationCommerceMeterUsage -Force | Should -Not -BeNullOrEmpty
         }
 
         It 'Should return single meter usage data' {
-            Get-ADOPSOrganizationCommerceMeterUsage -meterId '3efc2e47-d73e-4213-8368-3a8723ceb1cc' | Should -Not -BeNullOrEmpty
+            Get-ADOPSOrganizationCommerceMeterUsage -meterId '3efc2e47-d73e-4213-8368-3a8723ceb1cc' -Force | Should -Not -BeNullOrEmpty
         }
 
         It 'Should return meterIds' {
-            Get-ADOPSOrganizationCommerceMeterUsage | Select-object -ExpandProperty 'meterId' | Should -Not -BeNullOrEmpty
+            Get-ADOPSOrganizationCommerceMeterUsage -Force | Select-object -ExpandProperty 'meterId' | Should -Not -BeNullOrEmpty
         }
     }
 }
