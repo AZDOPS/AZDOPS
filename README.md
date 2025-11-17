@@ -32,10 +32,4 @@ This project is currently maintained by the following coders:
 
 - [bjompen](https://github.com/bjompen)
 - [JohnRoos](https://github.com/JohnRoos)
-- [PalmEmanuel](https://github.com/PalmEmanuel)
-- [egullbrandsson](https://github.com/egullbrandsson)
-- [StefanIvemo](https://github.com/StefanIvemo)
-- [SimonWahlin](https://github.com/SimonWahlin)
 - [SebastianClaesson](https://github.com/SebastianClaesson)
-- [hardstl](https://github.com/Hardstl)
-- [nilsson-jens](https://github.com/nilsson-jens)
