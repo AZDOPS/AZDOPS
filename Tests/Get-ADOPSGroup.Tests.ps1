@@ -23,6 +23,11 @@ Describe "Get-ADOPSGroup" {
                 Name = 'ContinuationToken'
                 Mandatory = $false
                 Type = 'string'
+            },
+            @{
+                Name = 'Descriptor'
+                Mandatory = $false
+                Type = 'string'
             }
         )
     
