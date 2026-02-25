@@ -6,7 +6,7 @@ This project started out as a hackathon around PowerShell and Pester with the go
 
 ## Installation
 
-From PSGallery, run 
+From PSGallery, run:
 
 ```PowerShell
 Install-Module ADOPS
@@ -16,13 +16,32 @@ _Or_ download this repo and run `Invoke-build` in it to build your own release
 
 _Or_ download this repo and import from ./source/ folder
 
+## Cmdlets using unsupported Azure DevOps Endpoints are not loaded per default
+Certain cmdlets require a feature flag to be set, or the -force switch to be used.
+
+Activate cmdlets using unsupported endpoints, by passing the ArgumentList:
+```PowerShell
+Install-Module ADOPS -ArgumentList $true
+```
+
+Activate cmdlets using unsupported endpoints, by setting the "AdopsAllowInsecureApis" PowerShell variable:
+```PowerShell
+$AdopsAllowInsecureApis = $true
+Install-Module ADOPS
+```
+
+Using a cmdlet with force:
+```PowerShell
+Get-ADOPSTenantPolicy -Force
+```
+
 ## Bug report and feature requests
 
 If you find a bug or have an idea for a new feature create an issue in the repo. Please have a look and see if a similar issue is already created before submitting.
 
 ## Contribution
 
-If you like the this module and want to contribute you are very much welcome to do so. Please read our [Contribution Guide](CONTRIBUTING.md) before you start! ❤
+If you like this module and want to contribute you are very much welcome to do so. Please read our [Contribution Guide](CONTRIBUTING.md) before you start! ❤
 
 We try to maintain high test coverage, and encourage TDD using [Pester](https://github.com/pester/Pester). We will gladly help out if you need help getting started with it.
 
