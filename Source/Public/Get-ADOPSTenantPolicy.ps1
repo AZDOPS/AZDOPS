@@ -25,7 +25,7 @@ function Get-ADOPSTenantPolicy {
             $Organization = GetADOPSDefaultOrganization
         }
         
-        $Uri = "https://vssps.dev.azure.com/$Organization/_apis/TenantPolicy/Policies/TenantPolicy."
+        $Uri = "https://vssps.dev.azure.com/$Organization/_apis/TenantPolicy/Policies/TenantPolicy"
         if ($PSBoundParameters.ContainsKey('PolicyCategory')) {
             [string[]]$getList = $PolicyCategory
         }
@@ -34,7 +34,7 @@ function Get-ADOPSTenantPolicy {
         }
 
         foreach ($policy in $getList) {
-            InvokeADOPSRestMethod -Uri ($Uri + $policy) -Method Get
+            InvokeADOPSRestMethod -Uri ("$Uri.$policy") -Method Get
         }
     }
     else {
