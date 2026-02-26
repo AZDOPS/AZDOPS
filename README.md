@@ -21,13 +21,13 @@ Certain cmdlets require a feature flag to be set, or the -force switch to be use
 
 Activate cmdlets using unsupported endpoints, by passing the ArgumentList:
 ```PowerShell
-Install-Module ADOPS -ArgumentList $true
+Import-Module ADOPS -ArgumentList $true
 ```
 
 Activate cmdlets using unsupported endpoints, by setting the "AdopsAllowInsecureApis" PowerShell variable:
 ```PowerShell
 $AdopsAllowInsecureApis = $true
-Install-Module ADOPS
+Import-Module ADOPS
 ```
 
 Using a cmdlet with force:
