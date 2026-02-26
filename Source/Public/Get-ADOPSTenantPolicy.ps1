@@ -25,42 +25,16 @@ function Get-ADOPSTenantPolicy {
             $Organization = GetADOPSDefaultOrganization
         }
         
+        $Uri = "https://vssps.dev.azure.com/$Organization/_apis/TenantPolicy/Policies/TenantPolicy."
         if ($PSBoundParameters.ContainsKey('PolicyCategory')) {
-            switch ($PolicyCategory) {
-
-                # Restrict global personal access token creation
-                'RestrictGlobalPersonalAccessToken' {
-                    $Uri = "https://vssps.dev.azure.com/$Organization/_apis/TenantPolicy/Policies/TenantPolicy.RestrictGlobalPersonalAccessToken"
-                }
-
-                # Enforce maximum personal access token lifespan
-                'RestrictPersonalAccessTokenLifespan' {
-                    # Properties.MaxPatLifespanInDays if True
-                    $Uri = "https://vssps.dev.azure.com/$Organization/_apis/TenantPolicy/Policies/TenantPolicy.RestrictPersonalAccessTokenLifespan"
-                }
-
-                # Automatically revoke leaked personal access tokens
-                'EnableLeakedPersonalAccessTokenAutoRevocation' {
-                    $Uri = "https://vssps.dev.azure.com/$Organization/_apis/TenantPolicy/Policies/TenantPolicy.EnableLeakedPersonalAccessTokenAutoRevocation"
-                }
-
-                # Restrict organization creation
-                'OrganizationCreationRestriction' {
-                    $Uri = "https://vssps.dev.azure.com/$Organization/_apis/TenantPolicy/Policies/TenantPolicy.OrganizationCreationRestriction"
-                }
-
-                # Restrict full-scoped personal access token creation
-                'RestrictFullScopePersonalAccessToken' {
-                    $Uri = "https://vssps.dev.azure.com/$Organization/_apis/TenantPolicy/Policies/TenantPolicy.RestrictFullScopePersonalAccessToken"
-                }
-            }
-            $Data = InvokeADOPSRestMethod -Uri $Uri -Method Get
-            Write-Output $Data
+            [string[]]$getList = $PolicyCategory
         }
         else {
-            @('RestrictGlobalPersonalAccessToken', 'RestrictPersonalAccessTokenLifespan', 'EnableLeakedPersonalAccessTokenAutoRevocation', 'OrganizationCreationRestriction', 'RestrictFullScopePersonalAccessToken') | ForEach-Object {
-                InvokeADOPSRestMethod -Uri "https://vssps.dev.azure.com/$Organization/_apis/TenantPolicy/Policies/TenantPolicy.$_" -Method Get
-            }
+            [string[]]$getList  = @('RestrictGlobalPersonalAccessToken', 'RestrictPersonalAccessTokenLifespan', 'EnableLeakedPersonalAccessTokenAutoRevocation', 'OrganizationCreationRestriction', 'RestrictFullScopePersonalAccessToken')
+        }
+
+        foreach ($policy in $getList) {
+            InvokeADOPSRestMethod -Uri ($Uri + $policy) -Method Get
         }
     }
     else {
