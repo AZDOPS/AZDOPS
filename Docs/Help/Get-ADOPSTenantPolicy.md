@@ -8,57 +8,96 @@ schema: 2.0.0
 # Get-ADOPSTenantPolicy
 
 ## SYNOPSIS
-Retrieves the tenant policy for Azure DevOps.
+
+Gets one or all tenant policies for an Azure DevOps organization.
 
 ## SYNTAX
+
 ```
-Get-ADOPSTenantPolicy [-Parameter1 <Type>] [-Parameter2 <Type>] [<CommonParameters>]
+Get-ADOPSTenantPolicy [[-Organization] <String>] [[-PolicyCategory] <String>] [-Force]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The `Get-ADOPSTenantPolicy` cmdlet retrieves the tenant policy settings for Azure DevOps. This cmdlet can be used to obtain information about the current policies applied to the tenant.
 
-## PARAMETERS
-
-### -Parameter1  
-Description of Parameter1.
-
-### -Parameter2  
-Description of Parameter2.
-
-### -Organization  
-Specifies the Azure DevOps organization to retrieve the tenant policy for.
-
-### -PolicyCategory  
-Specifies the category of the policy to retrieve. Valid values are:
-- RestrictGlobalPersonalAccessToken
-- RestrictPersonalAccessTokenLifespan
-- EnableLeakedPersonalAccessTokenAutoRevocation
-- OrganizationCreationRestriction
-- RestrictFullScopePersonalAccessToken
-
-### -Force  
-Allows the cmdlet to execute, as it's using unsupported endpoints in Azure DevOps.
+Gets one or all tenant policies for an Azure DevOps organization.
+When no PolicyCategory is specified, all supported policy categories are returned.
+If the module is loaded without AllowInsecureApis parameter or the variable AdopsAllowInsecureApis set, Use -Force to run command.
 
 ## EXAMPLES
 
 ### Example 1
+```powershell
+PS C:\> Get-ADOPSTenantPolicy
 ```
-Get-ADOPSTenantPolicy -Organization "MyOrganization" -PolicyCategory "RestrictGlobalPersonalAccessToken"
-```
-Retrieves the tenant policy for the specified organization and policy category.
+
+Gets all tenant policies for the default organization.
 
 ### Example 2
+```powershell
+PS C:\> Get-ADOPSTenantPolicy -Organization 'MyOrganization' -PolicyCategory 'RestrictGlobalPersonalAccessToken'
 ```
-Get-ADOPSTenantPolicy -Organization "MyOrganization" -PolicyCategory "RestrictPersonalAccessTokenLifespan"
+
+Gets the RestrictGlobalPersonalAccessToken tenant policy for MyOrganization.
+
+## PARAMETERS
+
+### -Organization
+The organization to get the tenant policy from.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
 ```
-Retrieves the tenant policy for the specified organization and policy category.
+
+### -PolicyCategory
+The tenant policy category to retrieve. When omitted, all categories are returned.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: RestrictGlobalPersonalAccessToken, RestrictPersonalAccessTokenLifespan, EnableLeakedPersonalAccessTokenAutoRevocation, OrganizationCreationRestriction, RestrictFullScopePersonalAccessToken
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+Allows the cmdlet to run against unsupported Azure DevOps endpoints without enabling AllowInsecureApis globally.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
+### None
+
 ## OUTPUTS
 
+### System.Object
 ## NOTES
 
 ## RELATED LINKS
-

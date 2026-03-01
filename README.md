@@ -2,7 +2,7 @@
 
 This repository contains functions for creating and maintaining Azure DevOps environments using OAuth and simple login without PATs.
 
-This project started out as a hackathon around PowerShell and Pester with the goal to be able to create, update, and remove, all or most of the parts we regularly use in our own Azure DevOps environments, in a standardized and easy way.
+This project started out as a hackathon around PowerShell and Pester with the goal to be able to create, update, and remove all or most of the parts we regularly use in our own Azure DevOps environments, in a standardized and easy way.
 
 ## Installation
 
@@ -16,21 +16,22 @@ _Or_ download this repo and run `Invoke-build` in it to build your own release
 
 _Or_ download this repo and import from ./source/ folder
 
-## Cmdlets using unsupported Azure DevOps Endpoints are not loaded per default
-Certain cmdlets require a feature flag to be set, or the -force switch to be used.
+## Cmdlets using unsupported Azure DevOps endpoints are not loaded by default
 
-Activate cmdlets using unsupported endpoints, by passing the ArgumentList:
+Certain cmdlets use undocumented, non-version-controlled, and/or unsupported REST API endpoints. These require a variable to be set, or the `-Force` switch to be used.
+
+Activate these cmdlets by passing the ArgumentList:
 ```PowerShell
 Import-Module ADOPS -ArgumentList $true
 ```
 
-Activate cmdlets using unsupported endpoints, by setting the "AdopsAllowInsecureApis" PowerShell variable:
+Or by setting the `AdopsAllowInsecureApis` variable before importing the module:
 ```PowerShell
 $AdopsAllowInsecureApis = $true
 Import-Module ADOPS
 ```
 
-Using a cmdlet with force:
+Using a cmdlet with `-Force`:
 ```PowerShell
 Get-ADOPSTenantPolicy -Force
 ```
