@@ -6,5 +6,10 @@ function Disconnect-ADOPS {
     # Reset context
     NewADOPSConfigFile
 
-    Clear-AzTokenCache -TokenCache $script:AzTokenCache
+    try {
+        Clear-AzTokenCache -TokenCache $script:AzTokenCache
+    }
+    catch {
+        Write-Warning "Failed to clear tokencache."
+    }
 }
