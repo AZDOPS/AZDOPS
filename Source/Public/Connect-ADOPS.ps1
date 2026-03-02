@@ -50,7 +50,7 @@ function Connect-ADOPS {
             $TokenSplat.Add('ManagedIdentity', $true)
             $script:LoginMethod = 'ManagedIdentity'
 
-            $Token = Get-AzToken @TokenSplat
+            $Token = GetAzTokenWrapper $TokenSplat
             $TokenTenantId = $Token.TenantId
             $TokenIdentity = $Token.Identity
         }
@@ -58,7 +58,7 @@ function Connect-ADOPS {
             $TokenSplat.Add('TokenCache', $script:AzTokenCache)
             $TokenSplat.Add('Interactive', $true)
 
-            $Token = Get-AzToken @TokenSplat
+            $Token = GetAzTokenWrapper $TokenSplat
             $TokenTenantId = $Token.TenantId
             $TokenIdentity = $Token.Identity
         }

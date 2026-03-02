@@ -13,7 +13,8 @@ function NewAzToken {
 
                 $TokenSplat['Username'] = $Usercontext['Default']['Identity']
                 $TokenSplat['TenantId'] = $Usercontext['Default']['TenantId']
-                Get-AzToken @TokenSplat -TokenCache $script:AzTokenCache
+                $TokenSplat['TokenCache'] = $script:AzTokenCache
+                GetAzTokenWrapper $TokenSplat
             }
             catch {
                 # Make sure we present the inner exception to users but with a nicer error message
@@ -28,7 +29,8 @@ function NewAzToken {
             }
         }
         'ManagedIdentity' {
-            Get-AzToken @TokenSplat -ManagedIdentity
+            $TokenSplat['ManagedIdentity'] = $true
+            GetAzTokenWrapper $TokenSplat 
         }
         'OAuthToken' {
             return $Script:ScriptToken
