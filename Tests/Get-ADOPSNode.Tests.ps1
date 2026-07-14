@@ -17,7 +17,7 @@ Describe "Get-ADOPSNode" {
             },
             @{
                 Name = 'PoolId'
-                Mandatory = $false
+                Mandatory = $true
                 Type = 'int32'
             }
         )

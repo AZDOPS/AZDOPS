@@ -17,12 +17,12 @@ Describe 'Get-ADOPSArtifactFeed' {
             },
             @{
                 Name = 'Project'
-                Mandatory = $false
+                Mandatory = $true
                 Type = 'string'
             },
             @{
                 Name = 'FeedId'
-                Mandatory = $false
+                Mandatory = $true
                 Type = 'string'
             }
         )

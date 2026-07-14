@@ -269,7 +269,7 @@ Describe 'Get-ADOPSOrganizationPolicy' {
             Should -Invoke 'GetADOPSDefaultOrganization' -ModuleName 'ADOPS' -Exactly -Times 1
         }
         It 'should not call API and output warning when Force is not used and runInsecureApis is false' {
-            Get-ADOPSOrganizationPolicy -Organization $OrganizationName
+            Get-ADOPSOrganizationPolicy -Organization $OrganizationName 4>&1
             Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 0
         }
         It 'should write warning to verbose stream when Force is not used and runInsecureApis is false' {

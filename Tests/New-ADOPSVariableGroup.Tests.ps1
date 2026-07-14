@@ -47,7 +47,7 @@ Describe "New-ADOPSVariableGroup" {
             },
             @{
                 Name = 'VariableHashtable'
-                Mandatory = $false
+                Mandatory = $true
                 Type = 'hashtable[]'
             }
         )

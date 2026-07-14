@@ -45,14 +45,14 @@ Describe 'Import-ADOPSRepository' {
             Get-Command Import-ADOPSRepository | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
         
-        It 'GitSource parameter should be in all parametersets: <_>' -TestCases $r.ParameterSets.Name {
-            $r.Parameters['GitSource'].ParameterSets.Keys | Should -Contain $_
+        It 'GitSource parameter should be in all parametersets' {
+            $r.Parameters['GitSource'].ParameterSets.Keys | Should -Contain '__AllParameterSets'
         }
-        It 'Organization parameter should be in all parametersets: <_>' -TestCases $r.ParameterSets.Name {
-            $r.Parameters['Organization'].ParameterSets.Keys | Should -Contain $_
+        It 'Organization parameter should be in all parametersets' {
+            $r.Parameters['Organization'].ParameterSets.Keys | Should -Contain '__AllParameterSets'
         }
-        It 'Project parameter should be in all parametersets: <_>' -TestCases $r.ParameterSets.Name {
-            $r.Parameters['Project'].ParameterSets.Keys | Should -Contain $_
+        It 'Project parameter should be in all parametersets' {
+            $r.Parameters['Project'].ParameterSets.Keys | Should -Contain '__AllParameterSets'
         }
         It 'RepositoryId parameter should only be in RepositoryId ParameterSet' {
             $r.Parameters['RepositoryID'].ParameterSets.Keys | Should -Be 'RepositoryId'
