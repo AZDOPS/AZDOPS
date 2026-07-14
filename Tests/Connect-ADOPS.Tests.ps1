@@ -5,13 +5,10 @@ param(
 BeforeAll {
     Remove-Module ADOPS -Force -ErrorAction SilentlyContinue
     Import-Module $PSM1 -Force
-    
-    BeforeAll {
-        Mock -ModuleName ADOPS -CommandName GetADOPSConfigFile {
-            @{ 'Default' = @{ 'Identity' = 'dummyuser'; 'TenantId' = 'dummytenant'; 'Organization' = 'org1' } }
-        }
-        Mock -ModuleName ADOPS SetADOPSConfigFile -MockWith { }
+    Mock -ModuleName ADOPS -CommandName GetADOPSConfigFile {
+        @{ 'Default' = @{ 'Identity' = 'dummyuser'; 'TenantId' = 'dummytenant'; 'Organization' = 'org1' } }
     }
+    Mock -ModuleName ADOPS SetADOPSConfigFile -MockWith { }
 }
 
 Describe 'Connect-ADOPS' {

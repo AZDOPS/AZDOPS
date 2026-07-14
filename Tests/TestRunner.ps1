@@ -37,7 +37,7 @@ if ($CodeCoveragePath) {
     $PesterConfiguration.CodeCoverage.Path = $AllCodeCoverageFiles
     $PesterConfiguration.CodeCoverage.CoveragePercentTarget = 75
     $PesterConfiguration.CodeCoverage.OutputPath = "./coverage.xml"
-    $PesterConfiguration.CodeCoverage.OutputFormat = 'CoverageGutters'
+    $PesterConfiguration.CodeCoverage.OutputFormat = 'JaCoCo'
 }
 
 if ($TestResults.IsPresent) {
