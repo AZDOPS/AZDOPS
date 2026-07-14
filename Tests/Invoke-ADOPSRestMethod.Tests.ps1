@@ -44,6 +44,10 @@ Describe 'Invoke-ADOPSRestMethod' {
                     return $InvokeSplat
                 }
             }
+            
+            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith {
+                return 'dummyOrg'
+            }
         }
 
         it 'Method should default to "Get"' {
@@ -81,9 +85,6 @@ Describe 'Invoke-ADOPSRestMethod' {
         it 'Uri should be set using partial uri' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
                 return $Uri
-            }
-            Mock -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -MockWith {
-                return 'dummyOrg'
             }
 
             Invoke-ADOPSRestMethod -Uri 'dummyUri' -Method 'Post' | Should -Be 'https://dev.azure.com/dummyOrg/dummyUri'
