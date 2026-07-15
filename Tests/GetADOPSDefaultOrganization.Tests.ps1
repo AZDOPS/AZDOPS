@@ -20,13 +20,13 @@ Describe 'GetADOPSDefaultOrganization' {
         It 'Should have no parameters' {
             (Get-Command GetADOPSDefaultOrganization).Parameters.GetEnumerator() | Where-Object {
                 $_.Key -notin [System.Management.Automation.Cmdlet]::CommonParameters
-            } | Should -BeNullOrEmpty
+            } | Should-BeNull
         }
     }
 
     Context 'It should return the default organization' {
         It 'Token should contain organization name' {
-            GetADOPSDefaultOrganization | Should -Be 'org1'
+            GetADOPSDefaultOrganization | Should-Be 'org1'
         }
     }
 
@@ -39,7 +39,7 @@ Describe 'GetADOPSDefaultOrganization' {
             }
         }
         It '#149 - Add clear error message if user runs commands without first connecting' {
-            { GetADOPSDefaultOrganization } | Should -Throw -ExpectedMessage 'No default organization found! Use Connect-ADOPS or set Organization parameter.'
+            { GetADOPSDefaultOrganization } | Should-Throw -ExceptionMessage 'No default organization found! Use Connect-ADOPS or set Organization parameter.'
         }
     }
 }

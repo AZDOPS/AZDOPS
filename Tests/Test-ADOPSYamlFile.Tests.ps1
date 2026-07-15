@@ -64,16 +64,16 @@ Describe 'Test-ADOPSYamlFile' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Test-ADOPSYamlFile | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Test-ADOPSYamlFile | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
     Context 'Verifying invoke body' {
         It 'Should call mocks' {
             $null = Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666
-            Should -Invoke -CommandName GetADOPSDefaultOrganization -Times 1 -Exactly -ModuleName ADOPS
-            Should -Invoke -CommandName InvokeADOPSRestMethod -Times 1 -Exactly -ModuleName ADOPS
-            Should -Invoke -CommandName Get-Content -Times 1 -Exactly -ModuleName ADOPS
+            Should-Invoke -CommandName GetADOPSDefaultOrganization -Times 1 -Exactly -ModuleName ADOPS
+            Should-Invoke -CommandName InvokeADOPSRestMethod -Times 1 -Exactly -ModuleName ADOPS
+            Should-Invoke -CommandName Get-Content -Times 1 -Exactly -ModuleName ADOPS
         }
     }
 
@@ -96,23 +96,23 @@ Describe 'Test-ADOPSYamlFile' {
 
         It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666 -Organization 'DummyOrg'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
         It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'Should call mocks' {
             $null = Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666
-            Should -Invoke -CommandName GetADOPSDefaultOrganization -Times 1 -Exactly -ModuleName ADOPS
-            Should -Invoke -CommandName InvokeADOPSRestMethod -Times 1 -Exactly -ModuleName ADOPS
-            Should -Invoke -CommandName Get-Content -Times 1 -Exactly -ModuleName ADOPS
+            Should-Invoke -CommandName GetADOPSDefaultOrganization -Times 1 -Exactly -ModuleName ADOPS
+            Should-Invoke -CommandName InvokeADOPSRestMethod -Times 1 -Exactly -ModuleName ADOPS
+            Should-Invoke -CommandName Get-Content -Times 1 -Exactly -ModuleName ADOPS
         }
         
         It 'Should throw if file is not of type .yaml or .yml' {
-            { Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.bad' -PipelineId 666 } | Should -Throw
+            { Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.bad' -PipelineId 666 } | Should-Throw
         }
         It 'Should NOT throw if file is of type .yaml' {
             { Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yaml' -PipelineId 666 } | Should -Not -Throw
@@ -122,7 +122,7 @@ Describe 'Test-ADOPSYamlFile' {
         }
 
         It 'Should throw if yaml file is not valid' {
-            { Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yaml' -PipelineId 22 } | Should -Throw -ExpectedMessage '400 (Bad Request)'
+            { Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yaml' -PipelineId 22 } | Should-Throw -ExceptionMessage '400 (Bad Request)'
         }
 
         It 'Should handle normal yaml validation failures' {
@@ -145,7 +145,7 @@ Describe 'Test-ADOPSYamlFile' {
             }
 
             # When using @PesterBoundParameters like this mock does it kind of messes up the output. Use -join to solve it.
-            -join (Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666) | Should -BeLike '*Validation failed*'
+            -join (Test-ADOPSYamlFile -Project 'DummyProj' -File 'c:\DummyFile.yml' -PipelineId 666) | Should-BeLikeString '*Validation failed*'
         }
     }
 }

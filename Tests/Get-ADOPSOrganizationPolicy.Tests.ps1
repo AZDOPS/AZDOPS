@@ -28,7 +28,7 @@ Describe 'Get-ADOPSOrganizationPolicy' {
         )
 
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Get-ADOPSOrganizationPolicy | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSOrganizationPolicy | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -244,37 +244,37 @@ Describe 'Get-ADOPSOrganizationPolicy' {
         
         It 'uses InvokeADOPSRestMethod single times' {
             Get-ADOPSOrganizationPolicy -Organization $OrganizationName -Force
-            Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
+            Should-Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
         }
         It 'should not throw with mandatory parameters' {
             { Get-ADOPSOrganizationPolicy -Organization $OrganizationName -Force -PolicyCategory $PolicyCategory } | Should -Not -Throw
         }
         It 'should return selected policies in category' {
-            (Get-ADOPSOrganizationPolicy -Organization $OrganizationName -Force -PolicyCategory $PolicyCategory).count | Should -Be 3
+            (Get-ADOPSOrganizationPolicy -Organization $OrganizationName -Force -PolicyCategory $PolicyCategory).count | Should-Be 3
         }
         It 'should return all policies for the organization' {
-            (Get-ADOPSOrganizationPolicy -Organization $OrganizationName -Force).count | Should -Be 11
+            (Get-ADOPSOrganizationPolicy -Organization $OrganizationName -Force).count | Should-Be 11
         }
         It 'should return Security policies when PolicyCategory is Security' {
-            (Get-ADOPSOrganizationPolicy -Organization $OrganizationName -Force -PolicyCategory 'Security').count | Should -Be 4
+            (Get-ADOPSOrganizationPolicy -Organization $OrganizationName -Force -PolicyCategory 'Security').count | Should-Be 4
         }
         It 'should return Privacy policies when PolicyCategory is Privacy' {
-            (Get-ADOPSOrganizationPolicy -Organization $OrganizationName -Force -PolicyCategory 'Privacy').count | Should -Be 1
+            (Get-ADOPSOrganizationPolicy -Organization $OrganizationName -Force -PolicyCategory 'Privacy').count | Should-Be 1
         }
         It 'should return ApplicationConnection policies when PolicyCategory is ApplicationConnection' {
-            (Get-ADOPSOrganizationPolicy -Organization $OrganizationName -Force -PolicyCategory 'ApplicationConnection').count | Should -Be 3
+            (Get-ADOPSOrganizationPolicy -Organization $OrganizationName -Force -PolicyCategory 'ApplicationConnection').count | Should-Be 3
         }
         It 'should use default organization when Organization is not provided' {
             Get-ADOPSOrganizationPolicy -Force
-            Should -Invoke 'GetADOPSDefaultOrganization' -ModuleName 'ADOPS' -Exactly -Times 1
+            Should-Invoke 'GetADOPSDefaultOrganization' -ModuleName 'ADOPS' -Exactly -Times 1
         }
         It 'should not call API and output warning when Force is not used and runInsecureApis is false' {
             Get-ADOPSOrganizationPolicy -Organization $OrganizationName 4>&1
-            Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 0
+            Should-Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 0
         }
         It 'should write warning to verbose stream when Force is not used and runInsecureApis is false' {
             $verboseOutput = Get-ADOPSOrganizationPolicy -Organization $OrganizationName 4>&1
-            $verboseOutput | Should -Match 'This function uses unsupported APIs'
+            ($verboseOutput -join ' ') | Should-MatchString 'This function uses unsupported APIs'
         }
     }
 }

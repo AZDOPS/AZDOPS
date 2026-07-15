@@ -18,22 +18,22 @@ Describe 'Get-ADOPSConnection' {
 
         It 'Command should exist' {
             $CmdExists  = Get-Command Get-ADOPSConnection -Module ADOPS -ErrorAction SilentlyContinue
-            $CmdExists | Should -Not -BeNullOrEmpty
+            $CmdExists | Should-NotBeNull
         }
 
         It 'If a connection is done it should return the name of the organization' {
             $Actual = Get-ADOPSConnection
-            $Actual['Organization'] | Should -Be 'ConnectedOrg'
+            $Actual['Organization'] | Should-Be 'ConnectedOrg'
         }
 
         It 'If a connection is done it should return TennantId' {
             $Actual = Get-ADOPSConnection
-            $Actual['TenantId'] | Should -Be '3328b76d-fc8e-43e9-9ce4-71ff86577d05'
+            $Actual['TenantId'] | Should-Be '3328b76d-fc8e-43e9-9ce4-71ff86577d05'
         }
 
         It 'If a connection is done it should return the name of the Identity' {
             $Actual = Get-ADOPSConnection
-            $Actual['Identity'] | Should -Be 'dummy.user@mail.address'
+            $Actual['Identity'] | Should-Be 'dummy.user@mail.address'
         }
 
         It 'If no connection is made, return nothing' {
@@ -41,7 +41,7 @@ Describe 'Get-ADOPSConnection' {
                 '{"Default":{}}' | ConvertFrom-Json -AsHashtable
             }
             $Actual = Get-ADOPSConnection
-            $Actual | Should -BeNullOrEmpty
+            $Actual | Should-BeHashtable -Count 0
         }
     }
 }

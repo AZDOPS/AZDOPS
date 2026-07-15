@@ -34,19 +34,19 @@ Describe "Get-ADOPSPipelineTask" {
         )
 
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Get-ADOPSPipelineTask | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSPipelineTask | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
     Context 'Functionality' {
         it 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Get-ADOPSPipelineTask -Organization 'anotherorg'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
         it 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Get-ADOPSPipelineTask
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         it 'It should call the API using no extra parameters' {
@@ -59,7 +59,7 @@ Describe "Get-ADOPSPipelineTask" {
 "@
             }
 
-            Get-ADOPSPipelineTask | Should -Be 'https://dev.azure.com/myorg/_apis/distributedtask/tasks?api-version=7.1-preview.1'
+            Get-ADOPSPipelineTask | Should-Be 'https://dev.azure.com/myorg/_apis/distributedtask/tasks?api-version=7.1-preview.1'
         }
 
         it 'Because of how this endpoint behaves, output should be a hashtable' {
@@ -428,7 +428,8 @@ Describe "Get-ADOPSPipelineTask" {
 }
 '@
             }
-            Get-ADOPSPipelineTask | Should -BeOfType 'hashtable'
+            Get-ADOPSPipelineTask | Should-All { $_ | Should-HaveType ([hashtable]) }
+            Should-HaveType -Actual (Get-ADOPSPipelineTask) -Expected ([Object[]]) -Because 'Unwrapping objects in PowerShell causes this to be the _actual_ result..'
         }
 
         it 'If a name is given it should return only that name, one version returned' {
@@ -469,7 +470,7 @@ Describe "Get-ADOPSPipelineTask" {
 '@
             }
 
-            (Get-ADOPSPipelineTask -Name 'PowerShell' | Select-Object -ExpandProperty name).count | Should -Be 1
+            (Get-ADOPSPipelineTask -Name 'PowerShell' | Select-Object -ExpandProperty name).count | Should-Be 1
         }
 
         it 'If a name is given it should return only that name, two versions returned' {
@@ -510,7 +511,7 @@ Describe "Get-ADOPSPipelineTask" {
 '@
             }
 
-            (Get-ADOPSPipelineTask -Name 'PowerShell' | Select-Object -ExpandProperty name).count | Should -Be 2
+            (Get-ADOPSPipelineTask -Name 'PowerShell' | Select-Object -ExpandProperty name).count | Should-Be 2
         }
 
         it 'If a version is given it should return only that version, one version returned' {
@@ -551,7 +552,7 @@ Describe "Get-ADOPSPipelineTask" {
 '@
             }
 
-            (Get-ADOPSPipelineTask -Version 1 | Select-Object -ExpandProperty name).count | Should -Be 1
+            (Get-ADOPSPipelineTask -Version 1 | Select-Object -ExpandProperty name).count | Should-Be 1
         }
 
         it 'If a version is given it should return only that version, two versions returned' {
@@ -592,7 +593,7 @@ Describe "Get-ADOPSPipelineTask" {
 '@
             }
 
-            (Get-ADOPSPipelineTask  -Version 1  | Select-Object -ExpandProperty name).count | Should -Be 2
+            (Get-ADOPSPipelineTask  -Version 1  | Select-Object -ExpandProperty name).count | Should-Be 2
         }
     }
 }
