@@ -23,7 +23,7 @@ Describe 'Get-ADOPSOrganizationCommerceMeterUsage' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Get-ADOPSOrganizationCommerceMeterUsage | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSOrganizationCommerceMeterUsage | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -126,15 +126,15 @@ Describe 'Get-ADOPSOrganizationCommerceMeterUsage' {
         }
 
         It 'Should return something' {
-            Get-ADOPSOrganizationCommerceMeterUsage -Force | Should -Not -BeNullOrEmpty
+            Get-ADOPSOrganizationCommerceMeterUsage -Force | Should-NotBeNull
         }
 
         It 'Should return single meter usage data' {
-            Get-ADOPSOrganizationCommerceMeterUsage -meterId '3efc2e47-d73e-4213-8368-3a8723ceb1cc' -Force | Should -Not -BeNullOrEmpty
+            Get-ADOPSOrganizationCommerceMeterUsage -meterId '3efc2e47-d73e-4213-8368-3a8723ceb1cc' -Force | Should-NotBeNull
         }
 
         It 'Should return meterIds' {
-            Get-ADOPSOrganizationCommerceMeterUsage -Force | Select-object -ExpandProperty 'meterId' | Should -Not -BeNullOrEmpty
+            Get-ADOPSOrganizationCommerceMeterUsage -Force | Select-object -ExpandProperty 'meterId' | Should-NotBeNull
         }
     }
 }

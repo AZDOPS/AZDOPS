@@ -42,26 +42,26 @@ Describe 'Import-ADOPSRepository' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Import-ADOPSRepository | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Import-ADOPSRepository | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
         
         It 'GitSource parameter should be in all parametersets' {
-            $r.Parameters['GitSource'].ParameterSets.Keys | Should -Contain '__AllParameterSets'
+            $r.Parameters['GitSource'].ParameterSets.Keys | Should-ContainCollection '__AllParameterSets'
         }
         It 'Organization parameter should be in all parametersets' {
-            $r.Parameters['Organization'].ParameterSets.Keys | Should -Contain '__AllParameterSets'
+            $r.Parameters['Organization'].ParameterSets.Keys | Should-ContainCollection '__AllParameterSets'
         }
         It 'Project parameter should be in all parametersets' {
-            $r.Parameters['Project'].ParameterSets.Keys | Should -Contain '__AllParameterSets'
+            $r.Parameters['Project'].ParameterSets.Keys | Should-ContainCollection '__AllParameterSets'
         }
         It 'RepositoryId parameter should only be in RepositoryId ParameterSet' {
-            $r.Parameters['RepositoryID'].ParameterSets.Keys | Should -Be 'RepositoryId'
+            $r.Parameters['RepositoryID'].ParameterSets.Keys | Should-Be 'RepositoryId'
         }
         It 'RepositoryName parameter should only be in RepositoryName ParameterSet' {
-            $r.Parameters['RepositoryName'].ParameterSets.Keys | Should -Be 'RepositoryName'
+            $r.Parameters['RepositoryName'].ParameterSets.Keys | Should-Be 'RepositoryName'
         }
         It 'Default ParameterSet should be "RepositoryName"' {
-            $r.DefaultParameterSet | Should -Be 'RepositoryName'
+            $r.DefaultParameterSet | Should-Be 'RepositoryName'
         }
     }
 
@@ -78,33 +78,33 @@ Describe 'Import-ADOPSRepository' {
 
         It 'If organization is given, it should not call GetADOPSDefaultOrganization' {
             $r = Import-ADOPSRepository -Organization 'Organization' -GitSource 'GitSource' -RepositoryName 'RepoName' -Project 'DummyProj'
-            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
         It 'If organization is not given, it should call GetADOPSDefaultOrganization' {
             $r = Import-ADOPSRepository -GitSource 'GitSource' -RepositoryName 'RepoName' -Project 'DummyProj'
-            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
         
         It 'Invoke should be correct, Verifying method "Post"' {
             $r = Import-ADOPSRepository -GitSource 'GitSource' -RepositoryName 'RepoName' -Project 'DummyProj'
-            $r.Method | Should -Be 'Post'
+            $r.Method | Should-Be 'Post'
         }
         It 'Invoke should be correct, Verifying URI using RepositoryName' {
             $r = Import-ADOPSRepository -Organization 'Organization' -GitSource 'GitSource' -RepositoryName 'RepoName' -Project 'DummyProj'
-            $r.URI | Should -Be 'https://dev.azure.com/Organization/DummyProj/_apis/git/repositories/RepoName/importRequests?api-version=7.1-preview.1'
+            $r.URI | Should-Be 'https://dev.azure.com/Organization/DummyProj/_apis/git/repositories/RepoName/importRequests?api-version=7.1-preview.1'
         }
         It 'Invoke should be correct, Verifying URI using RepositoryId' {
             $r = Import-ADOPSRepository -Organization 'Organization' -GitSource 'GitSource' -RepositoryId 'RepoId' -Project 'DummyProj'
-            $r.URI | Should -Be 'https://dev.azure.com/Organization/DummyProj/_apis/git/repositories/RepoId/importRequests?api-version=7.1-preview.1'
+            $r.URI | Should-Be 'https://dev.azure.com/Organization/DummyProj/_apis/git/repositories/RepoId/importRequests?api-version=7.1-preview.1'
         }
         It 'Invoke should be correct, Verifying URI without Organization' {
             $r = Import-ADOPSRepository -GitSource 'GitSource' -RepositoryId 'RepoId' -Project 'DummyProj'
-            $r.URI | Should -Be 'https://dev.azure.com/DummyOrg/DummyProj/_apis/git/repositories/RepoId/importRequests?api-version=7.1-preview.1'
+            $r.URI | Should-Be 'https://dev.azure.com/DummyOrg/DummyProj/_apis/git/repositories/RepoId/importRequests?api-version=7.1-preview.1'
         }
         It 'Invoke should be correct, Verifying body' {
             $res = '{"parameters":{"gitSource":{"url":"https://gituri.git"}}}'
             $r = Import-ADOPSRepository -Organization 'Organization' -GitSource 'https://gituri.git' -RepositoryId 'RepoId' -Project 'DummyProj'
-            $r.body | Should -Be $res
+            $r.body | Should-Be $res
         }
         
         It 'if wait is defined, waits until status is "completed"' {
@@ -135,7 +135,7 @@ Describe 'Import-ADOPSRepository' {
             Mock -CommandName Start-Sleep -ModuleName ADOPS -MockWith {}
             
             $r = Import-ADOPSRepository -Organization 'Organization' -GitSource 'GitSource' -RepositoryId 'RepoId' -Project 'DummyProj' -Wait
-            $r.status | Should -Be 'completed'
+            $r.status | Should-Be 'completed'
         }
     }
 }

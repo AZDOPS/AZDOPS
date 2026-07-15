@@ -43,12 +43,12 @@ Describe "Revoke-ADOPSPipelinePermission" {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Revoke-ADOPSPipelinePermission | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory
-            (Get-Command Grant-ADOPSPipelinePermission | Select-Object -ExpandProperty parameters)."$($_.Name)".ParameterType.Name | Should -Be $_.Type
+            Get-Command Revoke-ADOPSPipelinePermission | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory
+            (Get-Command Grant-ADOPSPipelinePermission | Select-Object -ExpandProperty parameters)."$($_.Name)".ParameterType.Name | Should-Be $_.Type
         }
 
         It 'Should throw if ResourceType is not correct' {
-            {Revoke-ADOPSPipelinePermission -Project "myproject" -PipelineId 1 -ResourceType "WrongType" -ResourceId 1} | Should -Throw
+            {Revoke-ADOPSPipelinePermission -Project "myproject" -PipelineId 1 -ResourceType "WrongType" -ResourceId 1} | Should-Throw
         }
 
     }
@@ -82,7 +82,7 @@ Describe "Revoke-ADOPSPipelinePermission" {
                 Organization = 'MyOrg'
             }
             $r = Revoke-ADOPSPipelinePermission @s
-            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0
+            Should-Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0
         }
 
         It 'If organization is not given, it should call GetADOPSDefaultOrganization' {
@@ -93,41 +93,41 @@ Describe "Revoke-ADOPSPipelinePermission" {
                 ResourceId ='ResId'
             }
             $r = Revoke-ADOPSPipelinePermission @s
-            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1
+            Should-Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1
         }
 
         It "Should not get organization from GetADOPSDefaultOrganization when organization parameter is used" {
             Revoke-ADOPSPipelinePermission -Organization 'anotherorg' -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
         It "Should get organization using GetADOPSDefaultOrganization when organization parameter is not used" {
             Revoke-ADOPSPipelinePermission -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It "Should invoke with PATCH" {
-            (Revoke-ADOPSPipelinePermission -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1).Method | Should -Be "Patch"
+            (Revoke-ADOPSPipelinePermission -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1).Method | Should-Be "Patch"
         }
 
         It "Should invoke corret Uri when organization is not used" {
-            (Revoke-ADOPSPipelinePermission -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1).Uri | Should -Be "https://dev.azure.com/myorg/myproject/_apis/pipelines/pipelinepermissions/variablegroup/1?api-version=7.1-preview.1"
+            (Revoke-ADOPSPipelinePermission -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1).Uri | Should-Be "https://dev.azure.com/myorg/myproject/_apis/pipelines/pipelinepermissions/variablegroup/1?api-version=7.1-preview.1"
         }
 
         It "Should invoke corret Uri when organization is used" {
-            (Revoke-ADOPSPipelinePermission -Organization "someorg" -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1).Uri | Should -Be "https://dev.azure.com/someorg/myproject/_apis/pipelines/pipelinepermissions/variablegroup/1?api-version=7.1-preview.1"
+            (Revoke-ADOPSPipelinePermission -Organization "someorg" -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1).Uri | Should-Be "https://dev.azure.com/someorg/myproject/_apis/pipelines/pipelinepermissions/variablegroup/1?api-version=7.1-preview.1"
         }     
 
         It "Should invoke with correct body for single pipeline" {
             $Request = (Revoke-ADOPSPipelinePermission -Project "myproject" -PipelineId 42 -ResourceType "variablegroup" -ResourceId 1)
-            $Request.Body | Should -Be '{"pipelines":[{"id":42,"authorized":false}]}'
-            $Request.Uri | Should -Be "https://dev.azure.com/myorg/myproject/_apis/pipelines/pipelinepermissions/variablegroup/1?api-version=7.1-preview.1"
+            $Request.Body | Should-Be '{"pipelines":[{"id":42,"authorized":false}]}'
+            $Request.Uri | Should-Be "https://dev.azure.com/myorg/myproject/_apis/pipelines/pipelinepermissions/variablegroup/1?api-version=7.1-preview.1"
         }
 
         It "Should invoke with correct body for all pipelines" {
             $Request = (Revoke-ADOPSPipelinePermission -Project "myproject" -AllPipelines -ResourceType "variablegroup" -ResourceId 1)
-            $Request.Body | Should -Be '{"allpipelines":{"authorized":false}}'
-            $Request.Uri | Should -Be "https://dev.azure.com/myorg/myproject/_apis/pipelines/pipelinepermissions/variablegroup/1?api-version=7.1-preview.1"
+            $Request.Body | Should-Be '{"allpipelines":{"authorized":false}}'
+            $Request.Uri | Should-Be "https://dev.azure.com/myorg/myproject/_apis/pipelines/pipelinepermissions/variablegroup/1?api-version=7.1-preview.1"
         }
     }
 }

@@ -23,12 +23,12 @@ Describe "Set-ADOPSElasticPool" {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Set-ADOPSElasticpool | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Set-ADOPSElasticpool | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
         
         # Since this parameter accepts multiple types we create a separate test for it.
         It 'Should have parameter ElasticPoolObject'  {
-            Get-Command Set-ADOPSElasticpool | Should -HaveParameter 'ElasticPoolObject' -Mandatory
+            Get-Command Set-ADOPSElasticpool | Should-HaveParameter 'ElasticPoolObject' -Mandatory
         }
     }
 
@@ -80,20 +80,20 @@ Describe "Set-ADOPSElasticPool" {
 
         It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -ParameterFilter { $Organization -eq 'DummyOrg' } -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -ParameterFilter { $Organization -eq 'DummyOrg' } -Times 0 -Exactly
         }
 
         It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It "Returns updated elastic pool" {
-            Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' | Should -Not -BeNullOrEmpty
+            Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' | Should-NotBeNull
         }
 
         It "Returns updated elastic pool id" {
-            (Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg').elasticPool.maxCapacity | Should -Be 2
+            (Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg').elasticPool.maxCapacity | Should-Be 2
         }
 
         It 'Creates correct URI' {
@@ -102,7 +102,7 @@ Describe "Set-ADOPSElasticPool" {
             }
             $required = 'https://dev.azure.com/DummyOrg/_apis/distributedtask/elasticpools/59?api-version=7.1-preview.1'
             $actual = Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg'
-            $actual | Should -Be $required
+            $actual | Should-Be $required
         }
 
         It 'If it is an object, converts ElasticPoolObject to json' {
@@ -122,7 +122,7 @@ Describe "Set-ADOPSElasticPool" {
             }
 
             $ElasticPoolObject = $ElasticPoolObject | ConvertFrom-Json            
-            {Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg'} | Should -Throw
+            {Set-ADOPSElasticpool -PoolId 59 -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg'} | Should-Throw
         }
     }
 }

@@ -33,7 +33,7 @@ Describe 'Get-ADOPSPool' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Get-ADOPSPool | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSPool | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -97,34 +97,34 @@ Describe 'Get-ADOPSPool' {
         }
 
         It 'Returns nodes' {
-            Get-ADOPSPool -Organization 'DummyOrg' -poolId 10 | Should -Not -BeNullOrEmpty
+            Get-ADOPSPool -Organization 'DummyOrg' -poolId 10 | Should-NotBeNull
         }
 
         It 'Returns an name' {
-            (Get-ADOPSPool -Organization 'DummyOrg' -PoolId 10).name | Should -Contain 'custom agent pool'
+            (Get-ADOPSPool -Organization 'DummyOrg' -PoolId 10).name | Should-ContainCollection 'custom agent pool'
         }
 
         It 'Returns all pools when Legacy is included' {
-            (Get-ADOPSPool -Organization 'DummyOrg' -IncludeLegacy).Count | Should -Be 3
+            (Get-ADOPSPool -Organization 'DummyOrg' -IncludeLegacy).Count | Should-Be 3
         }
 
         It 'Returns only non legacy pools when Legacy is not set and no parameters given' {
-            (Get-ADOPSPool).Count | Should -Be 2
+            (Get-ADOPSPool).Count | Should-Be 2
         }
 
         It 'Calls InvokeADOPSRestMethod with correct parameters when Organization is used' {
             Get-ADOPSPool -Organization 'MySecondOrg' -PoolId 10
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/MySecondOrg/_apis/distributedtask/pools/10?api-version=7.1-preview.1' }
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/MySecondOrg/_apis/distributedtask/pools/10?api-version=7.1-preview.1' }
         }
 
         It 'Calls InvokeADOPSRestMethod when only PoolId is used' {
             Get-ADOPSPool -PoolId 10
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/_apis/distributedtask/pools/10?api-version=7.1-preview.1' }
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/_apis/distributedtask/pools/10?api-version=7.1-preview.1' }
         }
 
         It 'Calls InvokeADOPSRestMethod when only PoolName is used' {
             Get-ADOPSPool -PoolName 'custom agent pool'
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/_apis/distributedtask/pools?poolName=custom agent pool&api-version=7.1-preview.1' }
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/_apis/distributedtask/pools?poolName=custom agent pool&api-version=7.1-preview.1' }
         }
 
         It 'Can handle single node responses from API' {
@@ -147,7 +147,7 @@ Describe 'Get-ADOPSPool' {
                 }
             }
             
-            (Get-ADOPSPool -Organization 'DummyOrg' -PoolId 8).name | Should -Be 'Hosted Ubuntu 1604'
+            (Get-ADOPSPool -Organization 'DummyOrg' -PoolId 8).name | Should-Be 'Hosted Ubuntu 1604'
         }
     }
 }

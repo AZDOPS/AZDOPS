@@ -23,7 +23,7 @@ Describe 'Get-ADOPSOrganizationAdminOverview' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Get-ADOPSOrganizationAdminOverview | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSOrganizationAdminOverview | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -59,7 +59,7 @@ Describe 'Get-ADOPSOrganizationAdminOverview' {
         }
 
         It 'Should return something' {
-            Get-ADOPSOrganizationAdminOverview | Should -Not -BeNullOrEmpty
+            Get-ADOPSOrganizationAdminOverview | Should-NotBeNull
         }
     }
 }

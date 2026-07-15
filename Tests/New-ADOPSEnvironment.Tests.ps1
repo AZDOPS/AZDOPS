@@ -78,36 +78,36 @@ Describe 'New-ADOPSEnvironment' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command New-ADOPSEnvironment | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command New-ADOPSEnvironment | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
     Context "Functionality" {
         It 'If organization is given, it should not call GetADOPSDefaultOrganization' {
             $r = New-ADOPSEnvironment -Organization 'DummyOrg' -Project 'DummyProj' -Name 'EnvName'
-            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
         It 'If organization is not given, it should call GetADOPSDefaultOrganization' {
             $r = New-ADOPSEnvironment -Project 'DummyProj' -Name 'EnvName'
-            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
         
         It 'Creates correct URI' {
             $required = 'https://dev.azure.com/DummyOrg/DummyProj/_apis/distributedtask/environments?api-version=7.1-preview.1'
             $actual = New-ADOPSEnvironment -Project 'DummyProj' -Name 'EnvName' -Description 'EnvDescription'
-            $actual.Uri | Should -Be $required
+            $actual.Uri | Should-Be $required
         }
 
         It 'Method sould be Post' {
             $required = 'Post'
             $actual = New-ADOPSEnvironment -Project 'DummyProj' -Name 'EnvName' -Description 'EnvDescription'
-            $actual.Method | Should -Be $required
+            $actual.Method | Should-Be $required
         }
 
         It 'Verifying body' {
             $required = '{"name":"EnvName","description":"Environment description"}'
             $actual = New-ADOPSEnvironment -Project 'DummyProj' -Name 'EnvName' -Description 'Environment description'
-            $actual.Body | Should -Be $required
+            $actual.Body | Should-Be $required
         }
     }
 
@@ -122,31 +122,31 @@ Describe 'New-ADOPSEnvironment' {
         It 'If SkipAdmin is set do not add admin group' {
             $required = 'Skipped admin group'
             $actual = New-ADOPSEnvironment -Project 'DummyProj' -Name 'EnvName' -Description 'Environment description' -SkipAdmin -Verbose 4>&1
-            $actual[1] | Should -Be $required
+            $actual[1] | Should-Be $required
         }
         
         It 'Creates correct security URI' {
             $required = 'https://dev.azure.com/DummyOrg/_apis/securityroles/scopes/distributedtask.environmentreferencerole/roleassignments/resources/1_2?api-version=7.1-preview.1'
             $actual = New-ADOPSEnvironment -Project 'DummyProj' -Name 'EnvName' -Description 'EnvDescription'
-            $actual.Uri | Should -Be $required
+            $actual.Uri | Should-Be $required
         }
 
         It 'security Method sould be Put' {
             $required = 'Put'
             $actual = New-ADOPSEnvironment -Project 'DummyProj' -Name 'EnvName' -Description 'EnvDescription'
-            $actual.Method | Should -Be $required
+            $actual.Method | Should-Be $required
         }
 
         It 'Verifying security body, no group given' {
             $required = '[{"userId":"ProjAdmOriginId","roleName":"Administrator"}]'
             $actual = New-ADOPSEnvironment -Project 'DummyProj' -Name 'EnvName' -Description 'Environment description'
-            $actual.Body | Should -Be $required
+            $actual.Body | Should-Be $required
         }
 
         It 'Verifying security body, custom group' {
             $required = '[{"userId":"AnotherGroupOriginId","roleName":"Administrator"}]'
             $actual = New-ADOPSEnvironment -Project 'DummyProj' -Name 'EnvName' -Description 'Environment description' -AdminGroup 'AnotherGroup'
-            $actual.Body | Should -Be $required
+            $actual.Body | Should-Be $required
         }
     }
 }

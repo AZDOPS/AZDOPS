@@ -18,7 +18,7 @@ Describe 'Get-ADOPSResourceUsage' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Get-ADOPSResourceUsage | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSResourceUsage | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -46,7 +46,7 @@ Describe 'Get-ADOPSResourceUsage' {
         }
 
         It 'Should return something' {
-            Get-ADOPSResourceUsage -Force | Should -Not -BeNullOrEmpty
+            Get-ADOPSResourceUsage -Force | Should-NotBeNull
         }
     }
 }

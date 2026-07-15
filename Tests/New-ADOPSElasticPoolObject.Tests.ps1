@@ -73,7 +73,7 @@ Describe "New-ADOPSElasticPoolObject" {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command New-ADOPSElasticPoolObject | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command New-ADOPSElasticPoolObject | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -87,23 +87,23 @@ Describe "New-ADOPSElasticPoolObject" {
         }
 
         It "Returns an output" {
-            New-ADOPSElasticPoolObject @splat  | Should -Not -BeNullOrEmpty
+            New-ADOPSElasticPoolObject @splat  | Should-NotBeNull
         }
 
         It "Returns a PowerShell object" {
-            (New-ADOPSElasticPoolObject @splat -OutputType 'pscustomobject').GetType().FullName | Should -Be 'System.Management.Automation.PSCustomObject'
+            (New-ADOPSElasticPoolObject @splat -OutputType 'pscustomobject').GetType().FullName | Should-Be 'System.Management.Automation.PSCustomObject'
         }
 
         It "Returns the given AzureId" {
-            (New-ADOPSElasticPoolObject @splat).azureId | Should -Be '/subscriptions/6713962a-bebb-45c2-97cd-fb0dead95acf/resourceGroups/resourceGroupName/providers/Microsoft.Compute/virtualMachineScaleSets/vmss-test'
+            (New-ADOPSElasticPoolObject @splat).azureId | Should-Be '/subscriptions/6713962a-bebb-45c2-97cd-fb0dead95acf/resourceGroups/resourceGroupName/providers/Microsoft.Compute/virtualMachineScaleSets/vmss-test'
         }
 
         It "Returns a Json object/string" {
-            (New-ADOPSElasticPoolObject @splat -OutputType 'json').GetType().FullName | Should -Be 'System.String'
+            (New-ADOPSElasticPoolObject @splat -OutputType 'json').GetType().FullName | Should-Be 'System.String'
         }
 
         It "DesiredIdle needs to be less than MaxCapacity" {
-            {New-ADOPSElasticPoolObject -DesiredIdle 2 -MaxCapacity 1  @splat} | Should -Throw
+            {New-ADOPSElasticPoolObject -DesiredIdle 2 -MaxCapacity 1  @splat} | Should-Throw
         }
     }
 }

@@ -28,7 +28,7 @@ Describe 'Set-ADOPSPipelineRetentionSettings' {
         )
 
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Set-ADOPSPipelineRetentionSettings | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Set-ADOPSPipelineRetentionSettings | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -69,7 +69,7 @@ Describe 'Set-ADOPSPipelineRetentionSettings' {
                 $Setting = 43 
             }
             Set-ADOPSPipelineRetentionSettings -Organization $OrganizationName -Project $Project -Values $Values
-            Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
+            Should-Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
         }
         
         It 'should not throw with all parameters' {
@@ -90,7 +90,7 @@ Describe 'Set-ADOPSPipelineRetentionSettings' {
             $Values = @{ 
                 artifactsRetention = 43 
             }
-            (Set-ADOPSPipelineRetentionSettings -Project $Project -Values $Values | Get-Member -MemberType NoteProperty).count | Should -Be 4
+            (Set-ADOPSPipelineRetentionSettings -Project $Project -Values $Values | Get-Member -MemberType NoteProperty).count | Should-Be 4
         }
 
         It 'should convert response type ProjectRetentionSetting into UpdateProjectRetentionSettingModel property names' {
@@ -103,10 +103,10 @@ Describe 'Set-ADOPSPipelineRetentionSettings' {
 
             $Response = Set-ADOPSPipelineRetentionSettings -Organization $OrganizationName -Project $Project -Values $Values
             
-            $Response.artifactsRetention | Should -BeExactly 40
-            $Response.runRetention | Should -BeExactly 30
-            $Response.pullRequestRunRetention | Should -BeExactly 2
-            $Response.retainRunsPerProtectedBranch | Should -BeNullOrEmpty
+            $Response.artifactsRetention | Should-Be 40
+            $Response.runRetention | Should-Be 30
+            $Response.pullRequestRunRetention | Should-Be 2
+            $Response.retainRunsPerProtectedBranch | Should-BeNull
         }
     }
 }

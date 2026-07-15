@@ -43,15 +43,15 @@ Describe 'Save-ADOPSPipelineTask' {
         )
 
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Save-ADOPSPipelineTask | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Save-ADOPSPipelineTask | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
 
         It 'Should have ParameterSet "InputData" for single download and manual input' {
-            (Get-Command Save-ADOPSPipelineTask).ParameterSets.name | Should -Contain 'InputData'
+            (Get-Command Save-ADOPSPipelineTask).ParameterSets.name | Should-ContainCollection 'InputData'
         }
 
         It 'Should have ParameterSet "InputObject" for multiple downloads and automatic input' {
-            (Get-Command Save-ADOPSPipelineTask).ParameterSets.name | Should -Contain 'InputObject'
+            (Get-Command Save-ADOPSPipelineTask).ParameterSets.name | Should-ContainCollection 'InputObject'
         }
     }
 
@@ -93,12 +93,12 @@ Describe 'Save-ADOPSPipelineTask' {
 
         It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Save-ADOPSPipelineTask -Organization 'DummyOrg' @InputData
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
         It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Save-ADOPSPipelineTask @InputData
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'Should run InvokeADOPSRestMethod with the OutFile parameter set, one file' {
@@ -107,7 +107,7 @@ Describe 'Save-ADOPSPipelineTask' {
             } -ParameterFilter { $OutFile }
             Save-ADOPSPipelineTask @InputData
 
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'Should run InvokeADOPSRestMethod with the OutFile parameter set, Object containing 2 files' {
@@ -116,7 +116,7 @@ Describe 'Save-ADOPSPipelineTask' {
             } -ParameterFilter { $OutFile }
             Save-ADOPSPipelineTask -InputObject $InputObject
 
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 2 -Exactly
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 2 -Exactly
         }
 
         It 'InputObject should be positional' {
@@ -125,7 +125,7 @@ Describe 'Save-ADOPSPipelineTask' {
             } -ParameterFilter { $OutFile }
             Save-ADOPSPipelineTask $InputObject
 
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 2 -Exactly
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 2 -Exactly
         }
 
         It 'InputObject should accept pipeline input' {
@@ -134,7 +134,7 @@ Describe 'Save-ADOPSPipelineTask' {
             } -ParameterFilter { $OutFile }
             $InputObject | Save-ADOPSPipelineTask
 
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 2 -Exactly
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 2 -Exactly
         }
     }
 }

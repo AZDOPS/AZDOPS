@@ -28,7 +28,7 @@ Describe 'Get-ADOPSAgentQueue' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Get-ADOPSAgentQueue | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSAgentQueue | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -75,25 +75,25 @@ Describe 'Get-ADOPSAgentQueue' {
 
         It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Get-ADOPSAgentQueue -Project 'DummyProject' -Organization 'anotherorg'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
         It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Get-ADOPSAgentQueue -Project 'DummyProject'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
         
         It 'Returns nodes' {
-            Get-ADOPSAgentQueue -Project 'DummyProject' | Should -Not -BeNullOrEmpty
+            Get-ADOPSAgentQueue -Project 'DummyProject' | Should-NotBeNull
         }
 
         It 'Should invoke InvokeADOPSRestMethod mock' {
             Get-ADOPSAgentQueue -Project 'DummyProject'
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly
         }
         
         It 'If no Queuename is given, should return two results' {
-            (Get-ADOPSAgentQueue -Project 'DummyProject').Count | Should -Be 2 -Because 'This endpoint returns a Value property that should be expanded.'
+            (Get-ADOPSAgentQueue -Project 'DummyProject').Count | Should-Be 2 -Because 'This endpoint returns a Value property that should be expanded.'
         }
 
         It 'If no Queuename is given, URI Should be correct' {
@@ -102,7 +102,7 @@ Describe 'Get-ADOPSAgentQueue' {
             }
             $required = 'https://dev.azure.com/DummyOrg/DummyProject/_apis/distributedtask/queues?api-version=7.1'
             $actual = Get-ADOPSAgentQueue -Project 'DummyProject'
-            $actual | Should -Be $required
+            $actual | Should-Be $required
         }
         
         It 'If Queuename is given, URI Should be correct' {
@@ -111,7 +111,7 @@ Describe 'Get-ADOPSAgentQueue' {
             }
             $required = 'https://dev.azure.com/DummyOrg/DummyProject/_apis/distributedtask/queues?queueName=MyQueue&api-version=7.1'
             $actual = Get-ADOPSAgentQueue -Project 'DummyProject' -QueueName 'MyQueue'
-            $actual | Should -Be $required
+            $actual | Should-Be $required
         }
     }
 }

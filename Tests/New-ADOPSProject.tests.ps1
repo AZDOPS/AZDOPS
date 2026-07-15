@@ -48,7 +48,7 @@ Describe 'New-ADOPSProject' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command New-ADOPSProject | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command New-ADOPSProject | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -108,7 +108,7 @@ Describe 'New-ADOPSProject' {
         It 'uses InvokeADOPSRestMethod two times' {
             New-ADOPSProject -Organization $OrganizationName -Name $Project -Visibility Private
 
-            Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 2
+            Should-Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 2
         }
         
         It 'should not throw with mandatory parameters' {
@@ -116,15 +116,15 @@ Describe 'New-ADOPSProject' {
         }
         
         It 'should throw with invalid Visibility parameter' {
-            { New-ADOPSProject -Organization $OrganizationName -Name $Project -Visibility 'DummyVisibility' } | Should -Throw
+            { New-ADOPSProject -Organization $OrganizationName -Name $Project -Visibility 'DummyVisibility' } | Should-Throw
         }
         
         It 'should throw with invalid SourceControlType parameter' {
-            { New-ADOPSProject -Organization $OrganizationName -Name $Project -SourceControlType 'DummySourceControl' -Visibility 'Private' } | Should -Throw
+            { New-ADOPSProject -Organization $OrganizationName -Name $Project -SourceControlType 'DummySourceControl' -Visibility 'Private' } | Should-Throw
         }
         
         It 'should throw with invalid ProcessTypeName parameter' {
-            { New-ADOPSProject -Organization $OrganizationName -Name $Project -ProcessTypeName "Dummy Process" -Visibility 'Private' } | Should -Throw
+            { New-ADOPSProject -Organization $OrganizationName -Name $Project -ProcessTypeName "Dummy Process" -Visibility 'Private' } | Should-Throw
         }
         
         It 'should not throw with Basic ProcessTypeName parameter' {
@@ -137,7 +137,7 @@ Describe 'New-ADOPSProject' {
             } -ParameterFilter { $Method -eq 'Post' }
 
             $r = New-ADOPSProject -Organization $OrganizationName -Name $Project -Visibility 'Public' -Description 'DummyDescription'
-            $r | Should -Be '{"name":"DummyOrg","visibility":"Public","capabilities":{"versioncontrol":{"sourceControlType":"Git"},"processTemplate":{"templateTypeId":"e5317e66-94c8-48cb-bed8-3f44ebdb0963"}},"description":"DummyDescription"}'
+            $r | Should-Be '{"name":"DummyOrg","visibility":"Public","capabilities":{"versioncontrol":{"sourceControlType":"Git"},"processTemplate":{"templateTypeId":"e5317e66-94c8-48cb-bed8-3f44ebdb0963"}},"description":"DummyDescription"}'
         }
                 
         It 'Verify uri' {
@@ -146,7 +146,7 @@ Describe 'New-ADOPSProject' {
             } -ParameterFilter { $Method -eq 'Post' }
 
             $r = New-ADOPSProject -Organization $OrganizationName -Name $Project -Visibility 'Public' -Description 'DummyDescription'
-            $r.OriginalString | Should -Be 'https://dev.azure.com/DummyOrg/_apis/projects?api-version=7.1-preview.4'
+            $r.OriginalString | Should-Be 'https://dev.azure.com/DummyOrg/_apis/projects?api-version=7.1-preview.4'
         }
 
         It 'if wait is defined, waits until status is "succeeded"' {
@@ -181,7 +181,7 @@ Describe 'New-ADOPSProject' {
             Mock -CommandName Start-Sleep -ModuleName ADOPS -MockWith {}
 
             $r = New-ADOPSProject -Organization $OrganizationName -Name $Project -Visibility 'Public' -Description 'DummyDescription' -Wait
-            $r.name | Should -Be 'MyProj'
+            $r.name | Should-Be 'MyProj'
         }
     }
 

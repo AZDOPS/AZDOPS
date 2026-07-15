@@ -33,7 +33,7 @@ Describe 'Get-ADOPSVariableGroup' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Get-ADOPSVariableGroup | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSVariableGroup | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -46,33 +46,33 @@ Describe 'Get-ADOPSVariableGroup' {
 
         It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Get-ADOPSVariableGroup -Organization 'Organization' -Project 'DummyProj'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
         
         It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Get-ADOPSVariableGroup -Project 'DummyProj'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
         
         It 'Verify URI is set when no search parameter is given.' {
             Mock -CommandName InvokeADOPSRestMethod -MockWith { Return @{value = $Uri} } -ModuleName ADOPS
 
             $Actual = Get-ADOPSVariableGroup -Project 'DummyProj'
-            $Actual | Should -Be 'https://dev.azure.com/DummyOrg/DummyProj/_apis/distributedtask/variablegroups?api-version=7.2-preview.2'
+            $Actual | Should-Be 'https://dev.azure.com/DummyOrg/DummyProj/_apis/distributedtask/variablegroups?api-version=7.2-preview.2'
         }
         
         It 'Verify URI is set when name search parameter is given.' {
             Mock -CommandName InvokeADOPSRestMethod -MockWith { Return @{value = $Uri} } -ModuleName ADOPS
 
             $Actual = Get-ADOPSVariableGroup -Project 'DummyProj' -Name 'VariableGroupName'
-            $Actual | Should -Be 'https://dev.azure.com/DummyOrg/DummyProj/_apis/distributedtask/variablegroups?groupName=VariableGroupName&api-version=7.2-preview.2'
+            $Actual | Should-Be 'https://dev.azure.com/DummyOrg/DummyProj/_apis/distributedtask/variablegroups?groupName=VariableGroupName&api-version=7.2-preview.2'
         }
         
         It 'Verify Method is set.' {
             Mock -CommandName InvokeADOPSRestMethod -MockWith { Return @{value = $Method} } -ModuleName ADOPS
 
             $Actual = Get-ADOPSVariableGroup -Project 'DummyProj'
-            $Actual | Should -Be 'Get'
+            $Actual | Should-Be 'Get'
         }
 
         It 'If Id is given, only return the correct result.' {
@@ -82,7 +82,7 @@ Describe 'Get-ADOPSVariableGroup' {
             } -ModuleName ADOPS
 
             $Actual = Get-ADOPSVariableGroup -Project 'DummyProj' -Id 8
-            $Actual.Count | Should -Be 1
+            $Actual.Count | Should-Be 1
         }
     }
 }

@@ -38,12 +38,12 @@ Describe "New-ADOPSElasticPool" {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command New-ADOPSElasticPool | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command New-ADOPSElasticPool | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
 
         # Since this parameter accepts multiple types we create a separate test for it.
         It 'Should have parameter ElasticPoolObject'  {
-            Get-Command New-ADOPSElasticPool | Should -HaveParameter 'ElasticPoolObject' -Mandatory
+            Get-Command New-ADOPSElasticPool | Should-HaveParameter 'ElasticPoolObject' -Mandatory
         }
     }
 
@@ -95,20 +95,20 @@ Describe "New-ADOPSElasticPool" {
 
         It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             New-ADOPSElasticPool -Organization 'anotherorg' -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -AuthorizeAllPipelines -AutoProvisionProjectPools
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -ParameterFilter { $Organization -eq 'anotherorg' } -Times 0 -Exactly
         }
 
         It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             New-ADOPSElasticPool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -AuthorizeAllPipelines -AutoProvisionProjectPools
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It "Returns created elastic pool" {
-            New-ADOPSElasticPool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' -AuthorizeAllPipelines -AutoProvisionProjectPools | Should -Not -BeNullOrEmpty
+            New-ADOPSElasticPool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' -AuthorizeAllPipelines -AutoProvisionProjectPools | Should-NotBeNull
         }
 
         It "Returns created elastic pool id" {
-            (New-ADOPSElasticPool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' -AuthorizeAllPipelines -AutoProvisionProjectPools).elasticPool.poolid | Should -Be 59
+            (New-ADOPSElasticPool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' -AuthorizeAllPipelines -AutoProvisionProjectPools).elasticPool.poolid | Should-Be 59
         }
 
         It 'Creates correct URI, no projectID' {
@@ -117,7 +117,7 @@ Describe "New-ADOPSElasticPool" {
             }
             $required = 'https://dev.azure.com/DummyOrg/_apis/distributedtask/elasticpools?poolName=CustomPool&authorizeAllPipelines=true&autoProvisionProjectPools=true&api-version=7.1-preview.1'
             $actual = New-ADOPSElasticPool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' -AuthorizeAllPipelines -AutoProvisionProjectPools 
-            $actual | Should -Be $required
+            $actual | Should-Be $required
         }
 
         It 'Creates correct URI, with projectID' {
@@ -126,7 +126,7 @@ Describe "New-ADOPSElasticPool" {
             }
             $required = 'https://dev.azure.com/DummyOrg/_apis/distributedtask/elasticpools?poolName=CustomPool&authorizeAllPipelines=true&autoProvisionProjectPools=true&projectId=123&api-version=7.1-preview.1'
             $actual = New-ADOPSElasticPool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' -AuthorizeAllPipelines -AutoProvisionProjectPools -ProjectId '123'
-            $actual | Should -Be $required
+            $actual | Should-Be $required
         }
 
         It 'If it is an object, converts ElasticPoolObject to json' {
@@ -146,7 +146,7 @@ Describe "New-ADOPSElasticPool" {
             }
 
             $ElasticPoolObject = $ElasticPoolObject | ConvertFrom-Json            
-            {New-ADOPSElasticPool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' -AuthorizeAllPipelines -AutoProvisionProjectPools} | Should -Throw
+            {New-ADOPSElasticPool -PoolName 'CustomPool' -ElasticPoolObject $ElasticPoolObject -Organization 'DummyOrg' -AuthorizeAllPipelines -AutoProvisionProjectPools} | Should-Throw
         }
     }
 }

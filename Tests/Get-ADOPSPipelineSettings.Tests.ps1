@@ -23,7 +23,7 @@ Describe 'Get-ADOPSPipelineSettings' {
         )
 
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Get-ADOPSPipelineSettings | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSPipelineSettings | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -64,7 +64,7 @@ Describe 'Get-ADOPSPipelineSettings' {
         
         It 'uses InvokeADOPSRestMethod single times' {
             Get-ADOPSPipelineSettings -Organization $OrganizationName -Project $Project
-            Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
+            Should-Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
         }
         It 'should not throw with mandatory parameters' {
             { Get-ADOPSPipelineSettings -Organization $OrganizationName -Project $Project } | Should -Not -Throw
@@ -73,7 +73,7 @@ Describe 'Get-ADOPSPipelineSettings' {
             { Get-ADOPSPipelineSettings -Project $Project } | Should -Not -Throw
         }
         It 'returns settings after getting pipelines' {
-            (Get-ADOPSPipelineSettings -Organization $OrganizationName -Project $Project | Get-Member -MemberType NoteProperty).count | Should -Be 19
+            (Get-ADOPSPipelineSettings -Organization $OrganizationName -Project $Project | Get-Member -MemberType NoteProperty).count | Should-Be 19
         }
     }
 }

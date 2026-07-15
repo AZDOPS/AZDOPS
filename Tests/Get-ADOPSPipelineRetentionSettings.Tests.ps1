@@ -23,7 +23,7 @@ Describe 'Get-ADOPSPipelineRetentionSettings' {
         )
 
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Get-ADOPSPipelineRetentionSettings | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSPipelineRetentionSettings | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -60,7 +60,7 @@ Describe 'Get-ADOPSPipelineRetentionSettings' {
 
         It 'uses InvokeADOPSRestMethod single times' {
             Get-ADOPSPipelineRetentionSettings -Organization $OrganizationName -Project $Project
-            Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
+            Should-Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
         }
 
         It 'should not throw with mandatory parameters' {
@@ -72,16 +72,16 @@ Describe 'Get-ADOPSPipelineRetentionSettings' {
         }
 
         It 'returns settings after getting pipelines' {
-            (Get-ADOPSPipelineRetentionSettings -Organization $OrganizationName -Project $Project | Get-Member -MemberType NoteProperty).count | Should -Be 4
+            (Get-ADOPSPipelineRetentionSettings -Organization $OrganizationName -Project $Project | Get-Member -MemberType NoteProperty).count | Should-Be 4
         }
 
         It 'should convert response type ProjectRetentionSetting into UpdateProjectRetentionSettingModel property names' {
             $Response = Get-ADOPSPipelineRetentionSettings -Organization $OrganizationName -Project $Project
             
-            $Response.artifactsRetention | Should -BeExactly 40
-            $Response.runRetention | Should -BeExactly 30
-            $Response.pullRequestRunRetention | Should -BeExactly 2
-            $Response.retainRunsPerProtectedBranch | Should -BeNullOrEmpty
+            $Response.artifactsRetention | Should-Be 40
+            $Response.runRetention | Should-Be 30
+            $Response.pullRequestRunRetention | Should-Be 2
+            $Response.retainRunsPerProtectedBranch | Should-BeNull
         }
     }
 }

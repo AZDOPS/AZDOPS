@@ -29,7 +29,7 @@ Describe 'Get-ADOPSTenantPolicy' {
         )
 
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Get-ADOPSTenantPolicy | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSTenantPolicy | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -61,10 +61,10 @@ Describe 'Get-ADOPSTenantPolicy' {
         }
         It 'calls InvokeADOPSRestMethod exactly once' {
             Get-ADOPSTenantPolicy -Force -Organization $OrganizationName -PolicyCategory $PolicyCategory
-            Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
+            Should-Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
         }
         It 'returns tenant policy settings' {
-            (Get-ADOPSTenantPolicy -Force -Organization $OrganizationName -PolicyCategory $PolicyCategory | Get-Member -MemberType NoteProperty).Count | Should -Be 3
+            (Get-ADOPSTenantPolicy -Force -Organization $OrganizationName -PolicyCategory $PolicyCategory | Get-Member -MemberType NoteProperty).Count | Should-Be 3
         }
     }
 
@@ -90,7 +90,7 @@ Describe 'Get-ADOPSTenantPolicy' {
         }
         It 'calls InvokeADOPSRestMethod exactly 5 times' {
             Get-ADOPSTenantPolicy -Force -Organization 'DummyOrg'
-            Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 5
+            Should-Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 5
         }
     }
 
@@ -105,11 +105,11 @@ Describe 'Get-ADOPSTenantPolicy' {
         }
         It 'should not call InvokeADOPSRestMethod' {
             Get-ADOPSTenantPolicy -Organization 'DummyOrg'
-            Should -Not -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS'
+            Should-NotInvoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS'
         }
         It 'should write a verbose warning' {
             Get-ADOPSTenantPolicy -Organization 'DummyOrg'
-            Should -Invoke 'Write-Verbose' -ModuleName 'ADOPS' -Exactly -Times 1
+            Should-Invoke 'Write-Verbose' -ModuleName 'ADOPS' -Exactly -Times 1
         }
     }
 

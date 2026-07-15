@@ -47,7 +47,7 @@ Describe 'New-ADOPSUserStory' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command New-ADOPSUserStory | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command New-ADOPSUserStory | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 }
@@ -71,17 +71,17 @@ Describe 'New-ADOPSUserStory' {
 
         It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             New-ADOPSUserStory -Organization 'Organization' -ProjectName 'DummyProj' -Title 'USTitle' -Description 'USDescription' -Tags 'USTags' -Priority 'USPrio'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
         It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             New-ADOPSUserStory -ProjectName 'DummyProj' -Title 'USTitle' -Description 'USDescription' -Tags 'USTags' -Priority 'USPrio'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
         
         It 'Should have called mock InvokeADOPSRestMethod' {
             $TesRes = New-ADOPSUserStory @TestRunSplat
-            Should -Invoke -CommandName 'InvokeADOPSRestMethod' -Exactly 1 -ModuleName ADOPS
+            Should-Invoke -CommandName 'InvokeADOPSRestMethod' -Exactly 1 -ModuleName ADOPS
         }
         
         It 'Verifying post object, ContentType' {
@@ -90,7 +90,7 @@ Describe 'New-ADOPSUserStory' {
             }
 
             $TesRes = New-ADOPSUserStory @TestRunSplat
-            $TesRes | Should -Be "application/json-patch+json"
+            $TesRes | Should-Be "application/json-patch+json"
         }
         It 'Verifying post object, Body' {
             Mock -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -MockWith {
@@ -99,7 +99,7 @@ Describe 'New-ADOPSUserStory' {
             
             $DesiredReslt = '[{"op":"add","path":"/fields/System.Title","value":"USTitle"},{"op":"add","path":"/fields/System.Description","value":"USDescription"},{"op":"add","path":"/fields/System.Tags","value":"USTags"},{"op":"add","path":"/fields/Microsoft.VSTS.Common.Priority","value":"USPrio"}]'
             $TesRes = (New-ADOPSUserStory @TestRunSplat) | ConvertFrom-Json | ConvertTo-Json -Compress
-            $TesRes | Should -Be $DesiredReslt
+            $TesRes | Should-Be $DesiredReslt
         }
     }
 }

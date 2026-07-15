@@ -33,7 +33,7 @@ Describe 'Start-ADOPSPipeline' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Start-ADOPSPipeline | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Start-ADOPSPipeline | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -54,38 +54,38 @@ Describe 'Start-ADOPSPipeline' {
 
         It 'Should call mock InvokeADOPSRestMethod' {
             Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject'
-            Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 2
+            Should-Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 2
         }
         It 'If no organization is passed, get default' {
             Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject'
-            Should -Invoke 'GetADOPSDefaultOrganization' -ModuleName 'ADOPS' -Exactly -Times 1
+            Should-Invoke 'GetADOPSDefaultOrganization' -ModuleName 'ADOPS' -Exactly -Times 1
         }
         It 'If an organization is passed, that organization should be used for URI' {
             Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject' -Organization 'Organization'
-            Should -Invoke 'GetADOPSDefaultOrganization' -ModuleName 'ADOPS' -Exactly -Times 0
+            Should-Invoke 'GetADOPSDefaultOrganization' -ModuleName 'ADOPS' -Exactly -Times 0
         }
         It 'If no pipeline with correct name is found we should throw error' {
-            { Start-ADOPSPipeline -Name 'NonExistingPipeline' -Project 'DummyProject' -Organization 'Organization' } | Should -Throw
+            { Start-ADOPSPipeline -Name 'NonExistingPipeline' -Project 'DummyProject' -Organization 'Organization' } | Should-Throw
         }
         It 'Uri should be set correct' {
             $r = Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject'
-            $r.Uri | Should -Be 'https://dev.azure.com/DummyOrg/DummyProject/_apis/pipelines/1/runs?api-version=7.1-preview.1'
+            $r.Uri | Should-Be 'https://dev.azure.com/DummyOrg/DummyProject/_apis/pipelines/1/runs?api-version=7.1-preview.1'
         }
         It 'Method should be post' {
             $r = Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject'
-            $r.Method | Should -Be 'post'
+            $r.Method | Should-Be 'post'
         }
         It 'Body should be set with branch name. If no branch is given, "main"' {
             $r = Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject'
-            ($r.Body | ConvertFrom-Json).resources.repositories.self.refName | Should -Be 'refs/heads/main'
+            ($r.Body | ConvertFrom-Json).resources.repositories.self.refName | Should-Be 'refs/heads/main'
         }
         It 'Body should be set with branch name If branch is given as parameter, "branch"' {
             $r = Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject' -Branch 'branch'
-            ($r.Body | ConvertFrom-Json).resources.repositories.self.refName | Should -Be 'refs/heads/branch'
+            ($r.Body | ConvertFrom-Json).resources.repositories.self.refName | Should-Be 'refs/heads/branch'
         }
         It 'Body should be set with correct branch name If branch is given and starts with "refs"' {
             $r = Start-ADOPSPipeline -Name 'DummyPipeline1' -Project 'DummyProject' -Branch 'refs/thing/otherBranch'
-            ($r.Body | ConvertFrom-Json).resources.repositories.self.refName | Should -Be 'refs/thing/otherBranch'
+            ($r.Body | ConvertFrom-Json).resources.repositories.self.refName | Should-Be 'refs/thing/otherBranch'
         }
     }
 }

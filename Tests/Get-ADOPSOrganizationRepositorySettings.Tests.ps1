@@ -18,7 +18,7 @@ Describe 'Get-ADOPSOrganizationRepositorySettings' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Get-ADOPSOrganizationRepositorySettings | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSOrganizationRepositorySettings | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -71,11 +71,11 @@ Describe 'Get-ADOPSOrganizationRepositorySettings' {
         }
 
         It 'Should return something' {
-            Get-ADOPSOrganizationRepositorySettings -Force | Should -Not -BeNullOrEmpty
+            Get-ADOPSOrganizationRepositorySettings -Force | Should-NotBeNull
         }
 
         It 'GravatarEnabled entry Should not be Null or empty' {
-            (Get-ADOPSOrganizationRepositorySettings -Force | Where-object key -eq "GravatarEnabled") | Should -Not -BeNullOrEmpty
+            (Get-ADOPSOrganizationRepositorySettings -Force | Where-object key -eq "GravatarEnabled") | Should-NotBeNull
         }
     }
 }

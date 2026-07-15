@@ -23,7 +23,7 @@ Describe "Get-ADOPSElasticPool" {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Get-ADOPSElasticPool | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSElasticPool | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -73,34 +73,34 @@ Describe "Get-ADOPSElasticPool" {
         }
 
         It "Returns elastic pool" {
-            Get-ADOPSElasticPool -Organization 'DummyOrg' -poolId 10 | Should -Not -BeNullOrEmpty
+            Get-ADOPSElasticPool -Organization 'DummyOrg' -poolId 10 | Should-NotBeNull
         }
 
         It "Returns elastic pool without poolid specified" {
-            Get-ADOPSElasticPool -Organization 'DummyOrg' | Should -Not -BeNullOrEmpty
+            Get-ADOPSElasticPool -Organization 'DummyOrg' | Should-NotBeNull
         }
 
         It 'Returns an id' {
-            (Get-ADOPSElasticPool -Organization 'DummyOrg').poolId | Should -Contain 11
+            (Get-ADOPSElasticPool -Organization 'DummyOrg').poolId | Should-ContainCollection 11
         }
 
         It 'Returns an azure id' {
-            (Get-ADOPSElasticPool -Organization 'DummyOrg' -PoolId 10).azureId | Should -Contain '/subscriptions/f47626a9-67f2-4a30-a0d9-22806c3b99bd/resourceGroups/ResourceGroupName/providers/Microsoft.Compute/virtualMachineScaleSets/VirtualMachineScaleSetName'
+            (Get-ADOPSElasticPool -Organization 'DummyOrg' -PoolId 10).azureId | Should-ContainCollection '/subscriptions/f47626a9-67f2-4a30-a0d9-22806c3b99bd/resourceGroups/ResourceGroupName/providers/Microsoft.Compute/virtualMachineScaleSets/VirtualMachineScaleSetName'
         }
 
         It 'Calls InvokeADOPSRestMethod with correct parameters when Organization is used' {
             Get-ADOPSElasticPool -Organization 'MySecondOrg'
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/MySecondOrg/_apis/distributedtask/elasticpools?api-version=7.1-preview.1' }
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/MySecondOrg/_apis/distributedtask/elasticpools?api-version=7.1-preview.1' }
         }
 
         It 'Calls InvokeADOPSRestMethod when no parameters is used' {
             Get-ADOPSElasticPool
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/_apis/distributedtask/elasticpools?api-version=7.1-preview.1' }
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/_apis/distributedtask/elasticpools?api-version=7.1-preview.1' }
         }
 
         It 'Calls InvokeADOPSRestMethod when id is used' {
             Get-ADOPSElasticPool -PoolId 123
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/_apis/distributedtask/elasticpools/123?api-version=7.1-preview.1' }
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/_apis/distributedtask/elasticpools/123?api-version=7.1-preview.1' }
         }
 
         It 'Can handle single elastic pool responses from API' {
@@ -124,7 +124,7 @@ Describe "Get-ADOPSElasticPool" {
                 }
             }
             
-            (Get-ADOPSElasticPool -Organization 'DummyOrg' -PoolId 10).poolId | Should -Be 10
+            (Get-ADOPSElasticPool -Organization 'DummyOrg' -PoolId 10).poolId | Should-Be 10
         }
     }
 }

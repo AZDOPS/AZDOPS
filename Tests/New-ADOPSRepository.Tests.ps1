@@ -28,7 +28,7 @@ Describe 'New-ADOPSRepository' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command New-ADOPSRepository | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command New-ADOPSRepository | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -59,29 +59,29 @@ Describe 'New-ADOPSRepository' {
 
         It 'If organization is not given, it should not call GetADOPSDefaultOrganization' {
             $r = New-ADOPSRepository -Organization 'DummyOrg' -Project 'DummyProj' -Name 'RepoName'
-            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
         It 'If organization is given, it should call GetADOPSDefaultOrganization' {
             $r = New-ADOPSRepository -Project 'DummyProj' -Name 'RepoName'
-            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
         
         It 'Invoke should be correct, Verifying method "Post"' {
             $r = New-ADOPSRepository -Organization 'DummyOrg' -Project 'DummyProj' -Name 'RepoName'
-            $r.Method | Should -Be 'Post'
+            $r.Method | Should-Be 'Post'
         }
         It 'Invoke should be correct, Verifying URI using RepositoryId' {
             $r = New-ADOPSRepository -Organization 'DummyOrg' -Project 'DummyProj' -Name 'RepoName'
-            $r.URI | Should -Be 'https://dev.azure.com/DummyOrg/_apis/git/repositories?api-version=7.1-preview.1'
+            $r.URI | Should-Be 'https://dev.azure.com/DummyOrg/_apis/git/repositories?api-version=7.1-preview.1'
         }
         It 'Invoke should be correct, Verifying URL for Organization' {
             $r = New-ADOPSRepository -Organization 'AnotherOrg' -Project 'DummyProj' -Name 'RepoName'
-            $r.URI | Should -Be 'https://dev.azure.com/AnotherOrg/_apis/git/repositories?api-version=7.1-preview.1'
+            $r.URI | Should-Be 'https://dev.azure.com/AnotherOrg/_apis/git/repositories?api-version=7.1-preview.1'
         }
         It 'Invoke should be correct, Verifying body' {
             $res = '{"name":"MyRepoName","project":{"id":"34f7babc-b656-4d13-bf24-bba1782d88fe"}}'
             $r = New-ADOPSRepository -Project 'DummyProject' -Name 'MyRepoName'
-            $r.body | Should -Be $res
+            $r.body | Should-Be $res
         }
     }
 }

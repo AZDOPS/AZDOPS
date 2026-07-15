@@ -38,7 +38,7 @@ Describe 'New-ADOPSArtifactFeed' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command New-ADOPSArtifactFeed | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command New-ADOPSArtifactFeed | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -80,28 +80,28 @@ Describe 'New-ADOPSArtifactFeed' {
         
         It 'If organization is given, it should not call GetADOPSDefaultOrganization' {
             $r = New-ADOPSArtifactFeed -Organization 'DummyOrg' -Project 'DummyProj' -Name 'FeedName'
-            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
         It 'If organization is not given, it should call GetADOPSDefaultOrganization' {
             $r = New-ADOPSArtifactFeed -Project 'DummyProj' -Name 'FeedName'
-            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'Should call Get-ADOPSUser once to get the build account' {
             $r = New-ADOPSArtifactFeed -Project 'DummyProj' -Name 'FeedName'
-            Should -Invoke -CommandName Get-ADOPSUser -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke -CommandName Get-ADOPSUser -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'Should call InvokeADOPSRestMethod once to get the build account descriptor' {
             $r = New-ADOPSArtifactFeed -Project 'DummyProj' -Name 'FeedName' -Organization 'DummyOrg'
-            Should -Invoke -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {
+            Should-Invoke -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {
                 $Uri -like "https://vssps.dev.azure.com/*/_apis/Identities?identityIds=*"
             }
         }
 
         It 'If no matching identity is found, dont try to get build account descriptor' {
             $r = New-ADOPSArtifactFeed -Project 'notExistingProj' -Name 'FeedName' -Organization 'DummyOrg'
-            Should -Invoke -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -Times 0 -Exactly -ParameterFilter {
+            Should-Invoke -CommandName InvokeADOPSRestMethod -ModuleName ADOPS -Times 0 -Exactly -ParameterFilter {
                 $Uri -like "https://vssps.dev.azure.com/*/_apis/Identities?identityIds=*"
             }
         }
@@ -109,35 +109,35 @@ Describe 'New-ADOPSArtifactFeed' {
         It 'Verify URI is set correct' {
             $required = 'https://feeds.dev.azure.com/DummyOrg/DummyProj/_apis/packaging/feeds?api-version=7.2-preview.1'
             $actual = New-ADOPSArtifactFeed -Project 'DummyProj' -Name 'FeedName'
-            $actual.Uri | Should -Be $required
+            $actual.Uri | Should-Be $required
         }
         
         It 'Verify Method is set correct' {
             $required = 'Post'
             $actual = New-ADOPSArtifactFeed -Project 'DummyProj' -Name 'FeedName'
-            $actual.Method | Should -Be $required
+            $actual.Method | Should-Be $required
         }
         
         It 'Verify baseline body is set correct' {
             # Use not found org to get the baseline body only, not including security settings.
             $required = '{"name":"FeedName","upstreamEnabled":false,"hideDeletedPackageVersions":true,"project":{"visibility":"Private"}}'
             $actual = New-ADOPSArtifactFeed -Project 'DummyProj' -Name 'FeedName' -Organization 'NotFound'
-            $actual.Body | Should -Be $required
+            $actual.Body | Should-Be $required
         }
         
         It 'Verify body is set correct, UpstreamEnabled' {
             $actual = (New-ADOPSArtifactFeed -Project 'DummyProj' -Name 'FeedName' -IncludeUpstream).Body | ConvertFrom-Json
-            $actual.upstreamSources.Count | Should -Be 9
+            $actual.upstreamSources.Count | Should-Be 9
         }
         
         It 'Verify body is set correct, Description' {
             $actual = (New-ADOPSArtifactFeed -Project 'DummyProj' -Name 'FeedName' -Description 'Test Description').Body | ConvertFrom-Json
-            $actual.Description | Should -Be 'Test Description'
+            $actual.Description | Should-Be 'Test Description'
         }
         
         It 'Verify body is set correct, permissions' {
             $actual = (New-ADOPSArtifactFeed -Project 'DummyProj' -Name 'FeedName' -IncludeUpstream).Body | ConvertFrom-Json
-            $actual.permissions.Count | Should -Be 1
+            $actual.permissions.Count | Should-Be 1
         }
     }
 }

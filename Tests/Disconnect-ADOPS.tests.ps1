@@ -12,7 +12,7 @@ Describe 'Disconnect-ADOPS' {
         It 'Should have no parameters' {
             (Get-Command GetADOPSDefaultOrganization).Parameters.GetEnumerator() | Where-Object {
                 $_.Key -notin [System.Management.Automation.Cmdlet]::CommonParameters
-            } | Should -BeNullOrEmpty
+            } | Should-BeNull
         }
     }
 

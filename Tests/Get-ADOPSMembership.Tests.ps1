@@ -32,11 +32,11 @@ Describe "Get-ADOPSMembership" {
         )
 
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Get-ADOPSMembership | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSMembership | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
 
         It 'Should throw if Direction is not up or down' {
-            { Get-ADOPSMembership -Descriptor 'vssgp.abc' -Direction 'invalid' } | Should -Throw
+            { Get-ADOPSMembership -Descriptor 'vssgp.abc' -Direction 'invalid' } | Should-Throw
         }
     }
 
@@ -49,14 +49,14 @@ Describe "Get-ADOPSMembership" {
 
         It 'Calls InvokeADOPSRestMethod with the correct URI when direction is up' {
             Get-ADOPSMembership -Organization 'DummyOrg' -Descriptor 'vssgp.abc123'
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {
                 $Uri -eq 'https://vssps.dev.azure.com/DummyOrg/_apis/graph/Memberships/vssgp.abc123?direction=up&depth=1&api-version=7.2-preview.1'
             }
         }
 
         It 'Calls InvokeADOPSRestMethod with the correct URI when direction is down' {
             Get-ADOPSMembership -Organization 'DummyOrg' -Descriptor 'vssgp.abc123' -Direction 'down'
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {
                 $Uri -eq 'https://vssps.dev.azure.com/DummyOrg/_apis/graph/Memberships/vssgp.abc123?direction=down&depth=1&api-version=7.2-preview.1'
             }
         }
@@ -71,12 +71,12 @@ Describe "Get-ADOPSMembership" {
 
         It 'Should not call GetADOPSDefaultOrganization when Organization parameter is provided' {
             Get-ADOPSMembership -Organization 'DummyOrg' -Descriptor 'vssgp.abc123'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
         It 'Should call GetADOPSDefaultOrganization when Organization parameter is not provided' {
             Get-ADOPSMembership -Descriptor 'vssgp.abc123'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
     }
 
@@ -108,12 +108,12 @@ Describe "Get-ADOPSMembership" {
 
         It 'Returns a result' {
             $result = Get-ADOPSMembership -Organization 'DummyOrg' -Descriptor 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
-            $result | Should -Not -BeNullOrEmpty
+            $result | Should-NotBeNull
         }
 
         It 'Calls Get-ADOPSGroup with the vssgp containerDescriptor' {
             Get-ADOPSMembership -Organization 'DummyOrg' -Descriptor 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
-            Should -Invoke Get-ADOPSGroup -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {
+            Should-Invoke Get-ADOPSGroup -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {
                 $Descriptor -eq 'vssgp.KZxAEOS5OBwwvtcidMzAKgkPrhLSpJ1SvwQj1CGj72xMmaz6tnXironO0TxMcas9TWir5sbN91JYp90YgbiBcSMcF94FaNmYl1dQSIOMUKPjwFQloaEG4l8rdlvTiSJTEjFxw5QgWrP1'
             }
         }
@@ -146,12 +146,12 @@ Describe "Get-ADOPSMembership" {
 
         It 'Returns a result' {
             $result = Get-ADOPSMembership -Organization 'DummyOrg' -Descriptor 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
-            $result | Should -Not -BeNullOrEmpty
+            $result | Should-NotBeNull
         }
 
         It 'Calls Get-ADOPSGroup with the aadgp containerDescriptor' {
             Get-ADOPSMembership -Organization 'DummyOrg' -Descriptor 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
-            Should -Invoke Get-ADOPSGroup -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {
+            Should-Invoke Get-ADOPSGroup -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {
                 $Descriptor -eq 'aadgp.YTBiMWMyZDMtZTRmNS1nNmg3LWk4ajktazFsMm0zbjRvNXA2'
             }
         }
@@ -185,12 +185,12 @@ Describe "Get-ADOPSMembership" {
 
         It 'Returns a result' {
             $result = Get-ADOPSMembership -Organization 'DummyOrg' -Descriptor 'vssgp.KZxAEOS5OBwwvtcidMzAKgkPrhLSpJ1SvwQj1CGj72xMmaz6tnXironO0TxMcas9TWir5sbN91JYp90YgbiBcSMcF94FaNmYl1dQSIOMUKPjwFQloaEG4l8rdlvTiSJTEjFxw5QgWrP1'
-            $result | Should -Not -BeNullOrEmpty
+            $result | Should-NotBeNull
         }
 
         It 'Calls Get-ADOPSUser with the aad containerDescriptor' {
             Get-ADOPSMembership -Organization 'DummyOrg' -Descriptor 'vssgp.KZxAEOS5OBwwvtcidMzAKgkPrhLSpJ1SvwQj1CGj72xMmaz6tnXironO0TxMcas9TWir5sbN91JYp90YgbiBcSMcF94FaNmYl1dQSIOMUKPjwFQloaEG4l8rdlvTiSJTEjFxw5QgWrP1'
-            Should -Invoke Get-ADOPSUser -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {
+            Should-Invoke Get-ADOPSUser -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {
                 $Descriptor -eq 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
             }
         }
@@ -223,12 +223,12 @@ Describe "Get-ADOPSMembership" {
 
         It 'Returns a result' {
             $result = Get-ADOPSMembership -Organization 'DummyOrg' -Descriptor 'vssgp.KZxAEOS5OBwwvtcidMzAKgkPrhLSpJ1SvwQj1CGj72xMmaz6tnXironO0TxMcas9TWir5sbN91JYp90YgbiBcSMcF94FaNmYl1dQSIOMUKPjwFQloaEG4l8rdlvTiSJTEjFxw5QgWrP1' -Direction 'down'
-            $result | Should -Not -BeNullOrEmpty
+            $result | Should-NotBeNull
         }
 
         It 'Calls Get-ADOPSGroup with the vssgp memberDescriptor' {
             Get-ADOPSMembership -Organization 'DummyOrg' -Descriptor 'vssgp.KZxAEOS5OBwwvtcidMzAKgkPrhLSpJ1SvwQj1CGj72xMmaz6tnXironO0TxMcas9TWir5sbN91JYp90YgbiBcSMcF94FaNmYl1dQSIOMUKPjwFQloaEG4l8rdlvTiSJTEjFxw5QgWrP1' -Direction 'down'
-            Should -Invoke Get-ADOPSGroup -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {
+            Should-Invoke Get-ADOPSGroup -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {
                 $Descriptor -eq 'vssgp.60AL7JP86iP6lpQs2ejp9v8vgpaxLWiiD1GK1zSEDMoHaQnSBunvfc3VixVcMoXlh8omp0yP1lVNAFoLw07MLHhF9aNM8EjsniV0Ok9sniqZj3MoiHWR3vEc4xuYK1T1HnhgxlZVmk0G'
             }
         }
@@ -262,12 +262,12 @@ Describe "Get-ADOPSMembership" {
 
         It 'Returns a result' {
             $result = Get-ADOPSMembership -Organization 'DummyOrg' -Descriptor 'vssgp.KZxAEOS5OBwwvtcidMzAKgkPrhLSpJ1SvwQj1CGj72xMmaz6tnXironO0TxMcas9TWir5sbN91JYp90YgbiBcSMcF94FaNmYl1dQSIOMUKPjwFQloaEG4l8rdlvTiSJTEjFxw5QgWrP1' -Direction 'down'
-            $result | Should -Not -BeNullOrEmpty
+            $result | Should-NotBeNull
         }
 
         It 'Calls Get-ADOPSUser with the aad memberDescriptor' {
             Get-ADOPSMembership -Organization 'DummyOrg' -Descriptor 'vssgp.KZxAEOS5OBwwvtcidMzAKgkPrhLSpJ1SvwQj1CGj72xMmaz6tnXironO0TxMcas9TWir5sbN91JYp90YgbiBcSMcF94FaNmYl1dQSIOMUKPjwFQloaEG4l8rdlvTiSJTEjFxw5QgWrP1' -Direction 'down'
-            Should -Invoke Get-ADOPSUser -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {
+            Should-Invoke Get-ADOPSUser -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {
                 $Descriptor -eq 'aad.am9obiBkb2Vqb2huIGRvZWpvaG4gZG9lam9obiBkb2U'
             }
         }
@@ -282,12 +282,12 @@ Describe "Get-ADOPSMembership" {
 
         It 'Returns empty result when no memberships found with direction up' {
             $result = Get-ADOPSMembership -Organization 'DummyOrg' -Descriptor 'vssgp.abc123'
-            $result | Should -BeNullOrEmpty
+            $result | Should-BeNull
         }
 
         It 'Returns empty result when no memberships found with direction down' {
             $result = Get-ADOPSMembership -Organization 'DummyOrg' -Descriptor 'vssgp.abc123' -Direction 'down'
-            $result | Should -BeNullOrEmpty
+            $result | Should-BeNull
         }
     }
 }

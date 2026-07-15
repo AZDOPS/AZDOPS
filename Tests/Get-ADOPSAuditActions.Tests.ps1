@@ -18,7 +18,7 @@ Describe 'Get-ADOPSAuditActions' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Get-ADOPSAuditActions | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSAuditActions | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -51,16 +51,16 @@ Describe 'Get-ADOPSAuditActions' {
         
         It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Get-ADOPSAuditActions -Organization 'anotherorg'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
         It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Get-ADOPSAuditActions
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'Should return something' {
-            Get-ADOPSAuditActions | Should -Not -BeNullOrEmpty
+            Get-ADOPSAuditActions | Should-NotBeNull
         }
     }
 }

@@ -38,7 +38,7 @@ Describe 'Set-ADOPSArtifactFeed' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Set-ADOPSArtifactFeed | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Set-ADOPSArtifactFeed | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -51,12 +51,12 @@ Describe 'Set-ADOPSArtifactFeed' {
         
         It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Set-ADOPSArtifactFeed -Organization 'anotherorg' -Project 'dummyProj' -FeedId 'FeedIdGoesHere' -UpstreamEnabled:$true
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
         It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Set-ADOPSArtifactFeed -Project 'dummyProj' -FeedId 'FeedIdGoesHere' -UpstreamEnabled:$true
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'Verifying URI' {
@@ -66,7 +66,7 @@ Describe 'Set-ADOPSArtifactFeed' {
             
             $Expected = 'https://feeds.dev.azure.com/DummyOrg/dummyProj/_apis/packaging/feeds/FeedIdGoesHere?api-version=7.2-preview.1'
             $Actual = Set-ADOPSArtifactFeed -Project 'dummyProj' -FeedId 'FeedIdGoesHere' -UpstreamEnabled:$true
-            $Actual | Should -Be $Expected
+            $Actual | Should-Be $Expected
         }
 
         It 'Verifying Method' {
@@ -75,7 +75,7 @@ Describe 'Set-ADOPSArtifactFeed' {
             }
             $Expected = 'Patch'
             $Actual = Set-ADOPSArtifactFeed -Project 'dummyProj' -FeedId 'FeedIdGoesHere' -UpstreamEnabled:$true
-            $Actual | Should -Be $Expected
+            $Actual | Should-Be $Expected
         }
         
         It 'Verifying body, Description' {
@@ -84,7 +84,7 @@ Describe 'Set-ADOPSArtifactFeed' {
             }
             $Expected = '{"description":"Description goes here"}'
             $Actual = Set-ADOPSArtifactFeed -Project 'dummyProj' -FeedId 'FeedIdGoesHere' -Description 'Description goes here'
-            $Actual | Should -Be $Expected
+            $Actual | Should-Be $Expected
         }
         
         It 'Verifying body, upstreamEnabled true' {
@@ -93,7 +93,7 @@ Describe 'Set-ADOPSArtifactFeed' {
             }
             $Expected = '{"upstreamEnabled":True*'
             $Actual = Set-ADOPSArtifactFeed -Project 'dummyProj' -FeedId 'FeedIdGoesHere' -UpstreamEnabled:$true
-            $Actual | Should -BeLike $Expected
+            $Actual | Should-BeLikeString $Expected
         }
         
         It 'Verifying body, upstreamEnabled false' {
@@ -102,13 +102,13 @@ Describe 'Set-ADOPSArtifactFeed' {
             }
             $Expected = '{"upstreamEnabled":False}'
             $Actual = Set-ADOPSArtifactFeed -Project 'dummyProj' -FeedId 'FeedIdGoesHere' -UpstreamEnabled:$false
-            $Actual | Should -Be $Expected
+            $Actual | Should-Be $Expected
         }
         
         It 'If no body is provided, do nothing' {
             $Actual = Set-ADOPSArtifactFeed -Project 'dummyProj' -FeedId 'FeedIdGoesHere'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 0 -Exactly
         }
     }
 }

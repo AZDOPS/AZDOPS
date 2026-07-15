@@ -28,7 +28,7 @@ Describe 'Get-ADOPSUsageData' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Get-ADOPSUsageData | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSUsageData | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -40,12 +40,12 @@ Describe 'Get-ADOPSUsageData' {
 
         It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Get-ADOPSUsageData -Organization 'Organization'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
         
         It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Get-ADOPSUsageData
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'Verifying request uri, ProjectVisibility:Private, SelfHosted:true' {
@@ -54,7 +54,7 @@ Describe 'Get-ADOPSUsageData' {
             }
 
             $r = Get-ADOPSUsageData -ProjectVisibility Private -SelfHosted
-            $r | Should -Be 'https://dev.azure.com/DummyOrg/_apis/distributedtask/resourceusage?parallelismTag=Private&poolIsHosted=false&includeRunningRequests=true'
+            $r | Should-Be 'https://dev.azure.com/DummyOrg/_apis/distributedtask/resourceusage?parallelismTag=Private&poolIsHosted=false&includeRunningRequests=true'
         }
 
         It 'Verifying request uri, ProjectVisibility:Public, SelfHosted:false' {
@@ -63,7 +63,7 @@ Describe 'Get-ADOPSUsageData' {
             }
 
             $r = Get-ADOPSUsageData -ProjectVisibility Public
-            $r | Should -Be 'https://dev.azure.com/DummyOrg/_apis/distributedtask/resourceusage?parallelismTag=Public&poolIsHosted=true&includeRunningRequests=true'
+            $r | Should-Be 'https://dev.azure.com/DummyOrg/_apis/distributedtask/resourceusage?parallelismTag=Public&poolIsHosted=true&includeRunningRequests=true'
         }
         
         It 'Verifying request uri, no parameters' {
@@ -72,7 +72,7 @@ Describe 'Get-ADOPSUsageData' {
             }
 
             $r = Get-ADOPSUsageData
-            $r | Should -Be 'https://dev.azure.com/DummyOrg/_apis/distributedtask/resourceusage?parallelismTag=Public&poolIsHosted=true&includeRunningRequests=true'
+            $r | Should-Be 'https://dev.azure.com/DummyOrg/_apis/distributedtask/resourceusage?parallelismTag=Public&poolIsHosted=true&includeRunningRequests=true'
         }
 
         It 'Verifying method: Get' {
@@ -81,7 +81,7 @@ Describe 'Get-ADOPSUsageData' {
             }
             
             $r = Get-ADOPSUsageData
-            $r | Should -Be 'Get'
+            $r | Should-Be 'Get'
         }
     }
 }

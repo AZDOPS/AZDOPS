@@ -23,7 +23,7 @@ Describe 'Set-ADOPSBuildDefinition' {
         )
 
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Set-ADOPSBuildDefinition | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Set-ADOPSBuildDefinition | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -46,7 +46,7 @@ Describe 'Set-ADOPSBuildDefinition' {
         
         It 'If no org is given, calls GetADOPSDefaultOrganization once' {
             Set-ADOPSBuildDefinition -DefinitionObject $definitionObject
-            Should -Invoke 'GetADOPSDefaultOrganization' -ModuleName 'ADOPS' -Exactly -Times 1
+            Should-Invoke 'GetADOPSDefaultOrganization' -ModuleName 'ADOPS' -Exactly -Times 1
         }
 
         It 'URI should be correct' {
@@ -54,7 +54,7 @@ Describe 'Set-ADOPSBuildDefinition' {
                 return $Uri
             }
             $actual = Set-ADOPSBuildDefinition -DefinitionObject $definitionObject
-            $actual | Should -Be 'https://dev.azure.com/DummyOrg/00a00a0a-0000-0aaa-aa00-a0a000000aa0/_apis/build/definitions/1?api-version=7.2-preview.7'
+            $actual | Should-Be 'https://dev.azure.com/DummyOrg/00a00a0a-0000-0aaa-aa00-a0a000000aa0/_apis/build/definitions/1?api-version=7.2-preview.7'
         }
 
         It 'Method should be PUT' {
@@ -62,7 +62,7 @@ Describe 'Set-ADOPSBuildDefinition' {
                 return $Method
             }
             $actual = Set-ADOPSBuildDefinition -DefinitionObject $definitionObject
-            $actual | Should -Be 'Put'
+            $actual | Should-Be 'Put'
         }
 
         It 'If body is JSON post if as is.' {
@@ -71,7 +71,7 @@ Describe 'Set-ADOPSBuildDefinition' {
             }
             $definitionObject = '[{"id":1,"name":"definition1"},{"id":2,"name":"definition2"}]'
             $actual = Set-ADOPSBuildDefinition -DefinitionObject $definitionObject
-            $actual | Should -Be $definitionObject
+            $actual | Should-Be $definitionObject
         }
 
         It 'If body is array, convert to json.' {
@@ -81,7 +81,7 @@ Describe 'Set-ADOPSBuildDefinition' {
             $definitionObject = '[{"id":1,"name":"definition1"},{"id":2,"name":"definition2"}]' | ConvertFrom-Json
             $resultObject = '[{"id":1,"name":"definition1"},{"id":2,"name":"definition2"}]'
             $actual = Set-ADOPSBuildDefinition -DefinitionObject $definitionObject
-            $actual | Should -Be $resultObject
+            $actual | Should-Be $resultObject
         }
     }
 }

@@ -18,7 +18,7 @@ Describe 'Get-ADOPSOrganizationAdvancedSecurity' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Get-ADOPSOrganizationAdvancedSecurity | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSOrganizationAdvancedSecurity | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -51,7 +51,7 @@ Describe 'Get-ADOPSOrganizationAdvancedSecurity' {
         }
 
         It 'enableOnCreate Should be false' {
-            (Get-ADOPSOrganizationAdvancedSecurity).enableOnCreate | Should -Be $false
+            (Get-ADOPSOrganizationAdvancedSecurity).enableOnCreate | Should-Be $false
         }
     }
 }

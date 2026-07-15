@@ -15,7 +15,7 @@ Describe 'Test-ADOPSConnection' {
         }
 
         It 'Should return something' {
-            Test-ADOPSConnection | Should -Be $true
+            Test-ADOPSConnection | Should-Be $true
         }
 
     }

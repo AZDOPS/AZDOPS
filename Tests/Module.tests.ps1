@@ -109,13 +109,13 @@ Describe "Module $ModuleName" {
         # Tests run on both uncompiled and compiled modules
         It "Exported functions exist" -TestCases (@{ Count = $PublicTestCases.count }) {
             param ( $Count )
-            $Count | Should -BeGreaterThan 0 -Because 'functions should exist'
+            $Count | Should-BeGreaterThan 0 -Because 'functions should exist'
         }
 
         # This test will only run on functions that does not have the [SkipTest('HasOrganizationParameter')] attribute set.
         It "Public function '<Function>' should have parameter Organization." -TestCases $PublicTestCases.Where({-Not (Get-Command $_.Function).ScriptBlock.Attributes.Where({$_.TypeID.Name -eq 'SkipTest'}).TestNames -contains 'HasOrganizationParameter'}) -AllowNullOrEmptyForEach {
             param ( $Function )
-            Get-Command $Function | Should -HaveParameter 'Organization'
+            Get-Command $Function | Should-HaveParameter 'Organization'
         }
 
         # Tests only for uncompiled modules goes here
@@ -123,50 +123,50 @@ Describe "Module $ModuleName" {
             It "Public function '<Function>' should have a CmdLet file in correct place." -TestCases $PublicTestCases {
                 param ( $Function )
                 
-                Test-Path -Path "$ScriptDirectory\Public\$Function.ps1" -PathType Leaf | Should -Be $true
+                Test-Path -Path "$ScriptDirectory\Public\$Function.ps1" -PathType Leaf | Should-Be $true
             }
 
             It "Public function '<Function>' should have a test file." -TestCases $PublicTestCases {
                 param ( $Function )
                 
-                Test-Path -Path "$ScriptDirectory\..\Tests\$Function.Tests.ps1" -PathType Leaf | Should -Be $true
+                Test-Path -Path "$ScriptDirectory\..\Tests\$Function.Tests.ps1" -PathType Leaf | Should-Be $true
             }
             
             It "Public function '<Function>' should have a Docs/Help file." -TestCases $PublicTestCases {
                 param ( $Function )
                 
-                Test-Path -Path "$ScriptDirectory\..\Docs\Help\$Function.md" -PathType Leaf | Should -Be $true
+                Test-Path -Path "$ScriptDirectory\..\Docs\Help\$Function.md" -PathType Leaf | Should-Be $true
             }
             
             It "Public function '<Function>' should not have empty descriptions in help file" -TestCases $PublicTestCases {
                 param ( $Function )
                 
-                Get-ChildItem "$ScriptDirectory\..\Docs\Help\$Function.md" | Select-String '{{ Fill \w+ Description }}' | Should -BeNullOrEmpty
+                Get-ChildItem "$ScriptDirectory\..\Docs\Help\$Function.md" | Select-String '{{ Fill \w+ Description }}' | Should-BeNull
             }
 
             It "Docs/Help file for '<Function>' contains parameter '<Parameter>'." -TestCases $ParametersTestCases {
                 param ( $Function, $Parameter )
 
-                "$ScriptDirectory\..\Docs\Help\$Function.md" | Should -FileContentMatch $Parameter
+                (Get-Content "$ScriptDirectory\..\Docs\Help\$Function.md" -Raw) | Should-MatchString $Parameter
             }
 
             It "Parameter '<Parameter>'in function '<Function>' is PascalCase (starts with capital letter)." -TestCases $ParametersTestCases {
                 param ( $Function, $Parameter )
 
-                $Parameter | Should -MatchExactly "^[A-Z].*"
+                $Parameter | Should-MatchString "^[A-Z].*" -CaseSensitive
             }
         }
         # Tests only for compiled modules goes here
         if ($CompiledModule) {
             It "Public function '<Function>' has been exported" -TestCases $PublicTestCases {
                 param ( $Function,  $ExportedFunctions)
-                $ExportedFunctions | Should -Contain $Function -Because 'It should be exported'
+                $ExportedFunctions | Should-ContainCollection $Function -Because 'It should be exported'
             }
 
             It "Exported function '<ExportedFunction>' is supposed to be public" -TestCases $ExportedFunctionsTestCases {
                 param ( $ExportedFunction,  $PublicFunctions)
 
-                $ExportedFunction | Should -BeIn $PublicFunctions -Because 'If function is exported but not a public function thats not correct'
+                $PublicFunctions | Should-ContainCollection $ExportedFunction -Because 'If function is exported but not a public function thats not correct'
             }
         }
     }
@@ -176,15 +176,15 @@ Describe "Module $ModuleName" {
         Context 'Validate private functions' -skip {
             It "Private function '<Function>' has not been exported" -TestCases $PrivateTestCases {
                 param ( $Function,  $ExportedFunctions)
-                $ExportedFunctions | Should -Not -Contain $Function -Because 'the file is not in the Public folder'
+                $ExportedFunctions | Should-NotContainCollection $Function -Because 'the file is not in the Public folder'
             }
             It "Private function '<Function>' should have a CmdLet file in correct place." -TestCases $PrivateTestCases {
                 param ( $Function )
-                Test-Path -Path "$ScriptDirectory\..\Source\Private\$Function.ps1" -PathType Leaf | Should -Be $true
+                Test-Path -Path "$ScriptDirectory\..\Source\Private\$Function.ps1" -PathType Leaf | Should-Be $true
             }
             It "Private function '<Function>' should have a test file." -TestCases $PrivateTestCases {
                 param ( $Function )
-                Test-Path -Path "$ScriptDirectory\$Function.Tests.ps1" -PathType Leaf | Should -Be $true
+                Test-Path -Path "$ScriptDirectory\$Function.Tests.ps1" -PathType Leaf | Should-Be $true
             }
         }
     }

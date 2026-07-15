@@ -43,7 +43,7 @@ Describe 'InvokeADOPSRestMethod' {
         )
 
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command InvokeADOPSRestMethod | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command InvokeADOPSRestMethod | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -69,7 +69,7 @@ Describe 'InvokeADOPSRestMethod' {
                 }
 
                 $ResultPostObject = InvokeADOPSRestMethod @PostObject
-                $ResultPostObject | Should -Be $PostObject.Uri
+                $ResultPostObject | Should-Be $PostObject.Uri
             }
         }
 
@@ -84,7 +84,7 @@ Describe 'InvokeADOPSRestMethod' {
                 }
 
                 $ResultPostObject = InvokeADOPSRestMethod @PostObject
-                $ResultPostObject | Should -Be $PostObject.Method
+                $ResultPostObject | Should-Be $PostObject.Method
             }
         }
 
@@ -99,7 +99,7 @@ Describe 'InvokeADOPSRestMethod' {
                 }
 
                 $ResultPostObject = InvokeADOPSRestMethod @PostObject
-                $ResultPostObject | Should -Be 'application/json'
+                $ResultPostObject | Should-Be 'application/json'
             }
         }
 
@@ -114,7 +114,7 @@ Describe 'InvokeADOPSRestMethod' {
                 }
 
                 $ResultPostObject = InvokeADOPSRestMethod @PostObject -ContentType 'application/json-patch+json'
-                $ResultPostObject | Should -Be 'application/json-patch+json'
+                $ResultPostObject | Should-Be 'application/json-patch+json'
             }
         }
 
@@ -129,7 +129,7 @@ Describe 'InvokeADOPSRestMethod' {
                 }
 
                 $ResultPostObject = InvokeADOPSRestMethod @PostObject
-                $ResultPostObject | Should -Be $PostObject.Body
+                $ResultPostObject | Should-Be $PostObject.Body
             }
         }
 
@@ -144,7 +144,7 @@ Describe 'InvokeADOPSRestMethod' {
                 }
 
                 $ResultPostObject = InvokeADOPSRestMethod @PostObject
-                $ResultPostObject | Should -Be 'Bearer eyJ0eXAiOiLoremIpsum'
+                $ResultPostObject | Should-Be 'Bearer eyJ0eXAiOiLoremIpsum'
             }
         }
 
@@ -167,8 +167,8 @@ Describe 'InvokeADOPSRestMethod' {
                             <link rel="SHORTCUT ICON" href="/favicon.ico"/>'
                     }
 
-                    { InvokeADOPSRestMethod @PostObject } | Should -Throw
-                    Should -Invoke Invoke-RestMethod -ModuleName ADOPS -Exactly 1
+                    { InvokeADOPSRestMethod @PostObject } | Should-Throw
+                    Should-Invoke Invoke-RestMethod -ModuleName ADOPS -Exactly 1
                 }
             }
         }
@@ -199,12 +199,12 @@ Describe 'InvokeADOPSRestMethod' {
         #             }
 
         #             $response = InvokeADOPSRestMethod @PostObject -FullResponse
-        #             Should -Invoke Invoke-RestMethod -ModuleName ADOPS -Exactly 1
-        #             Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Exactly 1
+        #             Should-Invoke Invoke-RestMethod -ModuleName ADOPS -Exactly 1
+        #             Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Exactly 1
 
-        #             $response.Content | Should -Not -BeNullOrEmpty
-        #             $response.Headers | Should -Not -BeNullOrEmpty
-        #             $response.StatusCode | Should -Not -BeNullOrEmpty
+        #             $response.Content | Should-NotBeNull
+        #             $response.Headers | Should-NotBeNull
+        #             $response.StatusCode | Should-NotBeNull
         #         }
         #     }
         # }

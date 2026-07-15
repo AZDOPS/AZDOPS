@@ -43,7 +43,7 @@ Describe 'New-ADOPSPipeline' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command New-ADOPSPipeline | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command New-ADOPSPipeline | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -94,12 +94,12 @@ Describe 'New-ADOPSPipeline' {
         
         It 'uses InvokeADOPSRestMethod one time' {
             New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath $YamlPath -Repository $Repository
-            Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
+            Should-Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
         }
         
         It 'uses Get-ADOPSRepository one time' {
             New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath $YamlPath -Repository $Repository
-            Should -Invoke 'Get-ADOPSRepository' -ModuleName 'ADOPS' -Exactly -Times 1
+            Should-Invoke 'Get-ADOPSRepository' -ModuleName 'ADOPS' -Exactly -Times 1
         }
 
         It 'should not throw with mandatory parameters' {
@@ -107,11 +107,11 @@ Describe 'New-ADOPSPipeline' {
         }
         
         It 'should throw if Repository Name is invalid' {
-            { New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath $YamlPath -Repository 'MissingRepo'} | Should -Throw
+            { New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath $YamlPath -Repository 'MissingRepo'} | Should-Throw
         }
         
         It 'should throw if YamlPath dont contain *.yaml' {
-            { New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath 'MissingYamlPath' -Repository $Repository} | Should -Throw
+            { New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath 'MissingYamlPath' -Repository $Repository} | Should-Throw
         }
         
         It 'should not throw if YamlPath is *.yml' {
@@ -128,7 +128,7 @@ Describe 'New-ADOPSPipeline' {
             } -ParameterFilter { $Method -eq 'Post' }
 
             $r = New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath $YamlPath -Repository $Repository
-            $r | Should -Be '{"name":"DummyPipe1","folder":"\\","configuration":{"type":"yaml","path":"DummyYamlPath/file.yaml","repository":{"id":"39956c9b-d818-4338-8d99-f5e6004bdb72","type":"azureReposGit"}}}'
+            $r | Should-Be '{"name":"DummyPipe1","folder":"\\","configuration":{"type":"yaml","path":"DummyYamlPath/file.yaml","repository":{"id":"39956c9b-d818-4338-8d99-f5e6004bdb72","type":"azureReposGit"}}}'
         }
                 
         It 'Verify uri' {
@@ -137,7 +137,7 @@ Describe 'New-ADOPSPipeline' {
             } -ParameterFilter { $Method -eq 'Post' }
 
             $r = New-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -YamlPath $YamlPath -Repository $Repository
-            $r | Should -Be 'https://dev.azure.com/DummyOrg/DummyProject/_apis/pipelines?api-version=7.1-preview.1'
+            $r | Should-Be 'https://dev.azure.com/DummyOrg/DummyProject/_apis/pipelines?api-version=7.1-preview.1'
         }
     }
 

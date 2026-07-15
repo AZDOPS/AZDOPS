@@ -28,7 +28,7 @@ Describe 'Remove-ADOPSVariableGroup' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Remove-ADOPSVariableGroup | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Remove-ADOPSVariableGroup | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -84,16 +84,16 @@ Describe 'Remove-ADOPSVariableGroup' {
         It 'uses InvokeADOPSRestMethod two times' {
             Remove-ADOPSVariableGroup -Project $Project -VariableGroupName $VariableGroupName
 
-            Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 2
+            Should-Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 2
         }
         It 'returns empty output after removing variable group' {
-            Remove-ADOPSVariableGroup -Project $Project -VariableGroupName $VariableGroupName | Should -BeNullOrEmpty
+            Remove-ADOPSVariableGroup -Project $Project -VariableGroupName $VariableGroupName | Should-BeNull
         }
         It 'should not throw with mandatory parameters' {
             { Remove-ADOPSVariableGroup -Project $Project -VariableGroupName $VariableGroupName } | Should -Not -Throw
         }
         It 'should throw if VariableGroupName Name is invalid' {
-            { Remove-ADOPSVariableGroup -Organization $OrganizationName -Project $Project -VariableGroupName 'MissingVariableGroupName'} | Should -Throw
+            { Remove-ADOPSVariableGroup -Organization $OrganizationName -Project $Project -VariableGroupName 'MissingVariableGroupName'} | Should-Throw
         }
     }
 }

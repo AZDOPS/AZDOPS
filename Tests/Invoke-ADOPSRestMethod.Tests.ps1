@@ -33,7 +33,7 @@ Describe 'Invoke-ADOPSRestMethod' {
         )
 
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Invoke-ADOPSRestMethod | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Invoke-ADOPSRestMethod | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -55,7 +55,7 @@ Describe 'Invoke-ADOPSRestMethod' {
                 return $Method
             }
 
-            Invoke-ADOPSRestMethod -Uri 'uri' | Should -Be 'Get'
+            Invoke-ADOPSRestMethod -Uri 'uri' | Should-Be 'Get'
         }
 
         it 'Method should be set' {
@@ -63,7 +63,7 @@ Describe 'Invoke-ADOPSRestMethod' {
                 return $Method
             }
 
-            Invoke-ADOPSRestMethod -Uri 'uri' -Method 'Post' | Should -Be 'Post'
+            Invoke-ADOPSRestMethod -Uri 'uri' -Method 'Post' | Should-Be 'Post'
         }
 
         it 'Uri should be set using full uri - dev.azure.com' {
@@ -71,7 +71,7 @@ Describe 'Invoke-ADOPSRestMethod' {
                 return $Uri
             }
 
-            Invoke-ADOPSRestMethod -Uri 'https://dev.azure.com/dummyUri' -Method 'Post' | Should -Be 'https://dev.azure.com/dummyUri'
+            Invoke-ADOPSRestMethod -Uri 'https://dev.azure.com/dummyUri' -Method 'Post' | Should-Be 'https://dev.azure.com/dummyUri'
         }
 
         it 'Uri should be set using full uri - visualstudio.com' {
@@ -79,7 +79,7 @@ Describe 'Invoke-ADOPSRestMethod' {
                 return $Uri
             }
             
-            Invoke-ADOPSRestMethod -Uri 'https://dummyOrg.visualstudio.com/dummyUri' -Method 'Post' | Should -Be 'https://dummyOrg.visualstudio.com/dummyUri'
+            Invoke-ADOPSRestMethod -Uri 'https://dummyOrg.visualstudio.com/dummyUri' -Method 'Post' | Should-Be 'https://dummyOrg.visualstudio.com/dummyUri'
         }
 
         it 'Uri should be set using partial uri' {
@@ -87,7 +87,7 @@ Describe 'Invoke-ADOPSRestMethod' {
                 return $Uri
             }
 
-            Invoke-ADOPSRestMethod -Uri 'dummyUri' -Method 'Post' | Should -Be 'https://dev.azure.com/dummyOrg/dummyUri'
+            Invoke-ADOPSRestMethod -Uri 'dummyUri' -Method 'Post' | Should-Be 'https://dev.azure.com/dummyOrg/dummyUri'
         }
 
         it 'If a body is given, post should include body'  {
@@ -95,7 +95,7 @@ Describe 'Invoke-ADOPSRestMethod' {
                 return $Body
             }
 
-            Invoke-ADOPSRestMethod -Uri 'uri' -body '{body}' | Should -Be '{body}'
+            Invoke-ADOPSRestMethod -Uri 'uri' -body '{body}' | Should-Be '{body}'
         }
     }
 }

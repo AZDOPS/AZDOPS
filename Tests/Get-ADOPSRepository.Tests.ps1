@@ -28,7 +28,7 @@ Describe "Get-ADOPSRepository" {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Get-ADOPSRepository | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSRepository | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -50,20 +50,20 @@ Describe "Get-ADOPSRepository" {
         }
 
         It "Returns repositories" {
-            Get-ADOPSRepository -Organization 'MyOrg' -Project 'MyProject' | Should -Not -BeNullOrEmpty
+            Get-ADOPSRepository -Organization 'MyOrg' -Project 'MyProject' | Should-NotBeNull
         }
 
         It "Returns repositories without organization specified" {
-            Get-ADOPSRepository -Project 'MyProject' | Should -Not -BeNullOrEmpty
+            Get-ADOPSRepository -Project 'MyProject' | Should-NotBeNull
         }
 
         It 'Returns an id' {
-            (Get-ADOPSRepository -Organization 'MyOrg' -Project 'MyProject').id | Should -Contain '84eba821-52d5-4ba8-a50b-63640ce234b8'
+            (Get-ADOPSRepository -Organization 'MyOrg' -Project 'MyProject').id | Should-ContainCollection '84eba821-52d5-4ba8-a50b-63640ce234b8'
         }
 
         It 'Calls InvokeADOPSRestMethod with correct parameters when repository is used' {
             Get-ADOPSRepository -Organization 'MyOrg' -Project 'MyProject' -Repository 'MyRepo'
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {$Uri -eq 'https://dev.azure.com/MyOrg/MyProject/_apis/git/repositories/MyRepo?api-version=7.1-preview.1'}
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter {$Uri -eq 'https://dev.azure.com/MyOrg/MyProject/_apis/git/repositories/MyRepo?api-version=7.1-preview.1'}
         }
 
         It 'Can handle single repository responses from API' {
@@ -73,7 +73,7 @@ Describe "Get-ADOPSRepository" {
                 }
             }
             
-            (Get-ADOPSRepository -Organization 'MyOrg' -Project 'MyProject' -Repository 'MyRepo').Name | Should -Be 'SingleRepo'
+            (Get-ADOPSRepository -Organization 'MyOrg' -Project 'MyProject' -Repository 'MyRepo').Name | Should-Be 'SingleRepo'
         }
     }
 }

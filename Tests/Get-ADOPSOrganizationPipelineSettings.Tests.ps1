@@ -18,7 +18,7 @@ Describe 'Get-ADOPSOrganizationPipelineSettings' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Get-ADOPSOrganizationPipelineSettings | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSOrganizationPipelineSettings | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -66,7 +66,7 @@ Describe 'Get-ADOPSOrganizationPipelineSettings' {
         }
 
         It 'buildsEnabledForForks Should be true' {
-            (Get-ADOPSOrganizationPipelineSettings).buildsEnabledForForks | Should -Be $true
+            (Get-ADOPSOrganizationPipelineSettings).buildsEnabledForForks | Should-Be $true
         }
     }
 }

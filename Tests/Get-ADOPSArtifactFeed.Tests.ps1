@@ -28,7 +28,7 @@ Describe 'Get-ADOPSArtifactFeed' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Get-ADOPSArtifactFeed | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSArtifactFeed | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -43,12 +43,12 @@ Describe 'Get-ADOPSArtifactFeed' {
         
         It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Get-ADOPSArtifactFeed -Organization 'anotherorg' -Project 'dummyProj'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
         It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Get-ADOPSArtifactFeed -Project 'dummyProj'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'Verifying URI, no project given' {
@@ -59,7 +59,7 @@ Describe 'Get-ADOPSArtifactFeed' {
             }
             $Expected = 'https://feeds.dev.azure.com/DummyOrg/_apis/packaging/feeds?api-version=7.2-preview.1'
             $Actual = Get-ADOPSArtifactFeed
-            $Actual | Should -Be $Expected
+            $Actual | Should-Be $Expected
         }
 
         It 'Verifying URI, no feed id given' {
@@ -70,7 +70,7 @@ Describe 'Get-ADOPSArtifactFeed' {
             }
             $Expected = 'https://feeds.dev.azure.com/DummyOrg/dummyProj/_apis/packaging/feeds?api-version=7.2-preview.1'
             $Actual = Get-ADOPSArtifactFeed -Project 'dummyProj'
-            $Actual | Should -Be $Expected
+            $Actual | Should-Be $Expected
         }
 
         It 'Verifying URI, feed id given' {
@@ -81,7 +81,7 @@ Describe 'Get-ADOPSArtifactFeed' {
             }
             $Expected = 'https://feeds.dev.azure.com/DummyOrg/dummyProj/_apis/packaging/feeds/feedIdGoesHere?api-version=7.2-preview.1'
             $Actual = Get-ADOPSArtifactFeed -Project 'dummyProj' -FeedId 'feedIdGoesHere'
-            $Actual | Should -Be $Expected
+            $Actual | Should-Be $Expected
         }
 
         It 'Verifying Method' {
@@ -92,7 +92,7 @@ Describe 'Get-ADOPSArtifactFeed' {
             }
             $Expected = 'Get'
             $Actual = Get-ADOPSArtifactFeed -Project 'dummyProj'
-            $Actual | Should -Be $Expected
+            $Actual | Should-Be $Expected
         }
 
         It 'Should return the value if a list is returned' {
@@ -101,8 +101,8 @@ Describe 'Get-ADOPSArtifactFeed' {
             }
             $Expected = 'testFeed'
             $Actual = Get-ADOPSArtifactFeed -Project 'dummyProj'
-            $Actual.Name | Should -Be $Expected
-            $Actual.Count | Should -Be 1
+            $Actual.Name | Should-Be $Expected
+            $Actual.Count | Should-Be 1
         }
 
         It 'Should return the value if a single object is returned' {
@@ -111,8 +111,8 @@ Describe 'Get-ADOPSArtifactFeed' {
             }
             $Expected = 'testFeed'
             $Actual = Get-ADOPSArtifactFeed -Project 'dummyProj'
-            $Actual.Name | Should -Be $Expected
-            $Actual.Count | Should -Be 1
+            $Actual.Name | Should-Be $Expected
+            $Actual.Count | Should-Be 1
         }
     }
 }

@@ -18,7 +18,7 @@ Describe 'Get-ADOPSAuditStreams' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Get-ADOPSAuditStreams | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSAuditStreams | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -51,7 +51,7 @@ Describe 'Get-ADOPSAuditStreams' {
         }
 
         It 'Should return something' {
-            Get-ADOPSAuditStreams | Should -Not -BeNullOrEmpty
+            Get-ADOPSAuditStreams | Should-NotBeNull
         }
     }
 }

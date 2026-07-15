@@ -28,7 +28,7 @@ Describe 'Get-ADOPSBuildDefinition' {
         )
 
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Get-ADOPSBuildDefinition | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSBuildDefinition | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -73,27 +73,27 @@ Describe 'Get-ADOPSBuildDefinition' {
         
         It 'If no org is given, calls GetADOPSDefaultOrganization once' {
             Get-ADOPSBuildDefinition -Project $Project
-            Should -Invoke 'GetADOPSDefaultOrganization' -ModuleName 'ADOPS' -Exactly -Times 1
+            Should-Invoke 'GetADOPSDefaultOrganization' -ModuleName 'ADOPS' -Exactly -Times 1
         }
 
         It 'If no Id is given, retrun all objects' {
             $actual = Get-ADOPSBuildDefinition -Project $Project
-            $actual.count | Should -Be 3
+            $actual.count | Should-Be 3
         }
 
         It 'If an Id is given, Only one object should be returned, type should be array' {
             $actual = Get-ADOPSBuildDefinition -Project $Project
-            $actual.GetType().BaseType.Name | Should -Be 'Array'
+            $actual.GetType().BaseType.Name | Should-Be 'Array'
         }
 
         It 'If an Id is given, Only that id should be returned' {
             $actual = Get-ADOPSBuildDefinition -Project $Project -Id 3
-            $actual.count | Should -Be 1
+            $actual.count | Should-Be 1
         }
 
         It 'If an Id is given, Only one object should be returned, type should be array' {
             $actual = Get-ADOPSBuildDefinition -Project $Project -Id 3
-            $actual.GetType().BaseType.Name | Should -Be 'Array'
+            $actual.GetType().BaseType.Name | Should-Be 'Array'
         }
     }
 }

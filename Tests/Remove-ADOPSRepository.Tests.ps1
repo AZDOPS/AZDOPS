@@ -36,7 +36,7 @@ Describe 'Remove-ADOPSRepository' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Remove-ADOPSRepository | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Remove-ADOPSRepository | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -44,12 +44,12 @@ Describe 'Remove-ADOPSRepository' {
 
         It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Remove-ADOPSRepository -Organization 'anotherorg' -Project 'myproj' -RepositoryID $RepositoryID
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
         It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Remove-ADOPSRepository -Project 'myproj' -RepositoryID $RepositoryID
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'If result has a value member, it should be returned' {
@@ -65,7 +65,7 @@ Describe 'Remove-ADOPSRepository' {
             }
 
             $r = Remove-ADOPSRepository -Project 'myproj' -RepositoryID $RepositoryID
-            $r.name | Should -Be 'HasValue'
+            $r.name | Should-Be 'HasValue'
         }
 
         It 'If result does not have value member, it should be returned' {
@@ -75,7 +75,7 @@ Describe 'Remove-ADOPSRepository' {
                 }
             }
             $r = Remove-ADOPSRepository -Project 'myproj' -RepositoryID $RepositoryID
-            $r.name | Should -Be 'HasNoValue'
+            $r.name | Should-Be 'HasNoValue'
         }
         
         It 'Verifying URI' {
@@ -84,7 +84,7 @@ Describe 'Remove-ADOPSRepository' {
             }
 
             $r = Remove-ADOPSRepository -Project 'myproj' -RepositoryID $RepositoryID
-            $r | Should -Be "https://dev.azure.com/myorg/myproj/_apis/git/repositories/${RepositoryID}?api-version=7.1-preview.1"
+            $r | Should-Be "https://dev.azure.com/myorg/myproj/_apis/git/repositories/${RepositoryID}?api-version=7.1-preview.1"
         }
 
         It 'Verifying method' {
@@ -92,7 +92,7 @@ Describe 'Remove-ADOPSRepository' {
                 return $Method
             }
             $r = Remove-ADOPSRepository -Project 'myproj' -RepositoryID $RepositoryID
-            $r | Should -Be 'Delete'
+            $r | Should-Be 'Delete'
         }
     }
 }

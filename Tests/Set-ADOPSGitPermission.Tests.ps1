@@ -33,7 +33,7 @@ Describe 'Set-ADOPSGitPermission' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Set-ADOPSGitPermission | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Set-ADOPSGitPermission | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -52,8 +52,8 @@ Describe 'Set-ADOPSGitPermission' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Set-ADOPSGitPermission | Should -HaveParameter $_.Name -Mandatory:$_.mandatory
-            (Get-Command Set-ADOPSGitPermission | Select-Object -ExpandProperty parameters)."$($_.Name)".ParameterType.Name | Should -Be $_.Type
+            Get-Command Set-ADOPSGitPermission | Should-HaveParameter $_.Name -Mandatory:$_.mandatory
+            (Get-Command Set-ADOPSGitPermission | Select-Object -ExpandProperty parameters)."$($_.Name)".ParameterType.Name | Should-Be $_.Type
         }
     }
     
@@ -77,7 +77,7 @@ Describe 'Set-ADOPSGitPermission' {
                 Allow = 'Administer'
             }
             $r = Set-ADOPSGitPermission @s
-            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0
+            Should-Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0
         }
 
         It 'If organization is not given, it should call GetADOPSDefaultOrganization' {
@@ -88,7 +88,7 @@ Describe 'Set-ADOPSGitPermission' {
                 Allow = 'Administer'
             }
             $r = Set-ADOPSGitPermission @s
-            Should -Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1
+            Should-Invoke -CommandName GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1
         }
 
         It 'If neither allow or deny is set, it should not do anything' {
@@ -97,19 +97,19 @@ Describe 'Set-ADOPSGitPermission' {
                 Repository = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' 
                 Descriptor = 'aad.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
             }
-            Set-ADOPSGitPermission @s | Should -BeNullOrEmpty
+            Set-ADOPSGitPermission @s | Should-BeNull
         }
 
         It 'Should throw if user descriptor is not formated like a descriptor, too short' {
-            {Set-ADOPSGitPermission -Allow Administer -Descriptor 'aad.NotADescriptorLength' -Project 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' -Repository '11111111-1111-1111-1111-111111111111'} | Should -Throw
+            {Set-ADOPSGitPermission -Allow Administer -Descriptor 'aad.NotADescriptorLength' -Project 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' -Repository '11111111-1111-1111-1111-111111111111'} | Should-Throw
         }
 
         It 'Should throw if Group descriptor is not formated like a descriptor, too short' {
-            {Set-ADOPSGitPermission -Allow Administer -Descriptor 'aadgp.NotADescriptorLength' -Project 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' -Repository '11111111-1111-1111-1111-111111111111'} | Should -Throw
+            {Set-ADOPSGitPermission -Allow Administer -Descriptor 'aadgp.NotADescriptorLength' -Project 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' -Repository '11111111-1111-1111-1111-111111111111'} | Should-Throw
         }
 
         It 'Should throw if user descriptor is not formated like a descriptor, no first three letters' {
-            {Set-ADOPSGitPermission -Allow Administer -Descriptor 'NotADescriptor' -Project 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' -Repository '11111111-1111-1111-1111-111111111111'} | Should -Throw
+            {Set-ADOPSGitPermission -Allow Administer -Descriptor 'NotADescriptor' -Project 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' -Repository '11111111-1111-1111-1111-111111111111'} | Should-Throw
         }
 
         It 'Verifying tokenPath' {
@@ -121,7 +121,7 @@ Describe 'Set-ADOPSGitPermission' {
                 Allow = 'Administer'
             }
             $r = Set-ADOPSGitPermission @s
-            ($r.Body | ConvertFrom-Json).token | Should -Be $Expected
+            ($r.Body | ConvertFrom-Json).token | Should-Be $Expected
         }
 
         It 'Verifying SubjectDescriptor' {
@@ -143,7 +143,7 @@ Describe 'Set-ADOPSGitPermission' {
                 Allow = 'Administer'
             }
             $r = Set-ADOPSGitPermission @s
-            ($r.Body | ConvertFrom-Json).accessControlEntries.descriptor | Should -Be $Expected
+            ($r.Body | ConvertFrom-Json).accessControlEntries.descriptor | Should-Be $Expected
         }
 
         It 'Set allow to the expected int value, no input' {
@@ -155,7 +155,7 @@ Describe 'Set-ADOPSGitPermission' {
                 Deny = 'Administer'
             }
             $r = Set-ADOPSGitPermission @s
-            ($r.Body | ConvertFrom-Json).accessControlEntries.allow | Should -Be $Expected
+            ($r.Body | ConvertFrom-Json).accessControlEntries.allow | Should-Be $Expected
         }
 
         It 'Set deny to the expected int value, no input' {
@@ -167,7 +167,7 @@ Describe 'Set-ADOPSGitPermission' {
                 Allow = 'Administer'
             }
             $r = Set-ADOPSGitPermission @s
-            ($r.Body | ConvertFrom-Json).accessControlEntries.deny | Should -Be $Expected
+            ($r.Body | ConvertFrom-Json).accessControlEntries.deny | Should-Be $Expected
         }
 
         It 'Set allow to the expected int value, one input' {
@@ -179,7 +179,7 @@ Describe 'Set-ADOPSGitPermission' {
                 Allow = 'CreateRepository'
             }
             $r = Set-ADOPSGitPermission @s
-            ($r.Body | ConvertFrom-Json).accessControlEntries.allow | Should -Be $Expected
+            ($r.Body | ConvertFrom-Json).accessControlEntries.allow | Should-Be $Expected
         }
 
         It 'Set deny to the expected int value, one input' {
@@ -191,7 +191,7 @@ Describe 'Set-ADOPSGitPermission' {
                 Deny = 'CreateRepository'
             }
             $r = Set-ADOPSGitPermission @s
-            ($r.Body | ConvertFrom-Json).accessControlEntries.deny | Should -Be $Expected
+            ($r.Body | ConvertFrom-Json).accessControlEntries.deny | Should-Be $Expected
         }
 
         It 'Set allow to the expected int value, multiple inputs' {
@@ -203,7 +203,7 @@ Describe 'Set-ADOPSGitPermission' {
                 Allow = 'RenameRepository','ForcePush'
             }
             $r = Set-ADOPSGitPermission @s
-            ($r.Body | ConvertFrom-Json).accessControlEntries.allow | Should -Be $Expected
+            ($r.Body | ConvertFrom-Json).accessControlEntries.allow | Should-Be $Expected
         }
 
         It 'Set deny to the expected int value, multiple inputs' {
@@ -215,7 +215,7 @@ Describe 'Set-ADOPSGitPermission' {
                 Deny = 'RenameRepository','ForcePush'
             }
             $r = Set-ADOPSGitPermission @s
-            ($r.Body | ConvertFrom-Json).accessControlEntries.deny | Should -Be $Expected
+            ($r.Body | ConvertFrom-Json).accessControlEntries.deny | Should-Be $Expected
         }
 
         It 'Verifying body' {
@@ -237,7 +237,7 @@ Describe 'Set-ADOPSGitPermission' {
                 Allow = 'Administer'
             }
             $r = Set-ADOPSGitPermission @s
-            $r.Body | Should -Be $Expected
+            $r.Body | Should-Be $Expected
         }
     }
 }

@@ -33,7 +33,7 @@ Describe 'Get-ADOPSPipeline' {
         )
 
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Get-ADOPSPipeline | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSPipeline | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -100,18 +100,18 @@ Describe 'Get-ADOPSPipeline' {
         
         It 'uses InvokeADOPSRestMethod two times' {
             Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName
-            Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 2
+            Should-Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 2
         }
         It 'Calls InvokeADOPSRestMethod when revision is from pipeline lookup' {
             Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/DummyProject/_apis/pipelines/10?api-version=7.1-preview.1&pipelineVersion=1' }
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/DummyProject/_apis/pipelines/10?api-version=7.1-preview.1&pipelineVersion=1' }
         }
         It 'Calls InvokeADOPSRestMethod when revision is from input' {
             Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName -Revision 2
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/DummyProject/_apis/pipelines/10?api-version=7.1-preview.1&pipelineVersion=2' }
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq 'https://dev.azure.com/DummyOrg/DummyProject/_apis/pipelines/10?api-version=7.1-preview.1&pipelineVersion=2' }
         }
         It 'returns output after getting pipeline' {
-            Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName | Should -BeOfType [pscustomobject] -Because 'InvokeADOPSRestMethod should convert the json to pscustomobject'
+            Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName | Should-HaveType ([pscustomobject]) -Because 'InvokeADOPSRestMethod should convert the json to pscustomobject'
         }
         It 'should not throw with mandatory parameters' {
             { Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName } | Should -Not -Throw
@@ -120,13 +120,13 @@ Describe 'Get-ADOPSPipeline' {
             { Get-ADOPSPipeline -Project $Project -Name $PipeName } | Should -Not -Throw
         }
         It 'should throw if pipeline name does not exist' {
-            { Get-ADOPSPipeline -Project $Project -Name 'MissingPipeline' } | Should -Throw
+            { Get-ADOPSPipeline -Project $Project -Name 'MissingPipeline' } | Should-Throw
         }
         It 'returns single output after getting pipeline' {
-            (Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName).count | Should -Be 1
+            (Get-ADOPSPipeline -Organization $OrganizationName -Project $Project -Name $PipeName).count | Should-Be 1
         }
         It 'returns multiple outputs after getting pipelines' {
-            (Get-ADOPSPipeline -Organization $OrganizationName -Project $Project).count | Should -Be 2
+            (Get-ADOPSPipeline -Organization $OrganizationName -Project $Project).count | Should-Be 2
         }
     }
 }

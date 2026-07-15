@@ -32,7 +32,7 @@ Describe "Get-ADOPSGroup" {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Get-ADOPSGroup | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSGroup | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -52,13 +52,13 @@ Describe "Get-ADOPSGroup" {
         It 'Verifying URI, no continuationtoken' {
             $Required = 'https://vssps.dev.azure.com/Organization/_apis/graph/groups?api-version=7.1-preview.1'
             $Actual = Get-ADOPSGroup -Organization 'Organization'
-            $Actual.OriginalString | Should -Be $Required
+            $Actual.OriginalString | Should-Be $Required
         }
 
         It 'Verifying URI, with continuationtoken' {
             $Required = 'https://vssps.dev.azure.com/Organization/_apis/graph/groups?continuationToken=page2token&api-version=7.1-preview.1'
             $Actual = Get-ADOPSGroup -Organization 'Organization' -ContinuationToken 'page2token'
-            $Actual.OriginalString | Should -Be $Required
+            $Actual.OriginalString | Should-Be $Required
         }
     }
 
@@ -105,12 +105,12 @@ Describe "Get-ADOPSGroup" {
 
         It 'Should get not organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Get-ADOPSGroup -Organization 'Organization'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
         
         It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Get-ADOPSGroup
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
     }
 
@@ -224,14 +224,14 @@ Describe "Get-ADOPSGroup" {
 
         It "Returns 3 groups" {
             $result = Get-ADOPSGroup -Organization 'DummyOrg'
-            $result | Should -Not -BeNullOrEmpty
-            $result | Should -HaveCount 3
+            $result | Should-NotBeNull
+            $result | Should-BeCollection -Count 3
         }
 
         It 'Calls InvokeADOPSRestMethod with the correct query params' {
             Get-ADOPSGroup -Organization 'DummyOrg'
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq "https://vssps.dev.azure.com/DummyOrg/_apis/graph/groups?api-version=7.1-preview.1" }
-            Should -Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq "https://vssps.dev.azure.com/DummyOrg/_apis/graph/groups?continuationToken=page2Token&api-version=7.1-preview.1" }
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq "https://vssps.dev.azure.com/DummyOrg/_apis/graph/groups?api-version=7.1-preview.1" }
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Times 1 -Exactly -ParameterFilter { $Uri -eq "https://vssps.dev.azure.com/DummyOrg/_apis/graph/groups?continuationToken=page2Token&api-version=7.1-preview.1" }
         }
     }
 }

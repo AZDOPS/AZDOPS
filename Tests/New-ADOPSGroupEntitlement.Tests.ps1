@@ -43,7 +43,7 @@ Describe 'New-ADOPSGroupEntitlement' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command New-ADOPSGroupEntitlement | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command New-ADOPSGroupEntitlement | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -63,7 +63,7 @@ Describe 'New-ADOPSGroupEntitlement' {
 
         It 'uses InvokeADOPSRestMethod once without wait parameter' {
             New-ADOPSGroupEntitlement -Organization $testOrgName -GroupOriginId $testGroupId -ProjectId $testProjectId -AccountLicenseType 'Express' -ProjectGroupType 'projectContributor'
-            Should -Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
+            Should-Invoke 'InvokeADOPSRestMethod' -ModuleName 'ADOPS' -Exactly -Times 1
         }
 
         It 'should not throw with all mandatory parameters' {
@@ -76,7 +76,7 @@ Describe 'New-ADOPSGroupEntitlement' {
             } -ParameterFilter { $Method -eq 'Post' }
 
             $result = New-ADOPSGroupEntitlement -Organization $testOrgName -GroupOriginId $testGroupId -ProjectId $testProjectId -AccountLicenseType 'Express' -ProjectGroupType 'projectContributor'
-            $result.OriginalString | Should -Be "https://vsaex.dev.azure.com/$testOrgName/_apis/GroupEntitlements?api-version=7.1"
+            $result.OriginalString | Should-Be "https://vsaex.dev.azure.com/$testOrgName/_apis/GroupEntitlements?api-version=7.1"
         }
 
         It 'Verify body' {
@@ -86,12 +86,12 @@ Describe 'New-ADOPSGroupEntitlement' {
 
             $result = New-ADOPSGroupEntitlement -Organization $testOrgName -GroupOriginId $testGroupId -ProjectId $testProjectId -AccountLicenseType 'Express' -ProjectGroupType 'projectContributor'
             $resultObj = $result | ConvertFrom-Json
-            $resultObj.group.origin | Should -Be 'aad'
-            $resultObj.group.originId | Should -Be $testGroupId
-            $resultObj.group.subjectKind | Should -Be 'group'
-            $resultObj.licenseRule.accountLicenseType | Should -Be 'Express'
-            $resultObj.projectEntitlements[0].group.groupType | Should -Be 'projectContributor'
-            $resultObj.projectEntitlements[0].projectRef.id | Should -Be $testProjectId
+            $resultObj.group.origin | Should-Be 'aad'
+            $resultObj.group.originId | Should-Be $testGroupId
+            $resultObj.group.subjectKind | Should-Be 'group'
+            $resultObj.licenseRule.accountLicenseType | Should-Be 'Express'
+            $resultObj.projectEntitlements[0].group.groupType | Should-Be 'projectContributor'
+            $resultObj.projectEntitlements[0].projectRef.id | Should-Be $testProjectId
         }
     }
 }

@@ -47,7 +47,7 @@ Describe 'Connect-ADOPS' {
         )
         
         It 'Should have parameter <_.Name>' -TestCases $TestCases {
-            Get-Command Connect-ADOPS | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Connect-ADOPS | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
     
@@ -55,7 +55,7 @@ Describe 'Connect-ADOPS' {
         It 'Should throw if InvokeADOPSRestMethod returns error.' {
             Mock -CommandName InvokeADOPSRestMethod -MockWith { throw 'DummyError' } -ModuleName ADOPS
             
-            { Connect-ADOPS -OAuthToken 'MyTokenGoesHere' -Organization 'MyOrg' } | Should -Throw
+            { Connect-ADOPS -OAuthToken 'MyTokenGoesHere' -Organization 'MyOrg' } | Should-Throw
         }
     }
 
@@ -91,13 +91,13 @@ Describe 'Connect-ADOPS' {
             }
             Mock -ModuleName ADOPS SetADOPSConfigFile
             Connect-ADOPS -OAuthToken 'MyTokenGoesHere' -Organization 'https://dev.azure.com/MyOrg1/'
-            Should -Invoke SetADOPSConfigFile -Times 1 -Exactly -ModuleName ADOPS -ParameterFilter { $ConfigObject['Default']['Organization'] -eq "MyOrg1" }
-            Should -Invoke GetADOPSConfigFile -Times 1 -Exactly -ModuleName ADOPS
+            Should-Invoke SetADOPSConfigFile -Times 1 -Exactly -ModuleName ADOPS -ParameterFilter { $ConfigObject['Default']['Organization'] -eq "MyOrg1" }
+            Should-Invoke GetADOPSConfigFile -Times 1 -Exactly -ModuleName ADOPS
         }
 
         It 'Should not call Get-AzToken when OAuthToken is provided' {
             Connect-ADOPS -OAuthToken 'MyTokenGoesHere' -Organization 'MyOrg1'
-            Should -Invoke Get-AzToken -Times 0 -Exactly -ModuleName ADOPS
+            Should-Invoke Get-AzToken -Times 0 -Exactly -ModuleName ADOPS
         }
 
         It 'Should not throw if token has access to provided organization' {
@@ -105,13 +105,13 @@ Describe 'Connect-ADOPS' {
         }
 
         It 'Should throw if token does not have access to provided organization' {
-            { Connect-ADOPS -OAuthToken 'MyTokenGoesHere' -Organization 'MyOrg3' } | Should -Throw
+            { Connect-ADOPS -OAuthToken 'MyTokenGoesHere' -Organization 'MyOrg3' } | Should-Throw
         }
 
         It 'If -SkipVerification is set, should not verify organization' {
             { Connect-ADOPS -OAuthToken 'MyTokenGoesHere' -Organization 'MyOrg1' -SkipVerification } | Should -Not -Throw
-            Should -Invoke InvokeADOPSRestMethod -Times 0 -Exactly -ModuleName ADOPS
-            Should -Invoke GetADOPSOrganizationAccess -Times 0 -Exactly -ModuleName ADOPS
+            Should-Invoke InvokeADOPSRestMethod -Times 0 -Exactly -ModuleName ADOPS
+            Should-Invoke GetADOPSOrganizationAccess -Times 0 -Exactly -ModuleName ADOPS
         }
     }
 }

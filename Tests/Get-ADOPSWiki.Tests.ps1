@@ -34,7 +34,7 @@ Describe 'Get-ADOPSWiki' {
         )
     
         It 'Should have parameter <_.Name>' -TestCases $TestCases  {
-            Get-Command Get-ADOPSWiki | Should -HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
+            Get-Command Get-ADOPSWiki | Should-HaveParameter $_.Name -Mandatory:$_.Mandatory -Type $_.Type
         }
     }
 
@@ -42,12 +42,12 @@ Describe 'Get-ADOPSWiki' {
 
         It 'Should not get organization from GetADOPSDefaultOrganization when organization parameter is used' {
             Get-ADOPSWiki -Organization 'anotherorg' -Project 'myproj' 
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 0 -Exactly
         }
 
         It 'Should get organization using GetADOPSDefaultOrganization when organization parameter is not used' {
             Get-ADOPSWiki -Project 'myproj'
-            Should -Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
+            Should-Invoke GetADOPSDefaultOrganization -ModuleName ADOPS -Times 1 -Exactly
         }
 
         It 'If result has a value member, it should be returned' {
@@ -63,7 +63,7 @@ Describe 'Get-ADOPSWiki' {
             }
 
             $r = Get-ADOPSWiki -Project 'myproj'
-            $r.name | Should -Be 'HasValue'
+            $r.name | Should-Be 'HasValue'
         }
 
         It 'If result does not have value member, it should be returned' {
@@ -73,7 +73,7 @@ Describe 'Get-ADOPSWiki' {
                 }
             }
             $r = Get-ADOPSWiki -Project 'myproj'
-            $r.name | Should -Be 'HasNoValue'
+            $r.name | Should-Be 'HasNoValue'
         }
         
         It 'Verifying URI, no WikiID given' {
@@ -82,7 +82,7 @@ Describe 'Get-ADOPSWiki' {
             }
 
             $r = Get-ADOPSWiki -Project 'myproj'
-            $r | Should -Be 'https://dev.azure.com/myorg/myproj/_apis/wiki/wikis?api-version=7.1-preview.2'
+            $r | Should-Be 'https://dev.azure.com/myorg/myproj/_apis/wiki/wikis?api-version=7.1-preview.2'
         }
 
         It 'Verifying URI, WikiID given' {
@@ -91,7 +91,7 @@ Describe 'Get-ADOPSWiki' {
             }
 
             $r = Get-ADOPSWiki -Project 'myproj' -WikiId 'MyWiki'
-            $r | Should -Be 'https://dev.azure.com/myorg/myproj/_apis/wiki/wikis/MyWiki?api-version=7.1-preview.2'
+            $r | Should-Be 'https://dev.azure.com/myorg/myproj/_apis/wiki/wikis/MyWiki?api-version=7.1-preview.2'
         }
 
         It 'Verifying method' {
@@ -99,7 +99,7 @@ Describe 'Get-ADOPSWiki' {
                 return $Method
             }
             $r = Get-ADOPSWiki -Project 'myproj'
-            $r | Should -Be 'Get'
+            $r | Should-Be 'Get'
         }
     }
 }
