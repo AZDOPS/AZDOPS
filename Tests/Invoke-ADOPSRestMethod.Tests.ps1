@@ -28,6 +28,11 @@ Describe 'Invoke-ADOPSRestMethod' {
                 Name = 'Body'
                 Mandatory = $false
                 Type = 'string'
+            },
+            @{
+                Name = 'FullResponse'
+                Mandatory = $false
+                Type = 'switch'
             }
 
         )
@@ -96,6 +101,74 @@ Describe 'Invoke-ADOPSRestMethod' {
             }
 
             Invoke-ADOPSRestMethod -Uri 'uri' -body '{body}' | Should-Be '{body}'
+        }
+
+        It 'Returns the full response unchanged with FullResponse enabled' {
+            InModuleScope -ModuleName ADOPS {
+                $headers = [System.Collections.Generic.Dictionary[string, string[]]]::new()
+                $headers.Add('x-ms-continuationtoken', @('first', 'second'))
+                $script:expectedResponse = @{
+                    Content = @{ value = @(@{ id = 1 }, @{ id = 2 }) }
+                    Headers = $headers
+                    StatusCode = 200
+                }
+                Mock InvokeADOPSRestMethod { $script:expectedResponse }
+
+                $response = Invoke-ADOPSRestMethod -Uri 'uri' -FullResponse
+
+                $response | Should-BeSame $script:expectedResponse
+                $response.Keys.Count | Should-Be 3
+                $response.Headers['x-ms-continuationtoken'].Count | Should-Be 2
+                $response.Headers['x-ms-continuationtoken'][0] | Should-Be 'first'
+                $response.Headers['x-ms-continuationtoken'][1] | Should-Be 'second'
+                Should-Invoke InvokeADOPSRestMethod -Exactly 1 -ParameterFilter {
+                    $FullResponse -and $Uri -eq 'https://dev.azure.com/dummyOrg/uri' -and $Method -eq 'Get'
+                }
+            }
+        }
+
+        It 'Preserves body-only output when FullResponse is <Enabled>' -ForEach @(
+            @{ Enabled = 'omitted'; Parameters = @{} }
+            @{ Enabled = 'false'; Parameters = @{ FullResponse = $false } }
+        ) {
+            InModuleScope -ModuleName ADOPS -Parameters @{ Parameters = $Parameters } {
+                $script:expectedBody = @{ value = @('one', 'two') }
+                Mock InvokeADOPSRestMethod { $script:expectedBody }
+
+                $response = Invoke-ADOPSRestMethod -Uri 'uri' @Parameters
+
+                $response | Should-BeSame $script:expectedBody
+                Should-Invoke InvokeADOPSRestMethod -Exactly 1 -ParameterFilter {
+                    -not $FullResponse -and -not $PesterBoundParameters.ContainsKey('FullResponse')
+                }
+            }
+        }
+
+        It 'Preserves positional arguments and explicit method/body with FullResponse' {
+            Invoke-ADOPSRestMethod 'https://dev.azure.com/dummyOrg/_apis/test' 'Patch' '{"value":1}' -FullResponse
+
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Exactly 1 -ParameterFilter {
+                $FullResponse -and $Method -eq 'Patch' -and $Body -eq '{"value":1}' -and
+                $Uri -eq 'https://dev.azure.com/dummyOrg/_apis/test' -and
+                $PesterBoundParameters.Count -eq 4
+            }
+        }
+
+        It 'Does not forward an empty body with FullResponse' {
+            Invoke-ADOPSRestMethod -Uri 'uri' -Body '' -FullResponse
+
+            Should-Invoke InvokeADOPSRestMethod -ModuleName ADOPS -Exactly 1 -ParameterFilter {
+                $FullResponse -and -not $PesterBoundParameters.ContainsKey('Body')
+            }
+        }
+
+        It 'Propagates transport errors with FullResponse <Enabled>' -ForEach @(
+            @{ Enabled = $true }
+            @{ Enabled = $false }
+        ) {
+            Mock InvokeADOPSRestMethod -ModuleName ADOPS { throw 'Transport failed' }
+
+            { Invoke-ADOPSRestMethod -Uri 'uri' -FullResponse:$Enabled } | Should-Throw -ExceptionMessage 'Transport failed'
         }
     }
 }

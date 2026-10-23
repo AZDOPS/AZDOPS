@@ -8,7 +8,10 @@ function Invoke-ADOPSRestMethod {
         [Microsoft.PowerShell.Commands.WebRequestMethod]$Method = 'Get',
 
         [Parameter()]
-        [string]$Body
+        [string]$Body,
+
+        [Parameter()]
+        [switch]$FullResponse
     )
 
     If ( ($Uri -NotLike "*dev.azure.com*") -and ($Uri -NotLike "*visualstudio.com*")) {
@@ -23,6 +26,10 @@ function Invoke-ADOPSRestMethod {
 
     if (-Not [String]::IsNullOrEmpty($Body)) {
         $InvokeSplat.Add('Body', $Body)
+    }
+
+    if ($FullResponse) {
+        $InvokeSplat.Add('FullResponse', $FullResponse)
     }
 
     InvokeADOPSRestMethod @InvokeSplat
