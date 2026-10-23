@@ -1,7 +1,7 @@
 #Requires -Modules 'InvokeBuild', 'PlatyPS', 'Pester'
 
 param (
-    [string]$Version = '1.1.2'
+    [string]$Version = '2.5.0'
 )
 
 [string]$ModuleName = 'ADOPS'
